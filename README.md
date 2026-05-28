@@ -1,4 +1,4 @@
-# NISSS self-employed content pages — alpha draft for review
+# NISSS self-employed content pages - alpha draft for review
 
 Three content pages for **alpha.gov.bb**, helping gig and self-employed workers in Barbados understand they can contribute to National Insurance. Built with NISSS (National Insurance and Social Security Service).
 
@@ -21,7 +21,7 @@ Please focus on: **the page content and wording**, whether anything is **unclear
 These only resolve once the pages are inside the real alpha.gov.bb app, so they'll break on the review link:
 
 - The **header logo**, **footer links** (Home / Terms / Careers), and the **alpha banner link** point at live-site routes (`/`, `/services`, `/feedback`, etc.).
-- The green **"Check your cover in 3 minutes"** button points at `/check` — the cover-check calculator, to be built later.
+- The green **"Check your coverage"** button points at `/check` — the coverage-check calculator, to be built later.
 - **"How to ask for your record"** (on the *not-too-late* page) has no destination yet.
 
 ## Open items needing a decision

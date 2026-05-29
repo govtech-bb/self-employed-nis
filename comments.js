@@ -25,13 +25,14 @@
   "use strict";
 
   var COMMENTS_CONFIG = {
-    // OPTION A — Supabase (recommended: central storage, no server to build).
-    //   supabase: { url: "https://xxxx.supabase.co", anonKey: "eyJhbGciOi..." }
-    supabase: null,
-    // OPTION B — your own REST API (see contract in COMMENTS.md).
-    apiBase: null,                 // e.g. "https://your-api.gov.bb/api"
-    // Leave BOTH null to store locally in each reviewer's browser (not shared).
-    pageId: location.pathname || "/", // one comment set per page
+    // Central storage via Supabase (anon public key — safe to ship in the page).
+    supabase: {
+      url: "https://ksnewcuzjbwjmmibgpmx.supabase.co",
+      anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzbmV3Y3V6amJ3am1taWJncG14Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDk1MTYsImV4cCI6MjA5NTYyNTUxNn0.ylV7U7I3X_xTQ30OWsCxAVPMJei_isJmLDKPxlO0MV8"
+    },
+    apiBase: null,
+    // Page key: treats "/self-employed-nis/" and "…/index.html" as the same page.
+    pageId: (location.pathname.replace(/index\.html$/, "").replace(/\/$/, "") || "/"),
     root: "#main"                  // only text inside here is commentable
   };
 

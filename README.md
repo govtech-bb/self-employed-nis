@@ -41,6 +41,10 @@ These are standalone HTML files for review. Each one carries a self-contained `<
 
 A few patterns aren't in the captured design-system markup and are flagged with `FLAG` comments in the HTML — the **breadcrumb**, the **accordion** (native `<details>`), and the **sector cards** — confirm these against a content-page template.
 
+## Credits
+
+Built by GovTech Barbados with NISSS. The prototype code — the three content pages, the design-system styling, and the select-to-comment review widget — was produced with assistance from **Claude (Anthropic)**, directed and reviewed by the GovTech team.
+
 ---
 
 *Plain Barbadian English, WCAG 2.2 AA (skip link, visible focus, breadcrumb landmark, `aria-current`, semantic headings). Built by GovTech Barbados with NISSS.*

@@ -1246,7 +1246,10 @@ function screenRegistrationGuide() {
       <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Three ways to do it</h2>
       <div class="space-y-3 mb-6">
         ${[
-          { icon: 'globe',    title: 'Online',         sub: 'Fill in the form on the <a href="https://nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">NISSS portal at nis.gov.bb</a>. Takes about 10 minutes.', tag: 'Easiest' },
+          { icon: 'globe',    title: 'Online',         sub: has === 'yes'
+            ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page</a>. Takes about 10 minutes.'
+            : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page</a>. Takes about 10 minutes.',
+          tag: 'Easiest' },
           { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown — or any branch.', tag: 'In person' },
           { icon: 'phone',    title: 'By phone',         sub: 'Call 246-431-7400 and an officer will help you over the phone.', tag: 'No screen' },
         ].map(o => `

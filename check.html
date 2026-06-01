@@ -280,7 +280,7 @@ const state = {
   expandedScenario: null,
 };
 
-const JOURNEY = ['worker-type', 'income-reality', 'risk-awareness', 'plan', 'next-steps'];
+const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
 
 /* ─────────────────────────────────────────────────────────
    Icons (lightweight inline SVGs)
@@ -655,37 +655,89 @@ function screenIncomeReality() {
         </div>
       </div>
 
-      <fieldset class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
-        <legend class="font-semibold text-bb-blue-00 px-2">Do you support children, family or others?</legend>
-        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3 mt-1">This helps us show you what would happen if you couldn't earn for a while.</p>
-        <div class="grid grid-cols-2 gap-2 mb-3" role="radiogroup">
-          ${[
-            { id: 'yes', label: 'Yes' },
-            { id: 'no',  label: 'Just me' },
-          ].map(o => {
-            const selected = d.hasDependants === o.id;
-            return `
-              <button type="button" role="radio" aria-checked="${selected}"
-                onclick="setDependants('${o.id}')"
-                class="selectable rounded-lg border-2 border-bb-grey-00 bg-white py-3 px-2 text-[1rem] font-medium text-bb-blue-00 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
-                ${o.label}
-              </button>`;
-          }).join('')}
-        </div>
-        ${d.hasDependants === 'yes' ? `
-          <label for="depCount" class="block text-[0.95rem] text-bb-mid-grey-00 mb-1">How many people depend on you?</label>
-          <div class="relative inline-flex rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="max-width: 220px;">
-            <input id="depCount" type="number" inputmode="numeric" min="1" max="20" step="1"
-              value="${d.dependantsCount || 1}"
-              oninput="updateDependantsCount(this.value)"
-              aria-label="Number of people who depend on you"
-              class="w-20 p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
-            <span class="pr-3 text-bb-mid-grey-00 text-[0.95rem]">people</span>
+      <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
+        <label for="goodMonthsPerYear" class="block font-semibold text-bb-blue-00 mb-1">
+          How many good months do you usually have in a year?
+        </label>
+        <div class="flex items-center gap-3 mt-3">
+          <span class="text-[0.95rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
+          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+            <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
+              value="${d.goodMonthsPerYear || ''}"
+              placeholder="e.g. 8"
+              oninput="state.data.goodMonthsPerYear = Math.max(1, Math.min(12, parseInt(this.value,10) || 0))"
+              aria-label="Number of good months per year"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
-        ` : ''}
-      </fieldset>
+        </div>
+      </div>
 
-      ${primaryBtn('Continue', "nav('risk-awareness')")}
+      ${primaryBtn('Continue', "nav('your-situation')")}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 3b — Your situation
+   ───────────────────────────────────────────────────────── */
+function screenYourSituation() {
+  const d = state.data;
+
+  function radioGroup(name, options) {
+    return options.map(o => {
+      const selected = d[name] === o.id;
+      return `
+        <button type="button" role="radio" aria-checked="${selected}"
+          onclick="state.data.${name} = '${o.id}'; render();"
+          class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+          <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+            ${ICONS.check}
+          </span>
+          <span class="text-[1.05rem] text-bb-black-00">${o.label}</span>
+        </button>`;
+    }).join('');
+  }
+
+  return `
+    <div class="screen stage">
+      ${backBtn('income-reality')}
+      ${progressBar('your-situation')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Tell us a bit more about your situation.
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        This helps us show you what would happen if you couldn't earn for a while.
+      </p>
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Dependants">
+        ${radioGroup('hasDependants', [
+          { id: 'yes', label: 'Yes — others rely on what I earn' },
+          { id: 'no',  label: "No — it's just me" }
+        ])}
+      </div>
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
+        ${radioGroup('hasSavings', [
+          { id: 'yes',      label: 'Yes' },
+          { id: 'no',       label: 'No' },
+          { id: 'not-sure', label: 'Not sure' }
+        ])}
+      </div>
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Current NIS status">
+        ${radioGroup('payingNIS', [
+          { id: 'yes',            label: 'Yes — I pay it' },
+          { id: 'registered',     label: "I'm registered but not paying" },
+          { id: 'no',             label: 'No' },
+          { id: 'not-sure',       label: 'Not sure' }
+        ])}
+      </div>
+
+      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || !d.hasSavings || !d.payingNIS })}
     </div>`;
 }
 
@@ -701,7 +753,7 @@ function screenRiskAwareness() {
 
   return `
     <div class="screen stage">
-      ${backBtn('income-reality')}
+      ${backBtn('your-situation')}
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
@@ -1688,6 +1740,7 @@ const SCREENS = {
   'risk-awareness': screenRiskAwareness,
   'worker-type': screenWorkerType,
   'income-reality': screenIncomeReality,
+  'your-situation': screenYourSituation,
   'plan': screenPlan,
   'next-steps': screenNextSteps,
   'benefits-quick': screenBenefitsQuick,
@@ -1704,6 +1757,7 @@ const TITLES = {
   'risk-awareness': 'What if something happened? – NISSS Barbados',
   'worker-type': 'What kind of work do you do? – NISSS Barbados',
   'income-reality': "Let's talk about your earnings – NISSS Barbados",
+  'your-situation': "Your situation – NISSS Barbados",
   'plan': 'Your contribution plan – NISSS Barbados',
   'next-steps': 'Next steps – NISSS Barbados',
   'benefits-quick': 'Six ways NISSS protects you – NISSS Barbados',

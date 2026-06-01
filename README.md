@@ -1,50 +1,55 @@
-# NISSS self-employed content pages — alpha draft for review
+# NIS self-employed prototype — alpha draft for review
 
-Three content pages for **alpha.gov.bb**, helping gig and self-employed workers in Barbados understand they can contribute to National Insurance. Built with NISSS (National Insurance and Social Security Service).
+A prototype for **alpha.gov.bb** helping gig and self-employed workers in Barbados understand they can contribute to National Insurance (NIS), see what they'd get, and start. Built by GovTech Barbados with NIS.
 
-**This is an alpha draft for feedback — not final, and not yet in the live site.** The facts still need NISSS sign-off (see "Open items" below).
+**This is an alpha draft for feedback — not final, and not yet in the live site.** The benefit figures still need NIS sign-off (see "Open items").
 
-## The pages
+## What's in here
 
-- **`index.html`** — *"Working for yourself in Barbados? You can be covered."* The landing page. Answers "does this apply to me?"
-- **`what-you-get.html`** — *"What you get for BDS$1,200.00 a year."* The benefits page.
-- **`not-too-late.html`** — *"It's not too late to start."* For over-50s and people who stopped contributing.
+Two information pages plus a calculator, on the alpha.gov.bb design system:
 
-## How to review
+- **`index.html`** — **Start page.** *"Working for yourself? You can be covered."* Who it's for (with examples), what you get (the seven benefits), and two clear next steps: check your coverage, or see how to get covered.
+- **`how-to.html`** — **Entry page.** *"How to get covered."* The practical steps: get your NIS number, register, top up if you have a main job, pay, check your benefits and record, and back-pay if you missed years.
+- **`check.html`** — **Coverage calculator.** A short, mobile-first tool that shows, in dollars, what a few weeks off work would cost you and what NIS would pay — tailored to the kind of work you do. *(Figures are estimates pending NIS confirmation — see below.)*
+- **`comments.js`** — the review-comment widget loaded by all three pages (see "Reviewing", below). Keep this file.
 
-Open the GitHub Pages link for this repo (Settings → Pages once it's enabled). The landing page is the front page; use the **"See also"** links at the bottom of each page to move between the three.
+The pages link to each other: **Start ↔ How to get covered**, and Start → the calculator.
 
-Please focus on: **the page content and wording**, whether anything is **unclear or untrue**, and whether the journey between the three pages makes sense. The pages are mobile-first — worth checking on a phone.
+> Superseded: `what-you-get.html` and `not-too-late.html` are no longer used — their content was folded into the Start and Entry pages. Delete them from the repo.
 
-**Leave feedback right on the page:** select any text and a **💬 Comment** button pops up — click it to start a comment. Use the **💬 Comments** panel (bottom-right) to read all threads, reply, or mark them resolved. Comments are shared with the whole team (saved centrally), so everyone sees the same feedback.
+## Reviewing
 
-## Known issues — expected, please ignore for now
+Open the GitHub Pages link (`https://govtech-bb.github.io/self-employed-nis/`). Please focus on **content and wording**, whether anything is **unclear or untrue**, and whether the journey **Start → How to get covered / Check your coverage** makes sense. It's mobile-first — worth checking on a phone.
 
-These only resolve once the pages are inside the real alpha.gov.bb app, so they'll break on the review link:
+**Leave feedback on the page:** select any text and a **💬 Comment** button appears. Use the **💬 Comments** panel (bottom-right) to read threads, reply, or resolve them. Comments are saved centrally (Supabase), so the whole team sees the same feedback. Setup notes are in `COMMENTS.md`.
 
-- The **header logo**, **footer links** (Home / Terms / Careers), and the **alpha banner link** point at live-site routes (`/`, `/services`, `/feedback`, etc.).
-- The **coverage check** is shown as a "coming soon" note — the calculator is still to be built.
+## Known issues — expected, please ignore
 
-The green **"Register with NISSS"** button does work — it opens the real NISSS registration portal in a new tab.
+These only resolve once the pages are inside the real alpha.gov.bb app:
+
+- The **header logo**, **footer links**, and the **alpha banner link** point at live-site routes (`/`, `/services`, `/feedback`).
+- The **"Register with NIS"** button works — it opens the real NIS registration portal in a new tab.
 
 ## Open items needing a decision
 
-- **NISSS fact-check.** Every benefit, amount, deadline, and rule is sourced to NISSS (Act 2023-25, May 2026) in the source note on each page. NISSS needs to confirm these before the pages go live.
-- **Currency style.** Amounts use `BDS$1,200.00` per the Barbados data-format rule (always two decimals). The `.00` reads a little heavy in the headline "What you get for BDS$1,200.00 a year" — confirm whether to keep it or show `BDS$1,200` in headings only.
-- **Destinations** for the two placeholder links above.
+- **NIS fact-check (the main blocker).** Every benefit, amount, deadline and rule is sourced to NIS (Act 2023-25) in the source note on each page. The **calculator's dollar figures are unverified placeholders** — they sit in one clearly-marked block at the top of `check.html`'s script and must be confirmed by the NIS Self-Employed Unit before launch. The known conflict to resolve: the contextual brief says sickness benefit at the $1,200 minimum is ~$30/week; Ann-Marie's earlier prototype computed ~$133/week.
+- **The opt-in is not collecting yet.** The calculator's "keep this summary" checkboxes are disabled, pending a signed-off privacy notice (no field collects data until then).
+- **Currency style.** Amounts use `BDS$1,200.00` (two decimals). Confirm whether to keep the `.00` everywhere or drop it on round "about" figures.
+- **Funeral grant** and a few benefit details are written plainly and general — confirm the exact names and conditions with NIS.
+- **Bigger picture:** the PM's National Portable Benefits Framework (hours-tracking across employers, engager registration, portability) is **out of scope here** — this prototype is the voluntary self-employed funnel. Whether GovTech now scopes that platform is a Phase-2 decision.
 
 ## Notes for the developer
 
-These are standalone HTML files for review. Each one carries a self-contained `<style>` block built from the live alpha.gov.bb design tokens (exact colours, spacing, type scale, Figtree font) so it renders on its own with no build step.
+Standalone HTML for review. Each page carries a self-contained `<style>` block rebuilt from the live alpha.gov.bb design tokens (colours, spacing, type scale, Figtree) so it renders on its own with no build step.
 
-**To bring into the site:** delete the `<style>` block and the two Figtree font `<link>`s, and lift the `<main>` content into the `(content)/[...slug]` route. The markup already uses the real `govbb` Tailwind utility classes, so the app's own stylesheet and layout (official banner, yellow header, footer) take over. Restore the app's real header/nav (the standalone files show the nav links at all widths because the JS hamburger needs React).
+**To bring into the site:** delete the `<style>` block, the Figtree font `<link>`s, and the `<script src="comments.js">` tag; lift the `<main>` content into the `(content)/[...slug]` route. The markup uses the real `govbb` utility classes, so the app's stylesheet and layout (official banner, yellow header, footer) take over. Restore the app's real header/nav. The calculator's estimate logic is isolated in one block in `check.html` for a clean swap when NIS confirms the numbers.
 
-A few patterns aren't in the captured design-system markup and are flagged with `FLAG` comments in the HTML — the **breadcrumb**, the **accordion** (native `<details>`), and the **sector cards** — confirm these against a content-page template.
+A few patterns aren't in the captured design-system markup and are flagged with `FLAG` comments — the **breadcrumb** and the calculator's option controls — confirm against a content-page template.
 
 ## Credits
 
-Built by GovTech Barbados with NISSS. The prototype code — the three content pages, the design-system styling, and the select-to-comment review widget — was produced with assistance from **Claude (Anthropic)**, directed and reviewed by the GovTech team.
+Built by GovTech Barbados with NIS. The prototype code — the two content pages, the coverage calculator, the design-system styling, and the select-to-comment review widget — was produced with assistance from **Claude (Anthropic)**, directed and reviewed by the GovTech team.
 
 ---
 
-*Plain Barbadian English, WCAG 2.2 AA (skip link, visible focus, breadcrumb landmark, `aria-current`, semantic headings). Built by GovTech Barbados with NISSS.*
+*Plain Barbadian English. WCAG 2.2 AA (skip link, visible focus, breadcrumb landmark, `aria-current`, semantic headings, keyboard-operable calculator).*

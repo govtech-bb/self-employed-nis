@@ -147,6 +147,16 @@
     .bcard-teal{background:var(--teal-10);border-color:var(--teal-40)}.bcard-teal .bcard-ic{color:var(--teal-00)}
     .bcard-blue{background:var(--blue-10);border-color:var(--blue-40)}.bcard-blue .bcard-ic{color:var(--blue-100)}
     .bcard-yellow{background:var(--yellow-10);border-color:var(--yellow-40)}.bcard-yellow .bcard-ic{color:var(--yellow-00)}
+    /* Reassurance grid (myth-busters) — reuses the .bcard styles above */
+    .reassure-grid{display:grid;grid-template-columns:1fr;gap:.75rem;margin-top:.75rem}
+    @media(min-width:540px){.reassure-grid{grid-template-columns:1fr 1fr}}
+    .reassure .bcard{padding:.85rem .95rem}
+    .reassure .bcard-ic{width:38px;height:38px}.reassure .bcard-ic svg{width:20px;height:20px}
+    .reassure h3{font-size:1.1rem}.reassure .bcard p{font-size:1rem;line-height:1.4}
+    /* Top-up callout */
+    .topup{display:flex;gap:.75rem;align-items:flex-start;border-left:4px solid var(--teal-00);background:var(--teal-10);padding:.85rem .95rem;border-radius:0 8px 8px 0}
+    .topup .bcard-ic{width:38px;height:38px;color:var(--teal-00)}.topup .bcard-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .topup p{font-size:1rem;line-height:1.4}
     /* Mobile: smaller headings + more breathing room (de-cluttered) */
     @media(max-width:640px){
       body{font-size:1.0625rem}
@@ -237,6 +247,41 @@
 
         <p class="text-[1.5rem] leading-[1.4]">When you work for yourself, National Insurance pays you money when you can't work. You can get that protection from about BDS$100.00 a month — the lowest you can pay.</p>
 
+        <!-- Reassurance grid — answers the most common worries up front (myth-busters) -->
+        <section class="reassure" aria-labelledby="reassure-h">
+          <h2 id="reassure-h" class="font-bold text-[1.5rem] leading-[1.25]">Good to know</h2>
+          <div class="reassure-grid">
+            <div class="bcard bcard-teal">
+              <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span>
+              <div>
+                <h3>It's not a tax</h3>
+                <p>Your money buys <strong>you</strong> protection. Nothing here is shared with BRA or used to chase you.</p>
+              </div>
+            </div>
+            <div class="bcard bcard-blue">
+              <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 21V5a2 2 0 012-2h7l5 5v13"/><path d="M9 9h4M9 13h6M9 17h6"/></svg></span>
+              <div>
+                <h3>You don't need a registered business</h3>
+                <p>Your NIS number is yours for life and follows you — not your job.</p>
+              </div>
+            </div>
+            <div class="bcard bcard-yellow">
+              <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+              <div>
+                <h3>Slow month? Pay less or skip</h3>
+                <p>It's voluntary, and there's no penalty for a month you can't pay.</p>
+              </div>
+            </div>
+            <div class="bcard bcard-teal">
+              <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M17 15l2 2 3-3"/></svg></span>
+              <div>
+                <h3>You're covered as you pay</h3>
+                <p>You don't have to pay a whole year up front before you start.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <h2 class="font-bold text-[2.5rem] leading-[1.25]">Who this is for</h2>
         <p>This is for you if you earn money from work and no employer pays National Insurance for you — whether it is your only job or something you do on the side. For example, if you:</p>
         <ul class="list-disc pl-7.5 space-y-2">
@@ -251,7 +296,10 @@
         </ul>
         <p>You don't need to fit one of these exactly.</p>
 
-        <p>If you already have a job where your employer pays National Insurance for you, you can still pay for your self-employed work as well.</p>
+        <div class="topup">
+          <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          <p><strong>Already have a job too?</strong> If an employer pays National Insurance for you, you can still pay for your self-employed work on top.</p>
+        </div>
 
         <h2 class="font-bold text-[2.5rem] leading-[1.25]">What you get</h2>
         <p>National Insurance protects you in 7 ways:</p>

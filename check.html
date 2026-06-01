@@ -547,7 +547,32 @@ function screenWorkerType() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType })}
+      <h2 class="font-bold text-[1.35rem] sm:text-[1.5rem] leading-[1.25] text-bb-blue-00 mb-1">
+        Do you already pay National Insurance through a main job?
+      </h2>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+        If yes, you can still pay for your self-employed income on top.
+      </p>
+
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Main job NIS status">
+        ${[
+          { id: 'yes', label: 'Yes — I have a job that pays NIS for me' },
+          { id: 'no',  label: 'No — my self-employed work is how I earn' }
+        ].map(opt => {
+          const selected = state.data.hasMainJob === opt.id;
+          return `
+            <button type="button" role="radio" aria-checked="${selected}"
+              onclick="selectMainJob('${opt.id}')"
+              class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+                ${ICONS.check}
+              </span>
+              <span class="text-[1.05rem] text-bb-black-00">${opt.label}</span>
+            </button>`;
+        }).join('')}
+      </div>
+
+      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob })}
     </div>`;
 }
 
@@ -1713,6 +1738,10 @@ function nav(screen) {
 
 function selectWorker(id) {
   state.data.workerType = id;
+  render();
+}
+function selectMainJob(id) {
+  state.data.hasMainJob = id;
   render();
 }
 function nextFromWorkerType() {

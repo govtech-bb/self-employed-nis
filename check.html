@@ -106,14 +106,26 @@
     .cc-btn-secondary{background:var(--grey-00);color:var(--black-00)}
     .cc-btn-secondary:hover{background:#cdd2d8}
     .cc-btn:focus-visible{outline:none;box-shadow:0 0 0 1px #fff,0 0 0 5px var(--teal-100)}
-    .cc-err{color:#8b1a10;font-weight:700;margin:.5rem 0;display:none}
+    .cc-err{color:#b1190b;font-weight:700;margin:.4rem 0;display:none}
     .cc-err.on{display:block}
+    .cc-fs{border:0;padding:0;margin:0 0 1.5rem}
+    .cc-fs legend{padding:0}
+    .cc-errsum{border:4px solid #d4351c;background:#fff;padding:1rem 1.25rem;margin-bottom:1.5rem}
+    .cc-errsum:focus{outline:3px solid #ffc726;outline-offset:2px}
+    .cc-errsum h2{font-size:1.2rem;color:#b1190b;margin-bottom:.4rem}
+    .cc-errsum ul{list-style:none;margin:0;padding:0}
+    .cc-errsum li{margin:.25rem 0}
+    .cc-errsum a{color:#b1190b;font-weight:700;text-decoration:underline}
+    .cc-options[aria-invalid="true"]{border-left:4px solid #d4351c;padding-left:.7rem}
+    .cc-num[aria-invalid="true"]{border-color:#d4351c}
 
     /* results */
     .cc-estimate-banner{border:4px solid var(--yellow-100);background:var(--yellow-40);padding:1rem;margin-bottom:1.5rem}
     .cc-result-h{font-size:2rem;line-height:1.2;font-weight:700;margin-bottom:.75rem}
-    .cc-gap{border-left:6px solid #00703c;background:#e7f5ed;padding:1.25rem;margin:1rem 0}
-    .cc-gap .big{font-size:2.25rem;font-weight:700;color:#00703c;line-height:1.1}
+    .cc-gap{border-left:6px solid var(--blue-100);background:var(--blue-10);padding:1.25rem;margin:1rem 0}
+    .cc-gap .big{font-size:2.25rem;font-weight:700;color:var(--blue-100);line-height:1.1}
+    .cc-scn-good{border:1px solid #00703c;background:#e7f5ed}
+    .cc-scn-good h3{color:#005a30}
     .cc-scn{border:1px solid var(--grey-00);border-radius:8px;padding:1rem 1.25rem;margin:.75rem 0}
     .cc-scn h3{font-size:1.15rem;font-weight:700;margin-bottom:.4rem}
     .cc-scn .row{display:flex;justify-content:space-between;gap:1rem;padding:.3rem 0;font-size:1.05rem}
@@ -208,51 +220,68 @@
         </div>
 
         <!-- STEP 1 -->
-        <fieldset class="cc-step" id="step1">
-          <legend class="cc-q">What kind of work do you do?</legend>
-          <p class="cc-q-help">Pick the one that's closest. It just helps us tailor the examples.</p>
-          <p class="cc-err" id="err1">Please choose the kind of work you do.</p>
-          <div class="cc-options" role="radiogroup" aria-label="Kind of work">
-            <label class="cc-opt"><input type="radio" name="work" value="app"><span class="cc-opt-label">Drive or deliver for an app<span class="cc-opt-hint">Rideshare, food or parcel delivery</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="trades"><span class="cc-opt-label">Trades or construction<span class="cc-opt-hint">Mechanic, electrician, mason, handyman</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="sell"><span class="cc-opt-label">Sell food, goods or crafts<span class="cc-opt-hint">Market vendor, caterer, online seller</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="freelance"><span class="cc-opt-label">Freelance for foreign firms<span class="cc-opt-hint">Design, writing, coding, support</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="host"><span class="cc-opt-label">Rent your place to visitors<span class="cc-opt-hint">Airbnb, short-let hosting</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="care"><span class="cc-opt-label">Domestic or care work<span class="cc-opt-hint">Household help, childcare, elder care</span></span></label>
-            <label class="cc-opt"><input type="radio" name="work" value="other"><span class="cc-opt-label">Something else<span class="cc-opt-hint">Any other self-employed work</span></span></label>
+        <section class="cc-step" id="step1">
+          <div class="cc-errsum" id="errsum1" role="alert" tabindex="-1" hidden>
+            <h2>There is a problem</h2>
+            <ul id="errlist1"></ul>
           </div>
 
-          <legend class="cc-q" style="font-size:1.25rem;margin-top:1.5rem">Do you already pay National Insurance through a main job?</legend>
-          <p class="cc-q-help">If yes, you can still pay for your self-employed income on top.</p>
-          <div class="cc-options" role="radiogroup" aria-label="Pay NIS through a main job">
-            <label class="cc-opt"><input type="radio" name="mainjob" value="yes"><span class="cc-opt-label">Yes — I have a job that pays NIS for me</span></label>
-            <label class="cc-opt"><input type="radio" name="mainjob" value="no"><span class="cc-opt-label">No — my self-employed work is how I earn</span></label>
-          </div>
+          <fieldset class="cc-fs">
+            <legend class="cc-q">What kind of work do you do?</legend>
+            <p class="cc-q-help">Pick the one that's closest. It just helps us tailor the examples.</p>
+            <p class="cc-err" id="err-work">Choose the kind of work you do.</p>
+            <div class="cc-options" id="grp-work" role="radiogroup" aria-label="Kind of work">
+              <label class="cc-opt"><input type="radio" name="work" value="app"><span class="cc-opt-label">Drive or deliver for an app<span class="cc-opt-hint">Rideshare, food or parcel delivery</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="trades"><span class="cc-opt-label">Trades or construction<span class="cc-opt-hint">Mechanic, electrician, mason, handyman</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="sell"><span class="cc-opt-label">Sell food, goods or crafts<span class="cc-opt-hint">Market vendor, caterer, online seller</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="freelance"><span class="cc-opt-label">Freelance or online work<span class="cc-opt-hint">Design, writing, coding, content creators</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="professional"><span class="cc-opt-label">Work in a profession on your own account<span class="cc-opt-hint">Consultants, accountants, lawyers, doctors, engineers</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="host"><span class="cc-opt-label">Rent your place to visitors<span class="cc-opt-hint">Airbnb, short-let hosting</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="care"><span class="cc-opt-label">Domestic or care work<span class="cc-opt-hint">Household help, childcare, elder care</span></span></label>
+              <label class="cc-opt"><input type="radio" name="work" value="other"><span class="cc-opt-label">Something else<span class="cc-opt-hint">Any other self-employed work</span></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="cc-fs">
+            <legend class="cc-q" style="font-size:1.25rem">Do you already pay National Insurance through a main job?</legend>
+            <p class="cc-q-help">If yes, you can still pay for your self-employed income on top.</p>
+            <p class="cc-err" id="err-mainjob">Choose whether you pay NIS through a main job.</p>
+            <div class="cc-options" id="grp-mainjob" role="radiogroup" aria-label="Pay NIS through a main job">
+              <label class="cc-opt"><input type="radio" name="mainjob" value="yes"><span class="cc-opt-label">Yes — I have a job that pays NIS for me</span></label>
+              <label class="cc-opt"><input type="radio" name="mainjob" value="no"><span class="cc-opt-label">No — my self-employed work is how I earn</span></label>
+            </div>
+          </fieldset>
 
           <div class="cc-actions">
             <button type="button" class="cc-btn cc-btn-primary" onclick="next(1)">Continue</button>
           </div>
-        </fieldset>
+        </section>
 
         <!-- STEP 2 -->
-        <fieldset class="cc-step" id="step2" hidden>
-          <legend class="cc-q">What do you usually earn?</legend>
+        <section class="cc-step" id="step2" hidden>
+          <div class="cc-errsum" id="errsum2" role="alert" tabindex="-1" hidden>
+            <h2>There is a problem</h2>
+            <ul id="errlist2"></ul>
+          </div>
+          <h2 class="cc-q">What do you usually earn?</h2>
           <p class="cc-q-help">Rough figures are fine. All amounts in Barbados dollars.</p>
-          <p class="cc-err" id="err2">Please fill in your earnings and good months.</p>
           <div class="cc-fieldset-grid">
             <div>
               <label class="cc-num-label" for="good">In a good month, about how much do you earn?</label>
               <span class="cc-num-hint">Your typical earnings when work is flowing.</span>
-              <span class="cc-prefix"><span>BDS$</span><input class="cc-num" id="good" type="number" inputmode="numeric" min="0" step="50" placeholder="e.g. 3,000"></span>
+              <p class="cc-err" id="err-good">Enter what you earn in a good month.</p>
+              <span class="cc-prefix"><span>BDS$</span><input class="cc-num" id="good" type="number" inputmode="numeric" min="0" step="50" placeholder="e.g. 3000"></span>
             </div>
             <div>
               <label class="cc-num-label" for="lean">In a slow month, about how much do you earn?</label>
               <span class="cc-num-hint">Enter 0 if you earn nothing in slow months.</span>
+              <p class="cc-err" id="err-lean">Enter what you earn in a slow month, or 0.</p>
               <span class="cc-prefix"><span>BDS$</span><input class="cc-num" id="lean" type="number" inputmode="numeric" min="0" step="50" placeholder="e.g. 600"></span>
             </div>
             <div>
               <label class="cc-num-label" for="goodmo">How many good months do you usually have in a year?</label>
               <span class="cc-num-hint">A number from 1 to 12.</span>
+              <p class="cc-err" id="err-goodmo">Enter a number from 1 to 12.</p>
               <input class="cc-num" id="goodmo" type="number" inputmode="numeric" min="1" max="12" step="1" placeholder="e.g. 8" style="max-width:8rem">
             </div>
           </div>
@@ -260,40 +289,50 @@
             <button type="button" class="cc-btn cc-btn-secondary" onclick="back(2)">Back</button>
             <button type="button" class="cc-btn cc-btn-primary" onclick="next(2)">Continue</button>
           </div>
-        </fieldset>
+        </section>
 
         <!-- STEP 3 -->
-        <fieldset class="cc-step" id="step3" hidden>
-          <legend class="cc-q">A little about your situation</legend>
-          <p class="cc-q-help">This helps us give you a more useful result.</p>
-          <p class="cc-err" id="err3">Please answer the three questions.</p>
-
-          <p class="cc-num-label" style="margin-top:.5rem">Does anyone depend on your income?</p>
-          <div class="cc-options" role="radiogroup" aria-label="Dependants">
-            <label class="cc-opt"><input type="radio" name="deps" value="yes"><span class="cc-opt-label">Yes — others rely on what I earn</span></label>
-            <label class="cc-opt"><input type="radio" name="deps" value="no"><span class="cc-opt-label">No — it's just me</span></label>
+        <section class="cc-step" id="step3" hidden>
+          <div class="cc-errsum" id="errsum3" role="alert" tabindex="-1" hidden>
+            <h2>There is a problem</h2>
+            <ul id="errlist3"></ul>
           </div>
 
-          <p class="cc-num-label" style="margin-top:1rem">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</p>
-          <div class="cc-options" role="radiogroup" aria-label="Savings">
-            <label class="cc-opt"><input type="radio" name="savings" value="yes"><span class="cc-opt-label">Yes</span></label>
-            <label class="cc-opt"><input type="radio" name="savings" value="no"><span class="cc-opt-label">No</span></label>
-            <label class="cc-opt"><input type="radio" name="savings" value="unsure"><span class="cc-opt-label">Not sure</span></label>
-          </div>
+          <fieldset class="cc-fs">
+            <legend class="cc-q" style="font-size:1.25rem">Does anyone depend on your income?</legend>
+            <p class="cc-err" id="err-deps">Choose whether anyone depends on your income.</p>
+            <div class="cc-options" id="grp-deps" role="radiogroup" aria-label="Dependants">
+              <label class="cc-opt"><input type="radio" name="deps" value="yes"><span class="cc-opt-label">Yes — others rely on what I earn</span></label>
+              <label class="cc-opt"><input type="radio" name="deps" value="no"><span class="cc-opt-label">No — it's just me</span></label>
+            </div>
+          </fieldset>
 
-          <p class="cc-num-label" style="margin-top:1rem">Are you paying National Insurance now for your self-employed work?</p>
-          <div class="cc-options" role="radiogroup" aria-label="Currently paying NIS">
-            <label class="cc-opt"><input type="radio" name="paying" value="paying"><span class="cc-opt-label">Yes — I pay it</span></label>
-            <label class="cc-opt"><input type="radio" name="paying" value="notpaying"><span class="cc-opt-label">I'm registered but not paying</span></label>
-            <label class="cc-opt"><input type="radio" name="paying" value="no"><span class="cc-opt-label">No</span></label>
-            <label class="cc-opt"><input type="radio" name="paying" value="unsure"><span class="cc-opt-label">Not sure</span></label>
-          </div>
+          <fieldset class="cc-fs">
+            <legend class="cc-q" style="font-size:1.25rem">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</legend>
+            <p class="cc-err" id="err-savings">Choose whether you have savings to cover 3 weeks.</p>
+            <div class="cc-options" id="grp-savings" role="radiogroup" aria-label="Savings">
+              <label class="cc-opt"><input type="radio" name="savings" value="yes"><span class="cc-opt-label">Yes</span></label>
+              <label class="cc-opt"><input type="radio" name="savings" value="no"><span class="cc-opt-label">No</span></label>
+              <label class="cc-opt"><input type="radio" name="savings" value="unsure"><span class="cc-opt-label">Not sure</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="cc-fs">
+            <legend class="cc-q" style="font-size:1.25rem">Are you paying National Insurance now for your self-employed work?</legend>
+            <p class="cc-err" id="err-paying">Choose whether you pay NIS now.</p>
+            <div class="cc-options" id="grp-paying" role="radiogroup" aria-label="Currently paying NIS">
+              <label class="cc-opt"><input type="radio" name="paying" value="paying"><span class="cc-opt-label">Yes — I pay it</span></label>
+              <label class="cc-opt"><input type="radio" name="paying" value="notpaying"><span class="cc-opt-label">I'm registered but not paying</span></label>
+              <label class="cc-opt"><input type="radio" name="paying" value="no"><span class="cc-opt-label">No</span></label>
+              <label class="cc-opt"><input type="radio" name="paying" value="unsure"><span class="cc-opt-label">Not sure</span></label>
+            </div>
+          </fieldset>
 
           <div class="cc-actions">
             <button type="button" class="cc-btn cc-btn-secondary" onclick="back(3)">Back</button>
             <button type="button" class="cc-btn cc-btn-primary" onclick="showResult()">See my result</button>
           </div>
-        </fieldset>
+        </section>
 
         <!-- RESULTS -->
         <section id="results" hidden aria-live="polite"></section>
@@ -362,6 +401,7 @@
     trades:    "Say you hurt your back on a job and can’t work for three weeks.",
     sell:      "Say you get sick and can’t cook or run your stall for three weeks.",
     freelance: "Say you’re ill for three weeks — and the client just moves on.",
+    professional: "Say you’re out of action for three weeks and can’t take on clients.",
     host:      "Say you’re in hospital for three weeks and can’t take guests.",
     care:      "Say you catch something and can’t go into people’s homes for three weeks.",
     other:     "Say you couldn’t work at all for three weeks."
@@ -371,6 +411,7 @@
     trades:    ["a slow season", "damaged or stolen tools", "bad weather stopping a job"],
     sell:      ["a slow season or bad weather", "stock that spoils or doesn’t sell", "getting your goods to market"],
     freelance: ["a dry spell between contracts", "a client who pays late — or not at all", "your laptop or equipment failing"],
+    professional: ["a quiet spell between clients", "a client who pays late — or not at all", "covering your own costs while you can’t work"],
     host:      ["empty weeks between bookings", "damage to your property", "a drop in visitors"],
     care:      ["fewer hours when a family no longer needs you", "travel between jobs", "getting sick yourself"],
     other:     ["a slow season", "equipment breaking down", "transport problems"]
@@ -386,26 +427,67 @@
     var titles = {1:'Your work',2:'Your income',3:'Your situation'};
     $('cc-progress').textContent = 'Step ' + n + ' of 3 — ' + titles[n];
     $('cc-progress-wrap').hidden = false;
-    var lg = $('step'+n).querySelector('legend');
+    document.title = 'Check your coverage — alpha.gov.bb';
+    var lg = $('step'+n).querySelector('legend, h2');
     if (lg){ lg.setAttribute('tabindex','-1'); lg.focus(); }
     window.scrollTo({top:0,behavior:'smooth'});
   }
   function back(from){ setStep(from-1); }
 
+  /* ---- validation: GDS-style error summary + per-field messages ---- */
+  var STEP_GROUPS = {
+    1:[{group:'grp-work',err:'err-work'},{group:'grp-mainjob',err:'err-mainjob'}],
+    2:[{group:'good',err:'err-good'},{group:'lean',err:'err-lean'},{group:'goodmo',err:'err-goodmo'}],
+    3:[{group:'grp-deps',err:'err-deps'},{group:'grp-savings',err:'err-savings'},{group:'grp-paying',err:'err-paying'}]
+  };
+  function fieldFocus(id){ var g=$(id); if(!g) return; var f=g.querySelector('input,select,textarea')||g; f.focus(); }
+  function clearErrors(n){
+    var sum=$('errsum'+n); if(sum) sum.hidden=true;
+    (STEP_GROUPS[n]||[]).forEach(function(p){
+      var e=$(p.err); if(e) e.classList.remove('on');
+      var g=$(p.group); if(g) g.removeAttribute('aria-invalid');
+    });
+  }
+  function showErrors(n, problems){
+    $('errlist'+n).innerHTML = problems.map(function(p){
+      return '<li><a href="#'+p.group+'" onclick="fieldFocus(\''+p.group+'\');return false;">'+p.msg+'</a></li>';
+    }).join('');
+    problems.forEach(function(p){
+      var e=$(p.err); if(e) e.classList.add('on');
+      var g=$(p.group); if(g) g.setAttribute('aria-invalid','true');
+    });
+    document.title = 'Error: Check your coverage — alpha.gov.bb';
+    var sum=$('errsum'+n); sum.hidden=false; sum.focus();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
   function next(from){
+    clearErrors(from);
+    var problems=[];
     if (from === 1){
-      if (!checked('work') || !checked('mainjob')){ $('err1').classList.add('on'); return; }
-      $('err1').classList.remove('on'); setStep(2);
+      if (!checked('work'))    problems.push({group:'grp-work',err:'err-work',msg:'Choose the kind of work you do'});
+      if (!checked('mainjob')) problems.push({group:'grp-mainjob',err:'err-mainjob',msg:'Choose whether you pay NIS through a main job'});
+      if (problems.length){ showErrors(1,problems); return; }
+      setStep(2);
     } else if (from === 2){
-      var g = parseFloat($('good').value), l = parseFloat($('lean').value), gm = parseInt($('goodmo').value);
-      if (isNaN(g) || isNaN(l) || isNaN(gm) || gm < 1 || gm > 12){ $('err2').classList.add('on'); return; }
-      $('err2').classList.remove('on'); setStep(3);
+      var g=$('good').value.trim(), l=$('lean').value.trim(), gm=$('goodmo').value.trim();
+      if (g===''||isNaN(parseFloat(g))||parseFloat(g)<0) problems.push({group:'good',err:'err-good',msg:'Enter what you earn in a good month'});
+      if (l===''||isNaN(parseFloat(l))||parseFloat(l)<0) problems.push({group:'lean',err:'err-lean',msg:'Enter what you earn in a slow month, or 0'});
+      var gmn=parseInt(gm,10);
+      if (gm===''||isNaN(gmn)||gmn<1||gmn>12) problems.push({group:'goodmo',err:'err-goodmo',msg:'Enter how many good months — a number from 1 to 12'});
+      if (problems.length){ showErrors(2,problems); return; }
+      setStep(3);
     }
   }
 
   function showResult(){
-    if (!checked('deps') || !checked('savings') || !checked('paying')){ $('err3').classList.add('on'); return; }
-    $('err3').classList.remove('on');
+    clearErrors(3);
+    var problems=[];
+    if (!checked('deps'))    problems.push({group:'grp-deps',err:'err-deps',msg:'Choose whether anyone depends on your income'});
+    if (!checked('savings')) problems.push({group:'grp-savings',err:'err-savings',msg:'Choose whether you have savings to cover 3 weeks'});
+    if (!checked('paying'))  problems.push({group:'grp-paying',err:'err-paying',msg:'Choose whether you pay NIS now'});
+    if (problems.length){ showErrors(3,problems); return; }
+    document.title = 'Check your coverage — alpha.gov.bb';
 
     S.work = checked('work'); S.mainjob = checked('mainjob');
     S.good = parseFloat($('good').value) || 0;
@@ -437,7 +519,7 @@
     // Only show the "match your income" scenario when that means paying more than the minimum.
     var showMatched = target > NIS.MIN_ANNUAL;
     var matchedHtml = showMatched
-      ? '<div class="cc-scn"><h3>Paying to match your income — about ' + money(targetMonthly) + ' a month</h3>'
+      ? '<div class="cc-scn cc-scn-good"><h3>Paying to match your income — about ' + money(targetMonthly) + ' a month</h3>'
         + '<div class="row"><span class="k">NIS would pay you about</span><span>' + money(sickTarget*3) + ' <span class="cc-est">(' + money(sickTarget) + '/week, est.)</span></span></div>'
         + '<div class="row"><span class="k">You’d still be short about</span><span class="short">' + money(gapTarget) + '</span></div></div>'
       : '<p style="margin:.5rem 0">At your income, about BDS$100 a month (the minimum) is already close to matching what you earn.</p>';
@@ -540,6 +622,7 @@
   function restart(){
     document.querySelectorAll('input[type=radio]').forEach(function(r){ r.checked = false; });
     ['good','lean','goodmo'].forEach(function(id){ $(id).value=''; });
+    clearErrors(1); clearErrors(2); clearErrors(3);
     $('results').hidden = true; $('results').innerHTML='';
     setStep(1);
   }

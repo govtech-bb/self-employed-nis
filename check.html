@@ -855,7 +855,7 @@ function screenRiskAwareness() {
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[1rem] text-bb-blue-00">
-          <strong>You don't have to plan for every scenario.</strong> NISSS covers a few of them at once — that's the point of a safety net.
+          <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once — that's the point of a safety net.
         </p>
       </div>
 
@@ -892,16 +892,16 @@ function screenPlan() {
     tier === 'strong'  ? strongMonthly : null;
 
   // Relative protection level — drives the bar fill in the hero.
-  // This is a QUALITATIVE indicator only (more contributions = more cover).
+  // This is a QUALITATIVE indicator only (more contributions = more benefits).
   // Exact benefit figures are not shown until NISSS confirms them.
   const protectionPct =
     tier === 'minimum' ? 40 :
     tier === 'safer'   ? 70 :
     tier === 'strong'  ? 95 : 0;
   const protectionLabel =
-    tier === 'minimum' ? 'Basic cover' :
-    tier === 'safer'   ? 'Better cover' :
-    tier === 'strong'  ? 'Strongest cover' : '';
+    tier === 'minimum' ? 'Basic benefits' :
+    tier === 'safer'   ? 'Better benefits' :
+    tier === 'strong'  ? 'Strongest benefits' : '';
 
   // ── Estimated benefit amounts ────────────────────────────────
   // The chosen monthly contribution implies a level of insurable EARNINGS
@@ -924,15 +924,15 @@ function screenPlan() {
   const tiers = [
     {
       id: 'minimum', label: 'Minimum', monthly: minMonthly, tag: 'Basic', color: 'yellow',
-      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim — but you're covered for everything.",
+      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim — but you still qualify for every benefit.",
     },
     {
       id: 'safer', label: 'Moderate', monthly: saferMonthly, tag: 'Recommended', color: 'green',
-      sub: 'A bigger share of your earnings, so you build more contributions and stronger cover.',
+      sub: 'A bigger share of your earnings, so you build more contributions and stronger benefits.',
     },
     {
       id: 'strong', label: 'Stronger', monthly: strongMonthly, tag: 'Maximum', color: 'teal',
-      sub: 'The most you put in here — closer to what employees contribute, building the strongest cover.',
+      sub: 'The most you put in here — closer to what employees contribute, building the strongest benefits.',
     },
   ];
 
@@ -1031,7 +1031,7 @@ function screenPlan() {
               <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
             </div>
             <p class="text-[0.8rem] text-white/70 mt-2">
-              The more you put in, the more cover you build. Figures below are estimates based on your insurable earnings.
+              The more you put in, the bigger your benefits. Figures below are estimates based on your insurable earnings.
             </p>
           </div>
         </div>
@@ -1079,7 +1079,7 @@ function screenPlan() {
         <div class="rounded-2xl bg-bb-blue-10 border border-bb-blue-40 p-4 mb-6 flex items-start gap-3">
           <span class="text-bb-blue-100 shrink-0 mt-0.5">${ICONS.clock}</span>
           <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>When your cover starts:</strong> you're protected after one full year of contributions — at least BDS$1,200 over the year. Keep paying and your cover stays active.
+            <strong>When your benefits start:</strong> you're protected after one full year of contributions — at least BDS$1,200 over the year. Keep paying and your benefits stay active.
           </p>
         </div>
       ` : `

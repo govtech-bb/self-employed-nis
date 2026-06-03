@@ -87,12 +87,12 @@ Each question has:
   - Refers to: whether someone is penalised for not paying in a given month (we tell users there's no penalty).
   - Answer: The voluntary/instalment model implies no per-month penalty (surcharge applies to missed *years*), but it's not stated outright.
 
-## 4. Registration, payment & data (backs up our "it's not a tax" claim)
+## 4. Registration, payment & data (backs up our "it's not *called* a tax" framing)
 
 - [ ] 🟡 **17. NIS↔BRA data sharing** — is any contribution data shared with BRA or used for tax enforcement?
-  - Plain: Is any of this shared with the BRA (taxes)? We're telling people their NIS info isn't used to chase them — can you confirm?
-  - Refers to: the reassurance on the landing page that NIS info isn't shared with the tax authority or used to chase people.
-  - Answer: **Ann-Marie was to verify** — not yet confirmed. Underpins the "not a tax" reassurance, so we need a definitive yes/no.
+  - Plain: Is any of this shared with the BRA (taxes)? Internal question for our own understanding — can you confirm?
+  - Refers to: internal context only. Per the 2026-06-02 meeting we no longer make any "not shared with BRA / not used to chase you" claim in user-facing copy — that drifts into tax-evasion comfort, which the team ruled out. Framing is "protection," and we avoid the word "tax" entirely (don't call it a tax, don't deny it's one).
+  - Answer: **Ann-Marie was to verify** — not yet confirmed. Useful for our understanding, but no longer load-bearing for any public claim.
 - [ ] ✅ **18. Registration channels & documents.**
   - Plain: How do people sign up — online, by phone, in person — and what do they need to bring (birth certificate, trading card)?
   - Refers to: how people sign up and what they need to bring.

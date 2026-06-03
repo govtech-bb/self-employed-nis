@@ -477,7 +477,7 @@ function screenLanding() {
         </p>
 
         <div class="space-y-3 mb-2">
-          ${primaryBtn('See what protection you may qualify for', "nav('worker-type')")}
+          ${primaryBtn('See what benefits you may qualify for', "nav('worker-type')")}
           ${secondaryBtn('Estimate my contributions', "nav('plan')")}
           <button type="button" onclick="nav('register-path')"
             class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
@@ -1962,5 +1962,10 @@ function restart() {
 // Initial render — first render scrolls to top for screen-reader users landing on the page
 render({ scroll: true });
 </script>
+
+<!-- Review comments (prototype). Reviewers select text to leave a comment.
+     Saves locally per browser by default; set COMMENTS_CONFIG.apiBase in
+     comments.js to your database API to share comments. Remove for production. -->
+<script src="comments.js" defer></script>
 </body>
 </html>

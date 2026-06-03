@@ -345,12 +345,12 @@ const WORKER_TYPES = [
 ];
 
 const BENEFITS = [
-  { id: 'sickness',   title: 'Sickness benefit',     real: 'If you cannot work because you are unwell, you still get money to live on.',                                          icon: 'sickness',   color: 'teal' },
-  { id: 'maternity',  title: 'Maternity benefit',    real: 'Income while you take time off to have your baby — so you can rest and recover.',                                     icon: 'maternity',  color: 'pink' },
-  { id: 'paternity',  title: 'Paternity benefit',    real: 'A short paid break for new fathers to be with their family.',                                                          icon: 'paternity',  color: 'blue' },
-  { id: 'invalidity', title: 'Invalidity benefit',   real: 'If a long illness or accident stops you from working, you get ongoing support.',                                       icon: 'invalidity', color: 'purple' },
-  { id: 'survivors',  title: 'Survivors benefit',    real: 'If something happens to you, your partner, children, or parents get help.',                                            icon: 'survivors',  color: 'yellow' },
-  { id: 'pension',    title: 'Old age pension',      real: 'A monthly income when you stop working — built up over the years from what you put in.',                              icon: 'pension',    color: 'green' },
+  { id: 'sickness',   title: 'Sickness Benefit',           real: 'If you cannot work because you are unwell, you still get money to live on.',                                          icon: 'sickness',   color: 'teal' },
+  { id: 'maternity',  title: 'Maternity Benefit',          real: 'Income while you take time off to have your baby — so you can rest and recover.',                                     icon: 'maternity',  color: 'pink' },
+  { id: 'paternity',  title: 'Paternity Benefit',          real: 'A short paid break for new fathers to be with their family.',                                                          icon: 'paternity',  color: 'blue' },
+  { id: 'invalidity', title: 'Invalidity Pension',         real: 'If a long illness or accident stops you from working, you get ongoing support.',                                       icon: 'invalidity', color: 'purple' },
+  { id: 'survivors',  title: "Survivors' Benefit",         real: 'If something happens to you, your partner, children, or parents get help.',                                            icon: 'survivors',  color: 'yellow' },
+  { id: 'pension',    title: 'Old-Age Contributory Pension', real: 'A monthly income when you stop working — built up over the years from what you put in.',                              icon: 'pension',    color: 'green' },
 ];
 
 const COLOR_MAP = {
@@ -366,6 +366,41 @@ const COLOR_MAP = {
    Helpers
    ───────────────────────────────────────────────────────── */
 const fmtMoney = n => 'BDS$' + Math.round(n).toLocaleString('en-BB');
+
+/* ─────────────────────────────────────────────────────────
+   NIS benefit calculation constants & helpers
+   Sources: official nis.gov.bb benefit pages + NISSS meeting 2026-06-02.
+   • Self-employed contribution rate 17.25% (incl. RNR) — meeting 02:14:03.
+   • Benefits are a % of INSURABLE EARNINGS, not of the contribution — meeting 02:16:33.
+   • Max insurable earnings $5,360/mo (max annual contribution $11,095.20) — meeting 02:12:39.
+   All figures are estimates and must be confirmed/validated by NISSS Benefits.
+   ───────────────────────────────────────────────────────── */
+const NIS = {
+  SE_RATE: 0.1725,            // self-employed contribution rate (incl. RNR)
+  MAX_MONTHLY_INSURABLE: 5360,
+  MIN_ANNUAL_CONTRIBUTION: 1200,
+  // replacement rates (share of insurable earnings)
+  SICKNESS_RATE: 2 / 3,       // 66⅔%
+  MATERNITY_RATE: 1.0,        // 100%
+  PATERNITY_RATE: 1.0,        // 100%
+  INVALIDITY_RATE: 0.40,      // 40% of average insurable earnings (up to 60%)
+  INVALIDITY_MIN_WK: 254,     // minimum invalidity pension per week
+  // fixed amounts
+  FUNERAL_GRANT: 2220,
+  CHILD_GRANT: 1280,
+  // durations / ages
+  SICKNESS_MAX_WEEKS: 52,
+  PATERNITY_WEEKS: 3,
+  PENSIONABLE_AGE: 67,
+};
+
+// Annual contribution -> monthly insurable earnings (capped at the ceiling).
+function monthlyInsurableFromContribution(annualContribution) {
+  const raw = (annualContribution / NIS.SE_RATE) / 12;
+  return Math.min(NIS.MAX_MONTHLY_INSURABLE, raw);
+}
+// Monthly insurable earnings -> weekly insurable earnings.
+const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
 
 function progressBar(currentId) {
   const idx = JOURNEY.indexOf(currentId);
@@ -782,7 +817,7 @@ function screenRiskAwareness() {
             withNis: 'NISSS maternity and paternity benefits pay you to take real time off with your baby.',
           },
           {
-            id: 'retire', icon: 'pension', title: "You're 65 and ready to slow down.",
+            id: 'retire', icon: 'pension', title: "You're 67 and ready to slow down.",
             without: `Without a pension, that's <strong>${fmtMoney(yearLost)}/year</strong> you'd need from somewhere else.`,
             withNis: 'NISSS pays a monthly pension for life, built up from years of small contributions.',
           },
@@ -868,8 +903,22 @@ function screenPlan() {
     tier === 'safer'   ? 'Better cover' :
     tier === 'strong'  ? 'Strongest cover' : '';
 
-  // Placeholder for any payout figure — real amounts must come from NISSS.
-  const TBC = '<span class="text-bb-mid-grey-00 italic">(amount to be confirmed with NISSS)</span>';
+  // ── Estimated benefit amounts ────────────────────────────────
+  // The chosen monthly contribution implies a level of insurable EARNINGS
+  // (contribution ÷ 17.25%). Benefits are a share of those earnings.
+  // These are planning estimates only — NISSS Benefits confirms actuals.
+  const annualContribution = chosen ? chosen * 12 : 0;
+  const monthlyInsurable   = chosen ? monthlyInsurableFromContribution(annualContribution) : 0;
+  const weeklyInsurable    = weeklyInsurableFromMonthly(monthlyInsurable);
+
+  const sicknessWk  = weeklyInsurable * NIS.SICKNESS_RATE;            // 66⅔%
+  const maternityWk = weeklyInsurable * NIS.MATERNITY_RATE;          // 100%
+  const paternityWk = weeklyInsurable * NIS.PATERNITY_RATE;          // 100%
+  const invalidityWk = Math.max(NIS.INVALIDITY_MIN_WK, weeklyInsurable * NIS.INVALIDITY_RATE); // 40%, min $254
+  const pensionWk   = weeklyInsurable * NIS.INVALIDITY_RATE;          // ~40% base accrual
+
+  // small helper: "BDS$X a week (about BDS$Y a month)"
+  const perWeek = wk => `<strong class="tabular-nums">${fmtMoney(wk)}</strong> a week <span class="text-bb-mid-grey-00">(about ${fmtMoney(wk * 52 / 12)}/month)</span>`;
 
   // Tier card definitions
   const tiers = [
@@ -887,21 +936,22 @@ function screenPlan() {
     },
   ];
 
-  // Benefit descriptions — plain-language only. No payout figures are shown
-  // until NISSS confirms the calculation; each carries a "to be confirmed" note.
+  // Benefit descriptions — show estimated payout figures derived from the
+  // chosen tier's insurable earnings. Every figure is an estimate; the page
+  // carries a disclaimer that NISSS Benefits confirms the actual amount.
   const benefitsInline = [
-    { id: 'sickness',   icon: 'sickness',   title: 'Sickness benefit',
-      desc: tier ? `If you can't work because you're sick, NISSS pays part of your usual earnings while you recover ${TBC}.` : '' },
-    { id: 'maternity',  icon: 'maternity',  title: 'Maternity benefit',
-      desc: tier ? `Paid time off when you have a baby, based on your earnings ${TBC}.` : '' },
-    { id: 'paternity',  icon: 'paternity',  title: 'Paternity benefit',
-      desc: tier ? `A short paid break for new fathers to be with their family ${TBC}.` : '' },
-    { id: 'invalidity', icon: 'invalidity', title: 'Invalidity benefit',
-      desc: tier ? `Ongoing income if a long illness stops you working ${TBC}.` : '' },
-    { id: 'survivors',  icon: 'survivors',  title: 'Survivors benefit',
-      desc: tier ? `Monthly payments for your partner, children, or parents if anything happens to you ${TBC}.` : '' },
-    { id: 'pension',    icon: 'pension',    title: 'Old age pension',
-      desc: tier ? `A monthly pension for life once you reach pension age, built from your years of contributions ${TBC}.` : '' },
+    { id: 'sickness',   icon: 'sickness',   title: 'Sickness Benefit',
+      desc: tier ? `If you can't work because you're sick, NISSS pays about ${perWeek(sicknessWk)} — roughly two-thirds of your usual earnings — for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` : '' },
+    { id: 'maternity',  icon: 'maternity',  title: 'Maternity Benefit',
+      desc: tier ? `Paid time off when you have a baby — about ${perWeek(maternityWk)}, based on your earnings.` : '' },
+    { id: 'paternity',  icon: 'paternity',  title: 'Paternity Benefit',
+      desc: tier ? `A ${NIS.PATERNITY_WEEKS}-week paid break for new fathers — about ${perWeek(paternityWk)}.` : '' },
+    { id: 'invalidity', icon: 'invalidity', title: 'Invalidity Pension',
+      desc: tier ? `If a long illness stops you working, ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` : '' },
+    { id: 'survivors',  icon: 'survivors',  title: "Survivors' Benefit",
+      desc: tier ? `If anything happens to you, your partner, children or parents share a benefit of about ${perWeek(pensionWk)}, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` : '' },
+    { id: 'pension',    icon: 'pension',    title: 'Old-Age Contributory Pension',
+      desc: tier ? `A pension for life from age ${NIS.PENSIONABLE_AGE} — starting around ${perWeek(pensionWk)} and growing the longer you contribute.` : '' },
   ];
 
   return `
@@ -981,7 +1031,7 @@ function screenPlan() {
               <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
             </div>
             <p class="text-[0.8rem] text-white/70 mt-2">
-              The more you put in, the more cover you build. Exact benefit amounts to be confirmed with NISSS.
+              The more you put in, the more cover you build. Figures below are estimates based on your insurable earnings.
             </p>
           </div>
         </div>
@@ -1012,8 +1062,8 @@ function screenPlan() {
             <div class="flex items-start gap-3">
               <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-teal-00">${ICONS.shield}</span>
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">Funeral grant</p>
-                <p class="text-[0.95rem] text-bb-blue-00/80">A one-time payment to help your family with funeral costs. Included at every level.</p>
+                <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">Funeral Grant</p>
+                <p class="text-[0.95rem] text-bb-blue-00/80">A one-time payment of <strong class="tabular-nums">${fmtMoney(NIS.FUNERAL_GRANT)}</strong> to help your family with funeral costs. Included at every level.</p>
               </div>
             </div>
           </div>
@@ -1040,7 +1090,7 @@ function screenPlan() {
 
       ${primaryBtn("I'm ready — show me next steps", "nav('next-steps')", { disabled: !tier })}
       <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
-        Contribution amounts are examples to help you plan. Exact benefit amounts and rates to be confirmed with NISSS.
+        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
       </p>
     </div>`;
 }

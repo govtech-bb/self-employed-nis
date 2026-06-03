@@ -138,14 +138,6 @@
     .sc-item:focus-within{outline:3px solid var(--yellow-100);outline-offset:1px}
     .sc-item input{width:22px;height:22px;accent-color:var(--teal-00);flex:0 0 auto;margin:0}
     .sc-item:has(input:checked){border-color:var(--teal-00);background:var(--teal-10)}
-    .benefit-cards{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
-    /* Icon chip — used by the top-up callout below */
-    .bcard-ic{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
-    .bcard-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    /* Top-up callout */
-    .topup{display:flex;gap:.75rem;align-items:flex-start;border-left:4px solid var(--teal-00);background:var(--teal-10);padding:.85rem .95rem;border-radius:0 8px 8px 0}
-    .topup .bcard-ic{width:38px;height:38px;color:var(--teal-00)}.topup .bcard-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    .topup p{font-size:1rem;line-height:1.4}
     /* Extra breathing room above each section heading so blocks don't sit too close */
     article.space-y-5 > h2{margin-top:3rem}
     /* Mobile: smaller headings + more breathing room (de-cluttered) */
@@ -266,8 +258,7 @@
         </ul>
         <p>You don't need to fit one of these exactly.</p>
 
-        <div class="topup">
-          <span class="bcard-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        <div class="border-l-4 border-teal-00 bg-teal-10 px-s py-s">
           <p><strong>Already have a job too?</strong> If an employer pays National Insurance for you, you can still pay for your self-employed work as well.</p>
         </div>
 

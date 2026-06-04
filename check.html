@@ -717,12 +717,13 @@ function screenIncomeReality() {
 function screenYourSituation() {
   const d = state.data;
 
-  function radioGroup(name, options) {
+  function radioGroup(name, options, onClick) {
     return options.map(o => {
       const selected = d[name] === o.id;
+      const handler = onClick ? onClick(o) : `state.data.${name} = '${o.id}'; render();`;
       return `
         <button type="button" role="radio" aria-checked="${selected}"
-          onclick="state.data.${name} = '${o.id}'; render();"
+          onclick="${handler}"
           class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
           <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
             ${ICONS.check}
@@ -746,12 +747,26 @@ function screenYourSituation() {
       </p>
 
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
-      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Dependants">
+      <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
         ${radioGroup('hasDependants', [
           { id: 'yes', label: 'Yes — others rely on what I earn' },
           { id: 'no',  label: "No — it's just me" }
-        ])}
+        ], o => `setDependants('${o.id}')`)}
       </div>
+
+      ${d.hasDependants === 'yes' ? `
+        <div class="mb-6">
+          <label for="dependantsCount" class="block font-semibold text-bb-blue-00 mb-1">How many people depend on your income?</label>
+          <p class="text-[0.95rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
+          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+            <input id="dependantsCount" type="number" inputmode="numeric" min="1" max="20" step="1"
+              value="${d.dependantsCount || ''}"
+              placeholder="e.g. 2"
+              oninput="updateDependantsCount(this.value)"
+              aria-label="Number of people who depend on your income"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+        </div>` : ''}
 
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
@@ -767,12 +782,11 @@ function screenYourSituation() {
         ${radioGroup('payingNIS', [
           { id: 'yes',            label: 'Yes — I pay it' },
           { id: 'registered',     label: "I'm registered but not paying" },
-          { id: 'no',             label: 'No' },
-          { id: 'not-sure',       label: 'Not sure' }
+          { id: 'no',             label: 'No' }
         ])}
       </div>
 
-      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || !d.hasSavings || !d.payingNIS })}
+      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS })}
     </div>`;
 }
 

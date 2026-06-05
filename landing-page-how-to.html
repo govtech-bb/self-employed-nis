@@ -128,6 +128,11 @@
       .lg\:h-8\.75{height:2.1875rem}.lg\:w-88\.75{width:22.1875rem}
     }
     @media(min-width:80rem){.container{max-width:1200px}}
+    /* Register chooser — native <details> styled as a button; hide the default marker */
+    .reg-choose{display:block}
+    .reg-choose>summary{display:inline-flex;list-style:none}
+    .reg-choose>summary::-webkit-details-marker{display:none}
+    .reg-choose>summary::marker{content:""}
     /* Interactive self-check */
     .sc-fieldset{border:0;padding:0;margin:1rem 0}
     .sc-fieldset legend{margin-bottom:.5rem}
@@ -302,10 +307,18 @@
 
         <h3 class="font-bold text-[1.5rem] leading-[1.25]">2. Register with NIS</h3>
         <p>You register as a self-employed person — just yourself and your National Insurance number, no registered business needed. There are two ways to start: one if you already have a number, and one if you've never had one. It's all online, with no paperwork, and you can save and come back to it.</p>
-        <p>
-          <a href="https://portal.bginis.gov.bb/webdynpro/resources/sap.com/home~register/Register" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">Register with NIS</a>
-        </p>
-        <p class="text-[1rem]">This link takes you to NIS to register. It opens in a new tab.</p>
+        <details class="reg-choose">
+          <summary class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100 cursor-pointer select-none">Register with NIS</summary>
+          <div class="border-l-4 border-teal-00 bg-teal-10 px-s py-s space-y-3 mt-3">
+            <p><strong>Have you registered with NIS before?</strong></p>
+            <p>Choose the option that fits you, and we'll take you to the right form on the NIS website.</p>
+            <div class="flex flex-wrap gap-s">
+              <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">Yes — I already have an NIS number</a>
+              <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">No — I've never registered</a>
+            </div>
+            <p class="text-[1rem]">Both links take you to NIS to register. They open in a new tab.</p>
+          </div>
+        </details>
 
         <h3 class="font-bold text-[1.5rem] leading-[1.25]">3. Already have a job that pays NIS?</h3>
         <p>If your employer pays National Insurance for your main job, that covers your job income. When you also work for yourself, you can pay extra for that self-employed work. It adds to your cover; it doesn't replace what your employer already pays.</p>

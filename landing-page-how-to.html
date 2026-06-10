@@ -336,7 +336,7 @@
         <p>Register for the online NIS portal to see your full contribution history — every payment over your working life — and to get an estimate of your pension and benefits. You can also request your record directly from NIS.</p>
 
         <h3 class="font-bold text-[1.5rem] leading-[1.25]">Missed a few years? It's not too late</h3>
-        <p>If you used to pay NIS contributions but stopped, or if you've never paid before, you may still be able to make payments for up to [X] past years. However, you cannot make payments for any period older than that.</p>
+        <p>If you used to pay NIS contributions but stopped, or if you've never paid before, you may still be able to make late payments for up to 3 years in the past. The earliest year you can pay for is 2024, so right now you can make late payments for <span id="late-payment-years">2024 and 2025</span>. You cannot make payments for any period older than that.</p>
         <p>If you're close to retirement and don't have enough contributions to qualify for a full pension, you may qualify for a one-time payment (grant) instead.</p>
         <p>To find out what contributions you can make and what benefits you may qualify for, contact NISSS at 467-4NIS (4647).</p>
 
@@ -387,6 +387,26 @@
        Saves locally per browser by default; set COMMENTS_CONFIG.apiBase in
        comments.js to your database API to share comments. Remove for production. -->
   <script src="comments.js" defer></script>
+
+  <!-- Late-payment window: shows which past years you can still pay for.
+       Rule: the most recent 3 years, but never earlier than 2024.
+       Recomputed from today's date, so it stays correct each year. -->
+  <script>
+    (function () {
+      var el = document.getElementById('late-payment-years');
+      if (!el) return;
+      var FLOOR = 2024;                      // earliest payable year (scheme start)
+      var now = new Date().getFullYear();
+      var end = now - 1;                     // late payments cover completed past years
+      var start = Math.max(FLOOR, now - 3);  // up to 3 years back
+      if (end < start) return;               // keep the fallback text if nothing applies
+      var years = [];
+      for (var y = start; y <= end; y++) years.push(y);
+      el.textContent = years.length === 1
+        ? String(years[0])
+        : years.slice(0, -1).join(', ') + ' and ' + years[years.length - 1];
+    })();
+  </script>
 
 </body>
 </html>

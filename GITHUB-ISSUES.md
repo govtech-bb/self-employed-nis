@@ -16,7 +16,7 @@ cues, input validation).
 |---|------|
 | [#1](https://github.com/govtech-bb/self-employed-nis/issues/1) | Remove em-dashes from user-facing copy (67 across the pages) |
 | [#2](https://github.com/govtech-bb/self-employed-nis/issues/2) | Accessibility pass to WCAG 2.2 AA (axe: contrast on check footer links, landmarks; + manual keyboard/SR pass) |
-| [#3](https://github.com/govtech-bb/self-employed-nis/issues/3) | Add an "opens in a new tab" cue to external links (Register, Careers) |
+| [#3](https://github.com/govtech-bb/self-employed-nis/issues/3) | Add an "opens in a new tab" cue to the Register with NIS button (footer links are platform chrome, aligned at migration) |
 | [#4](https://github.com/govtech-bb/self-employed-nis/issues/4) | Verify the calculator's number inputs clamp the visible field |
 
 ## Content / NISSS review

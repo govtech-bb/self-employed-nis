@@ -117,6 +117,75 @@ Baseline before changes, re-scan after; scripts in the session scratchpad
   `<main id="main">`; same re-verified on the three static pages after the header
   restructure.
 
+## Review fixes (same day, after adversarial review of this branch's own work)
+
+An adversarial review of commit `666c00e` produced nine empirically confirmed findings,
+all in `check.html`. Each was reproduced on the pre-fix code and re-verified fixed with
+Playwright (`verify-review-fixes.js` in the session scratchpad runs the same checks in
+`before` and `after` mode). Full regression after the fixes: axe 0 violations on all
+4 pages (mobile+desktop) and all 14 screens (+ plan-with-tier, register-with-errors),
+focus/keyboard/skip-link transcripts all green, zero page errors.
+
+1. **Register-screen error focus steal.** After a failed submit, picking a contact
+   method re-rendered with `state.errors` still set, and `render()` re-focused
+   `#error-summary`, making the radio group inoperable. Fix: `render()` only focuses the
+   error summary when called with `focusErrors: true` (set solely by `submitForm()`),
+   and answering the contact-method question deletes its own error
+   (`selectContactMethod()`). Other errors intentionally persist until the next submit,
+   matching the usual validate-on-submit model.
+2. **Reduced-motion block was dead for transitions.** It preceded the base
+   `.selectable`/`.chev`/`.protect-bar-fill` rules, so at equal specificity the base
+   transitions won. The block now sits at the END of the stylesheet (a comment explains
+   the source-order dependency). Judgment call: a standard catch-all
+   (`* { animation-duration: 0.01ms; transition-duration: 0.01ms }` etc.) was added to
+   the block, because verification showed Tailwind's own utility transitions
+   (`transition-all` on input wrappers) still animating under reduced motion; nothing in
+   the page depends on transition timing. Verified with `reducedMotion: 'reduce'`:
+   computed transitions are `none` on the three named classes, and no animation longer
+   than 0.01ms exists on selection or nav (the Tailwind CDN JIT briefly spawns 0.01ms
+   transitions when it injects newly generated CSS; nothing is running 250ms later).
+3. **Modifier-key hijack.** The radio keydown handler now returns early when
+   Ctrl/Cmd/Alt is held, so Ctrl+Home / Cmd+Arrow scroll shortcuts no longer change
+   answers.
+4. **Arrow-scanning wiped the typed dependants count.** Preserved-count semantics
+   chosen: `dependantsCount` still zeroes while "No" is selected (downstream code keeps
+   its invariant that the count is only meaningful under "Yes"), but the last non-zero
+   value is stashed in `state.data.lastDependantsCount` and restored when the user
+   returns to "Yes"; a first-time "Yes" still defaults to 1. `restart()` clears it
+   naturally by rebuilding `state.data`.
+5. **Silent reveals.** A single persistent `<p id="reveal-status" role="status">` lives
+   outside `#app` (so re-renders cannot destroy it mid-announcement). Wording, kept
+   short and only fired when content actually appears: first tier pick announces
+   "Your plan details are shown below." (later tier changes are quiet; the radio label
+   itself announces the change); switching to "Yes" on dependants announces "A question
+   about how many people depend on you was added below." Announce uses clear-then-set on
+   the next frame so identical messages re-announce.
+6. **your-situation stale Continue + wrong hint.** `updateDependantsCount()` now
+   refreshes the Continue button in place (the button moved into
+   `#situation-continue`, rebuilt by the shared `situationContinue()` helper), an
+   in-place refresh rather than a full `render()` so the caret in the count field is
+   never disturbed while typing. The hint now names the real blocker: unanswered radios
+   get "Answer all the questions above to continue.", a cleared count gets "Enter how
+   many people depend on your income to continue."
+7. **Entrance animation replayed on every selection re-render.** `render()` toggles a
+   `no-anim` class on `#app` for any render not triggered by navigation
+   (`opts.scroll`), and `.no-anim .screen { animation: none; }` suppresses the fade.
+   Nav (and initial load) still animate once; error re-renders no longer flash either.
+8. **Safari/VoiceOver focus-restore gap.** A capture-phase click listener on `#app`
+   records the activated radio's `data-rg`/`data-ri` before the inline handlers call
+   `render()`; `render()` prefers that record and falls back to `activeElement`
+   (keyboard activation). One central listener instead of touching every selection
+   handler. Verified by dispatching a click without focusing (Safari's mouse-click
+   behaviour): focus previously fell to `<body>`, now lands on the clicked radio.
+9. **Second press of a not-ready Continue was silent.** `showDisabledHint()` clears the
+   `role=status` element and re-sets the text on the next animation frame, so AT does
+   not dedupe the repeat announcement. The DOM mutation log confirms text / empty /
+   text across two presses.
+
+Out of scope, per the review disposition: the `comments.js` re-scoping via `id="main"`
+(finding #8 of the review) is documented on the PR as an accepted trade-off and was left
+untouched. External links' inner content belongs to a parallel PR and was not modified.
+
 ## Deliberately not done
 
 - Issue #20 (scroll jump) overlaps the render/scroll code touched here; per the issue

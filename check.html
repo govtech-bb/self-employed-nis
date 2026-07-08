@@ -626,6 +626,33 @@
     $('results').hidden = true; $('results').innerHTML='';
     setStep(1);
   }
+
+  /* Reconcile inputs on change: rewrite each earnings field to the exact
+     number the maths in showResult() will use (parseFloat for good/lean,
+     parseInt for goodmo, clamped to the field's min/max), so the visible
+     value and the estimate can never disagree (e.g. "1e3" -> 1000,
+     "8.5" good months -> 8). Values the next(2) validation gate rejects
+     (empty, non-numeric, negative, out of range) are left untouched so
+     the error summary still shows exactly what the user typed and still
+     blocks progress. Runs on change (commit), not input, so typing is
+     never disturbed mid-keystroke. */
+  function reconcileField(id){
+    var el = $(id), raw = el.value.trim(), v;
+    if (raw === '') return;
+    if (id === 'goodmo'){
+      v = parseInt(raw, 10);                      // same truncation showResult() uses
+      if (isNaN(v) || v < 1 || v > 12) return;    // leave for the validation gate
+      v = Math.min(12, Math.max(1, v));
+    } else {
+      v = parseFloat(raw);
+      if (isNaN(v) || v < 0) return;              // leave for the validation gate
+      v = Math.max(0, Math.round(v * 100) / 100); // whole dollars and cents
+    }
+    if (String(v) !== el.value) el.value = v;
+  }
+  ['good','lean','goodmo'].forEach(function(id){
+    $(id).addEventListener('change', function(){ reconcileField(id); });
+  });
   </script>
 
   <!-- Review comments (prototype). Select text to leave a comment. Remove for production. -->

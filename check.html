@@ -1316,8 +1316,8 @@ function screenRegistrationGuide() {
       <div class="space-y-3 mb-6">
         ${[
           { icon: 'globe',    title: 'Online',         sub: has === 'yes'
-            ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page</a>. Takes about 10 minutes.'
-            : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page</a>. Takes about 10 minutes.',
+            ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page<span class="sr-only"> (opens in a new tab)</span></a>. Takes about 10 minutes.'
+            : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page<span class="sr-only"> (opens in a new tab)</span></a>. Takes about 10 minutes.',
           tag: 'Easiest' },
           { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown, or any branch.', tag: 'In person' },
           { icon: 'phone',    title: 'By phone',         sub: 'Call 246-431-7400 and an officer will help you over the phone.', tag: 'No screen' },
@@ -1376,7 +1376,7 @@ function screenPaymentOptions() {
         ${[
           { icon: 'globe',    title: 'NISSS online portal',  sub: 'Pay from your phone, anytime. Get a receipt right away.',     tag: 'Quickest', color: 'teal' },
           { icon: 'store',    title: 'SurePay',            sub: 'Pay cash or card at any SurePay location across the island.', tag: 'Cash OK',  color: 'green' },
-          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
+          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb<span class="sr-only"> (opens in a new tab)</span></a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
           { icon: 'card',     title: 'Bank transfer',      sub: 'Standing order or one-off transfer from your bank account.',  tag: 'Set & forget', color: 'blue' },
           { icon: 'building', title: 'In person at NISSS',   sub: 'Pay at the NISSS office. Get help if you have questions.',     tag: 'Face to face', color: 'purple' },
         ].map(p => {

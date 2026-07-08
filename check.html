@@ -17,6 +17,8 @@
       extend: {
         colors: {
           'bb-yellow-00': '#e8a833', 'bb-yellow-100': '#ffc726', 'bb-yellow-40': '#ffe9a8', 'bb-yellow-10': '#fff9e9',
+          // Dark amber for TEXT on white/yellow-10 (bb-yellow-00 is only 2.1:1 as text)
+          'bb-yellow-dark': '#8a5a00',
           'bb-blue-00': '#00164a', 'bb-blue-100': '#00267f', 'bb-blue-40': '#99a8cc', 'bb-blue-10': '#e5e9f2',
           'bb-black-00': '#000', 'bb-mid-grey-00': '#595959', 'bb-grey-00': '#e0e4e9', 'bb-white-00': '#fff',
           'bb-green-00': '#00654a', 'bb-green-100': '#1fbf84', 'bb-green-40': '#a5e5ce', 'bb-green-10': '#e9f9f3',
@@ -70,7 +72,7 @@
   html, body { font-family: Figtree, -apple-system, system-ui, sans-serif; }
   body {
     font-weight: 400; line-height: 1.55;
-    display: grid; min-height: 100vh; grid-template-rows: auto auto auto 1fr auto;
+    display: grid; min-height: 100vh; grid-template-rows: auto 1fr auto;
     background: var(--color-white-00); color: var(--color-black-00);
     -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   }
@@ -78,6 +80,11 @@
   .stage { max-width: 600px; margin-inline: auto; }
   .stage-wide { max-width: 760px; margin-inline: auto; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  /* Programmatic focus targets (skip link -> <main>, screen-change -> <h1>).
+     These get focus() for screen-reader context, not for keyboard operation,
+     so no visible focus ring. */
+  main:focus, h1[tabindex="-1"]:focus { outline: none; }
 
   /* Range sliders */
   input[type=range] {
@@ -101,6 +108,12 @@
   .screen { animation: fade 0.32s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
+  /* Honour reduced-motion: no screen fade/slide, no animated bar fill */
+  @media (prefers-reduced-motion: reduce) {
+    .screen { animation: none; }
+    .protect-bar-fill, .selectable, .chev { transition: none; }
+  }
+
   /* Selectable cards */
   .selectable { transition: all .18s ease; }
   .selectable[aria-checked="true"],
@@ -118,6 +131,19 @@
   .btn-primary:active { background: #0a4549; transform: translateY(1px); }
   .btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
   .btn-primary:disabled { background: #99a8cc; cursor: not-allowed; box-shadow: none; }
+  /* "Not ready yet" state: aria-disabled keeps the button focusable so keyboard and
+     screen-reader users can reach it and hear why it does nothing yet.
+     Grey-00 bg + mid-grey text = 5.4:1, so it passes AA even though it looks muted. */
+  .btn-primary[aria-disabled="true"],
+  .btn-primary[aria-disabled="true"]:hover,
+  .btn-primary[aria-disabled="true"]:active {
+    background: var(--color-grey-00); color: var(--color-mid-grey-00);
+    cursor: not-allowed; box-shadow: none; transform: none;
+  }
+  .btn-primary[aria-disabled="true"]:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
+  /* Hint announced (role=status) and shown when a not-ready Continue is pressed */
+  .disabled-hint { color: var(--color-red-00); font-size: 0.95rem; }
+  .disabled-hint:not(:empty) { margin-top: 0.75rem; }
 
   .btn-secondary {
     background: #fff; color: #0e5f64; border: 2px solid #0e5f64;
@@ -179,6 +205,11 @@
 </head>
 <body>
 
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-bb-yellow-100 focus:text-bb-black-00 focus:px-4 focus:py-2 focus:font-bold">Skip to main content</a>
+
+<!-- Page chrome: top bar + logo bar + alpha banner in one banner landmark -->
+<header>
+
 <!-- Top bar -->
 <div class="bg-bb-blue-100 text-bb-white-00">
   <div class="container">
@@ -191,7 +222,7 @@
 </div>
 
 <!-- Yellow header with GoB logo -->
-<header class="bg-bb-yellow-100">
+<div class="bg-bb-yellow-100">
   <div class="container">
     <div class="stage py-3">
       <div class="text-bb-black-00" style="max-width: 240px;">
@@ -222,7 +253,7 @@
       </div>
     </div>
   </div>
-</header>
+</div>
 
 <!-- Alpha banner -->
 <div class="bg-bb-blue-10 border-b border-bb-blue-40/40">
@@ -233,10 +264,12 @@
   </div>
 </div>
 
+</header>
+
 <!-- Main -->
-<main>
+<main id="main" tabindex="-1">
   <div class="container">
-    <div class="px-4 py-6 sm:py-8" id="app" role="region" aria-live="polite"></div>
+    <div class="px-4 py-6 sm:py-8" id="app"></div>
   </div>
 </main>
 
@@ -363,7 +396,7 @@ const COLOR_MAP = {
   pink:   { bg: 'bg-bb-red-10',    text: 'text-bb-pink-00',   border: 'border-bb-red-40' },
   blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-blue-00',   border: 'border-bb-blue-40' },
   purple: { bg: 'bg-[#f3eaf6]',    text: 'text-bb-purple-00', border: 'border-[#d9c1e1]' },
-  yellow: { bg: 'bg-bb-yellow-10', text: 'text-bb-yellow-00', border: 'border-bb-yellow-40' },
+  yellow: { bg: 'bg-bb-yellow-10', text: 'text-bb-yellow-dark', border: 'border-bb-yellow-40' },
   green:  { bg: 'bg-bb-green-10',  text: 'text-bb-green-00',  border: 'border-bb-green-40' },
 };
 
@@ -412,12 +445,12 @@ function progressBar(currentId) {
   if (idx === -1) return '';
   const total = JOURNEY.length;
   return `
-    <div class="mb-6" aria-label="Progress">
+    <div class="mb-6">
       <div class="flex items-center justify-between mb-2 text-[0.85rem] text-bb-mid-grey-00">
         <span class="font-medium text-bb-blue-00">Step ${idx + 1} of ${total}</span>
         <span>${Math.round(((idx + 1) / total) * 100)}% through the guide</span>
       </div>
-      <div class="flex gap-1.5" role="progressbar" aria-valuenow="${idx + 1}" aria-valuemin="1" aria-valuemax="${total}">
+      <div class="flex gap-1.5" role="progressbar" aria-label="Progress through the guide" aria-valuenow="${idx + 1}" aria-valuemin="1" aria-valuemax="${total}" aria-valuetext="Step ${idx + 1} of ${total}">
         ${JOURNEY.map((_, i) => `
           <div class="h-1.5 flex-1 rounded-full ${i <= idx ? 'bg-bb-teal-00' : 'bg-bb-grey-00'}"></div>
         `).join('')}
@@ -444,13 +477,27 @@ function serviceCaption(text = 'NISSS for self-employed and gig workers') {
 // Primary action — alpha.gov.bb button styling (rounded-sm, 20px on desktop,
 // 18px on mobile so long labels don't wrap awkwardly on narrow screens,
 // inset hover/active shadows). Width: full-column.
+//
+// opts.disabled uses aria-disabled (NOT the disabled attribute) so the button
+// stays focusable. Pressing it announces + shows opts.hint (role=status)
+// explaining what is still needed, instead of silently doing nothing.
 function primaryBtn(label, action, opts = {}) {
-  const disabled = opts.disabled ? 'disabled' : '';
+  const isDisabled = !!opts.disabled;
+  const hint = opts.hint || 'Answer the question above to continue.';
+  const attrs = isDisabled
+    ? `onclick="showDisabledHint(this)" aria-disabled="true" data-hint="${hint.replace(/"/g, '&quot;')}"`
+    : `onclick="${action}"`;
   return `
-    <button type="button" onclick="${action}" ${disabled}
+    <button type="button" ${attrs}
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
-    </button>`;
+    </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
+}
+
+// Pressing a not-ready Continue: announce + show why it does nothing yet.
+function showDisabledHint(btn) {
+  const el = btn.nextElementSibling;
+  if (el && el.classList.contains('disabled-hint')) el.textContent = btn.dataset.hint || '';
 }
 
 function secondaryBtn(label, action) {
@@ -612,7 +659,7 @@ function screenWorkerType() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob })}
+      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob, hint: 'Choose your kind of work and answer the main job question to continue.' })}
     </div>`;
 }
 
@@ -791,7 +838,7 @@ function screenYourSituation() {
         ])}
       </div>
 
-      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS })}
+      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS, hint: 'Answer all three questions above to continue.' })}
     </div>`;
 }
 
@@ -1107,7 +1154,7 @@ function screenPlan() {
         </div>
       `}
 
-      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { disabled: !tier })}
+      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { disabled: !tier, hint: 'Pick a contribution level above to continue.' })}
       <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
         Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
       </p>
@@ -1239,7 +1286,7 @@ function screenRegisterPath() {
         If you worked for an employer before, you probably do. It's the same number for life.
       </p>
 
-      <div class="space-y-3 mb-6" role="radiogroup">
+      <div class="space-y-3 mb-6" role="radiogroup" aria-label="Do you already have an NISSS number?">
         ${[
           { id: 'yes',    label: "Yes, I have one",                sub: "I worked for someone before, or registered already." },
           { id: 'no',     label: "No, I never registered",         sub: "I've always worked for myself." },
@@ -1262,7 +1309,7 @@ function screenRegisterPath() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "goToRegistrationGuide()", { disabled: !state.data.alreadyHasNis })}
+      ${primaryBtn('Continue', "goToRegistrationGuide()", { disabled: !state.data.alreadyHasNis, hint: 'Choose one of the options above to continue.' })}
     </div>`;
 }
 
@@ -1328,7 +1375,7 @@ function screenRegistrationGuide() {
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
                   <p class="font-semibold text-[1.05rem] text-bb-blue-00">${o.title}</p>
-                  <span class="chip bg-bb-yellow-10 text-bb-yellow-00 border border-bb-yellow-40">${o.tag}</span>
+                  <span class="chip bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40">${o.tag}</span>
                 </div>
                 <p class="text-[0.95rem] text-bb-mid-grey-00">${o.sub}</p>
               </div>
@@ -1493,7 +1540,7 @@ function screenRegister() {
 
         <fieldset>
           <legend class="block font-semibold text-bb-blue-00 mb-2">How would you like us to contact you?</legend>
-          <div class="grid grid-cols-3 gap-2" role="radiogroup">
+          <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="How would you like us to contact you?">
             ${[
               { id: 'whatsapp', label: 'WhatsApp' },
               { id: 'sms',      label: 'Text' },
@@ -1588,9 +1635,9 @@ function screenTracker() {
         <div class="flex items-start justify-between gap-3 mb-3">
           <div>
             <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back,</p>
-            <p class="text-[1.6rem] font-bold leading-tight">${profile.name}</p>
+            <h1 class="text-[1.6rem] font-bold leading-tight">${profile.name}</h1>
           </div>
-          <span class="chip bg-bb-green-100 text-bb-green-00 border border-bb-green-40">
+          <span class="chip bg-bb-green-10 text-bb-green-00 border border-bb-green-40">
             ${ICONS.circleCheck}<span>${overallStatus}</span>
           </span>
         </div>
@@ -1619,7 +1666,7 @@ function screenTracker() {
         <div class="flex items-start gap-3 mb-3">
           <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-yellow-00">${ICONS.bell}</span>
           <div class="flex-1 min-w-0">
-            <p class="text-[0.85rem] uppercase tracking-wide text-bb-yellow-00 font-semibold">Due in 18 days</p>
+            <p class="text-[0.85rem] uppercase tracking-wide text-bb-yellow-dark font-semibold">Due in 18 days</p>
             <p class="font-bold text-[1.25rem] text-bb-blue-00 leading-tight">November contribution</p>
             <p class="text-[0.95rem] text-bb-mid-grey-00 mt-0.5">${fmtMoney(150)} · Due 15 December 2026</p>
           </div>
@@ -1653,7 +1700,7 @@ function screenTracker() {
         ${history.map(h => {
           const statusStyle = {
             paid:   { bg: 'bg-bb-green-10',  fg: 'text-bb-green-00',  label: 'Paid',     icon: 'circleCheck' },
-            due:    { bg: 'bg-bb-yellow-10', fg: 'text-bb-yellow-00', label: 'Due soon', icon: 'bell'        },
+            due:    { bg: 'bg-bb-yellow-10', fg: 'text-bb-yellow-dark', label: 'Due soon', icon: 'bell'        },
             missed: { bg: 'bg-bb-grey-00',   fg: 'text-bb-mid-grey-00', label: 'Skipped', icon: 'circleMinus'},
           }[h.status];
           return `
@@ -1703,7 +1750,7 @@ function screenTracker() {
             <div class="rounded-xl border border-bb-grey-00 bg-white p-4">
               <div class="flex items-center justify-between gap-3 mb-2">
                 <p class="font-semibold text-[1rem] text-bb-blue-00">${b.title}</p>
-                <span class="chip ${isEligible ? 'bg-bb-green-10 text-bb-green-00 border border-bb-green-40' : 'bg-bb-yellow-10 text-bb-yellow-00 border border-bb-yellow-40'}">
+                <span class="chip ${isEligible ? 'bg-bb-green-10 text-bb-green-00 border border-bb-green-40' : 'bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40'}">
                   ${isEligible ? ICONS.circleCheck : ICONS.calendar}
                   <span>${isEligible ? 'Eligible' : 'In progress'}</span>
                 </span>
@@ -1841,10 +1888,60 @@ const TITLES = {
   'confirmation': 'Thanks – NISSS Barbados',
 };
 
+/* Roving tabindex for the custom role="radio" groups (ARIA radio-group
+   pattern): one tab stop per group, the checked option or else the first one.
+   data-rg/data-ri give each radio a stable identity so focus can be put back
+   on the equivalent button after an in-place re-render. */
+function setupRadioGroups(root) {
+  root.querySelectorAll('[role="radiogroup"]').forEach((group, gi) => {
+    const radios = Array.from(group.querySelectorAll('[role="radio"]'));
+    const checked = radios.findIndex(r => r.getAttribute('aria-checked') === 'true');
+    const stop = checked === -1 ? 0 : checked;
+    radios.forEach((r, ri) => {
+      r.dataset.rg = gi;
+      r.dataset.ri = ri;
+      r.setAttribute('tabindex', ri === stop ? '0' : '-1');
+    });
+  });
+}
+
+// Arrow keys move AND select within a radio group; Home/End jump to first/last.
+// Selection re-renders the screen, and render() restores focus to the
+// equivalent radio, so focus (and scroll) stay put.
+document.getElementById('app').addEventListener('keydown', (ev) => {
+  const radio = ev.target.closest('[role="radio"]');
+  if (!radio) return;
+  const group = radio.closest('[role="radiogroup"]');
+  if (!group) return;
+  const radios = Array.from(group.querySelectorAll('[role="radio"]'));
+  const idx = radios.indexOf(radio);
+  let next = null;
+  if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') next = (idx + 1) % radios.length;
+  else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') next = (idx - 1 + radios.length) % radios.length;
+  else if (ev.key === 'Home') next = 0;
+  else if (ev.key === 'End') next = radios.length - 1;
+  if (next === null) return;
+  ev.preventDefault();
+  radios[next].focus();
+  radios[next].click();
+});
+
 function render(opts = {}) {
   const root = document.getElementById('app');
+
+  // Remember where focus was, so in-place re-renders (selecting a card or
+  // radio rebuilds the whole screen) don't dump focus on <body>.
+  const prev = document.activeElement;
+  let restore = null;
+  if (prev && prev !== document.body && root.contains(prev)) {
+    if (prev.dataset && prev.dataset.rg !== undefined) restore = { rg: prev.dataset.rg, ri: prev.dataset.ri };
+    else if (prev.id) restore = { id: prev.id };
+  }
+
   root.innerHTML = (SCREENS[state.screen] || screenLanding)();
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
+  setupRadioGroups(root);
+
   // Scroll to top ONLY when navigating between screens, not on in-page re-renders
   // (selecting cards, picking radio options, etc.)
   if (opts.scroll) {
@@ -1852,6 +1949,20 @@ function render(opts = {}) {
   }
   if (Object.keys(state.errors).length && document.getElementById('error-summary')) {
     document.getElementById('error-summary').focus();
+  } else if (opts.focusHeading) {
+    // Screen change: move focus to the new screen's H1 so screen readers
+    // announce where the user has landed (replaces the old whole-app
+    // aria-live region, which re-read the entire page on every re-render).
+    const h1 = root.querySelector('h1');
+    if (h1) {
+      h1.setAttribute('tabindex', '-1');
+      h1.focus({ preventScroll: true });
+    }
+  } else if (restore) {
+    const el = restore.id
+      ? document.getElementById(restore.id)
+      : root.querySelector(`[data-rg="${restore.rg}"][data-ri="${restore.ri}"]`);
+    if (el) el.focus({ preventScroll: true });
   }
 }
 
@@ -1859,7 +1970,7 @@ function nav(screen) {
   state.screen = screen;
   state.errors = {};
   state.expandedScenario = null;
-  render({ scroll: true });
+  render({ scroll: true, focusHeading: true });
 }
 
 function selectWorker(id) {

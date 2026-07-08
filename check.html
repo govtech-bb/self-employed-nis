@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+<meta name="theme-color" content="#ffc726">
+<title>Protect your income. Protect your future. – NISSS Barbados</title>
+<meta name="description" content="A friendly, simple guide to NISSS protection for self-employed and gig workers in Barbados.">
+<link rel="icon" type="image/svg+xml" href="https://upload.wikimedia.org/wikipedia/commons/e/ef/Flag_of_Barbados.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          'bb-yellow-00': '#e8a833', 'bb-yellow-100': '#ffc726', 'bb-yellow-40': '#ffe9a8', 'bb-yellow-10': '#fff9e9',
+          'bb-blue-00': '#00164a', 'bb-blue-100': '#00267f', 'bb-blue-40': '#99a8cc', 'bb-blue-10': '#e5e9f2',
+          'bb-black-00': '#000', 'bb-mid-grey-00': '#595959', 'bb-grey-00': '#e0e4e9', 'bb-white-00': '#fff',
+          'bb-green-00': '#00654a', 'bb-green-100': '#1fbf84', 'bb-green-40': '#a5e5ce', 'bb-green-10': '#e9f9f3',
+          'bb-red-00': '#a42c2c', 'bb-red-100': '#ff6b6b', 'bb-red-40': '#ffc4c4', 'bb-red-10': '#fff0f0',
+          'bb-teal-00': '#0e5f64', 'bb-teal-100': '#30c0c8', 'bb-teal-40': '#ace6e9', 'bb-teal-10': '#eaf9f9',
+          'bb-purple-00': '#4a235a', 'bb-purple-100': '#a962c7',
+          'bb-pink-00': '#ad1157', 'bb-pink-100': '#ff94d9',
+        },
+        fontFamily: { sans: ['Figtree', '-apple-system', 'system-ui', 'sans-serif'] },
+        boxShadow: {
+          'form-hover': 'inset 4px 4px 0px 0px #0000001a',
+          'card': '0 1px 2px rgba(0,22,74,0.04), 0 4px 14px rgba(0,22,74,0.06)',
+          'card-hover': '0 2px 4px rgba(0,22,74,0.06), 0 12px 28px rgba(0,22,74,0.10)',
+        },
+        // alpha.gov.bb spacing scale — usable as px-xs, py-s, mb-xm, etc.
+        spacing: {
+          'xs': '0.5rem',   // 8px
+          's':  '1rem',     // 16px
+          'xm': '1.5rem',   // 24px
+          'm':  '2rem',     // 32px
+          'l':  '4rem',     // 64px
+          'xl': '8rem',     // 128px
+        },
+        // alpha.gov.bb radius — override Tailwind's tiny default sm to match the design token
+        borderRadius: {
+          'sm': '0.25rem',  // 4px
+          'md': '0.375rem', // 6px
+          'lg': '0.5rem',   // 8px
+        },
+      },
+    },
+  };
+</script>
+<style>
+  :root {
+    --color-yellow-00:#e8a833; --color-yellow-100:#ffc726; --color-yellow-40:#ffe9a8; --color-yellow-10:#fff9e9;
+    --color-blue-00:#00164a; --color-blue-100:#00267f; --color-blue-40:#99a8cc; --color-blue-10:#e5e9f2;
+    --color-black-00:#000; --color-mid-grey-00:#595959; --color-grey-00:#e0e4e9; --color-white-00:#fff;
+    --color-green-00:#00654a; --color-green-100:#1fbf84; --color-green-40:#a5e5ce; --color-green-10:#e9f9f3;
+    --color-red-00:#a42c2c; --color-red-100:#ff6b6b; --color-red-40:#ffc4c4; --color-red-10:#fff0f0;
+    --color-teal-00:#0e5f64; --color-teal-100:#30c0c8; --color-teal-40:#ace6e9; --color-teal-10:#eaf9f9;
+    --color-purple-00:#4a235a; --color-purple-100:#a962c7;
+    --color-pink-00:#ad1157; --color-pink-100:#ff94d9;
+
+    /* alpha.gov.bb design tokens */
+    --spacing-xs: 0.5rem;  --spacing-s: 1rem;  --spacing-xm: 1.5rem;
+    --spacing-m: 2rem;     --spacing-l: 4rem;  --spacing-xl: 8rem;
+    --radius-sm: 0.25rem;  --radius-md: 0.375rem;  --radius-lg: 0.5rem;
+    --shadow-form-hover: inset 4px 4px 0px 0px #0000001a;
+  }
+  html, body { font-family: Figtree, -apple-system, system-ui, sans-serif; }
+  body {
+    font-weight: 400; line-height: 1.55;
+    display: grid; min-height: 100vh; grid-template-rows: auto auto auto 1fr auto;
+    background: var(--color-white-00); color: var(--color-black-00);
+    -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
+  }
+  .container { max-width: 1200px; margin-inline: auto; padding-inline: 16px; }
+  .stage { max-width: 600px; margin-inline: auto; }
+  .stage-wide { max-width: 760px; margin-inline: auto; }
+  .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+  /* Range sliders */
+  input[type=range] {
+    -webkit-appearance: none; appearance: none; width: 100%; height: 10px;
+    background: #e5e9f2; border-radius: 999px; outline: none;
+    background-image: linear-gradient(#0e5f64, #0e5f64);
+    background-size: 0% 100%; background-repeat: no-repeat;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none; width: 32px; height: 32px;
+    border-radius: 50%; background: #0e5f64; cursor: pointer;
+    border: 5px solid #fff; box-shadow: 0 2px 8px rgba(0,22,74,0.25);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 32px; height: 32px; border-radius: 50%; background: #0e5f64; cursor: pointer;
+    border: 5px solid #fff; box-shadow: 0 2px 8px rgba(0,22,74,0.25);
+  }
+  input[type=range]:focus-visible { box-shadow: 0 0 0 4px #30c0c8; }
+
+  /* Screen transitions */
+  .screen { animation: fade 0.32s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* Selectable cards */
+  .selectable { transition: all .18s ease; }
+  .selectable[aria-checked="true"],
+  .selectable.selected {
+    border-color: #0e5f64; background: #eaf9f9;
+    box-shadow: 0 0 0 2px #0e5f64 inset;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background: #0e5f64; color: #fff;
+    transition: background-color .15s, box-shadow .15s, transform .05s;
+  }
+  .btn-primary:hover { background: #1a777d; box-shadow: inset 0 0 0 4px rgba(222,245,246,0.10); }
+  .btn-primary:active { background: #0a4549; transform: translateY(1px); }
+  .btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
+  .btn-primary:disabled { background: #99a8cc; cursor: not-allowed; box-shadow: none; }
+
+  .btn-secondary {
+    background: #fff; color: #0e5f64; border: 2px solid #0e5f64;
+    transition: background-color .15s, color .15s;
+  }
+  .btn-secondary:hover { background: #eaf9f9; }
+  .btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
+
+  /* Links */
+  .link-bb {
+    color: #0e5f64; text-decoration: underline; text-underline-offset: 2px;
+  }
+  .link-bb:hover { color: #000; background: #eaf9f9; text-decoration: none; }
+  .link-bb:focus-visible { outline: none; background: #ffc726; color: #000; text-decoration: none; }
+
+  /* Expandable cards */
+  details.scenario summary { list-style: none; cursor: pointer; }
+  details.scenario summary::-webkit-details-marker { display: none; }
+  details.scenario[open] .chev { transform: rotate(180deg); }
+  .chev { transition: transform .2s ease; }
+
+  /* Soft pattern dot background for hero */
+  .hero-bg {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(48,192,200,0.18), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(255,199,38,0.22), transparent 40%);
+  }
+
+  /* Steppers */
+  .stepper-btn {
+    width: 44px; height: 44px; border-radius: 999px;
+    border: 2px solid var(--color-teal-00); color: var(--color-teal-00);
+    background: #fff; font-size: 1.25rem; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .stepper-btn:hover { background: var(--color-teal-10); }
+  .stepper-btn:disabled { border-color: var(--color-grey-00); color: var(--color-grey-00); cursor: not-allowed; background: #fff; }
+  .stepper-btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--color-teal-100); }
+
+  /* Tag/chip */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 0.85rem; font-weight: 600;
+  }
+
+  /* Bar visualization (for protection level) */
+  .protect-bar {
+    height: 14px; border-radius: 999px; background: var(--color-grey-00);
+    overflow: hidden; position: relative;
+  }
+  .protect-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, #1fbf84, #30c0c8);
+    transition: width .5s cubic-bezier(.22,1,.36,1);
+  }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="bg-bb-blue-100 text-bb-white-00">
+  <div class="container">
+    <div class="stage flex items-center gap-2 py-2 text-[0.85rem]">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Coat_of_arms_of_Barbados_%282%29.svg/1280px-Coat_of_arms_of_Barbados_%282%29.svg.png"
+           alt="" class="h-4 w-auto" />
+      <span>Official website of the Government of Barbados</span>
+    </div>
+  </div>
+</div>
+
+<!-- Yellow header with GoB logo -->
+<header class="bg-bb-yellow-100">
+  <div class="container">
+    <div class="stage py-3">
+      <div class="text-bb-black-00" style="max-width: 240px;">
+        <svg viewBox="0 0 276 27" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto" role="img" aria-label="Government of Barbados">
+          <path d="M39.079 21.527C37.5026 21.527 36.103 21.1903 34.8802 20.5168C33.6721 19.8286 32.7219 18.8916 32.0294 17.7057C31.337 16.5051 30.9908 15.1288 30.9908 13.5769C30.9908 12.0249 31.337 10.6559 32.0294 9.47001C32.7219 8.26943 33.6721 7.3324 34.8802 6.65891C36.103 5.97077 37.5026 5.6267 39.079 5.6267C40.0219 5.6267 40.8911 5.7658 41.6867 6.04398C42.4823 6.32216 43.1821 6.71015 43.7861 7.20795C44.4049 7.69111 44.9205 8.24747 45.3331 8.87704L42.858 10.4144C42.6075 10.0191 42.276 9.66767 41.8635 9.3602C41.4657 9.05274 41.0237 8.81116 40.5376 8.63547C40.0514 8.45977 39.5652 8.37192 39.079 8.37192C38.1067 8.37192 37.2448 8.59886 36.4934 9.05274C35.7421 9.49197 35.1527 10.0996 34.7255 10.8756C34.2982 11.6515 34.0846 12.552 34.0846 13.5769C34.0846 14.5871 34.2909 15.4875 34.7034 16.2782C35.1307 17.0688 35.7273 17.691 36.4934 18.1449C37.2595 18.5841 38.1435 18.8038 39.1453 18.8038C39.8967 18.8038 40.567 18.6647 41.1563 18.3865C41.7456 18.0937 42.2171 17.691 42.5707 17.1786C42.9243 16.6661 43.1231 16.0659 43.1673 15.3777H39.5873V13.0278H46.0844V14.8946C46.055 16.3001 45.7382 17.5007 45.1342 18.4963C44.5301 19.4773 43.7051 20.2313 42.6591 20.7584C41.613 21.2708 40.4197 21.527 39.079 21.527Z"/>
+          <path d="M52.8353 21.527C51.7156 21.527 50.7138 21.2854 49.8298 20.8023C48.9606 20.3045 48.2755 19.6237 47.7746 18.7598C47.2884 17.896 47.0453 16.9004 47.0453 15.773C47.0453 14.6457 47.2884 13.6501 47.7746 12.7862C48.2608 11.9224 48.9385 11.2489 49.8077 10.7658C50.677 10.268 51.6714 10.0191 52.7911 10.0191C53.9255 10.0191 54.9273 10.268 55.7966 10.7658C56.6658 11.2489 57.3435 11.9224 57.8297 12.7862C58.3159 13.6501 58.559 14.6457 58.559 15.773C58.559 16.9004 58.3159 17.896 57.8297 18.7598C57.3435 19.6237 56.6658 20.3045 55.7966 20.8023C54.9421 21.2854 53.955 21.527 52.8353 21.527ZM52.8353 18.8477C53.3804 18.8477 53.8592 18.7159 54.2717 18.4524C54.6843 18.1888 55.001 17.8301 55.222 17.3763C55.4577 16.9077 55.5756 16.3733 55.5756 15.773C55.5756 15.1728 55.4577 14.6457 55.222 14.1918C54.9863 13.7233 54.6548 13.3572 54.2275 13.0937C53.815 12.8302 53.3362 12.6984 52.7911 12.6984C52.2607 12.6984 51.7819 12.8302 51.3547 13.0937C50.9421 13.3572 50.618 13.7233 50.3823 14.1918C50.1466 14.6457 50.0287 15.1728 50.0287 15.773C50.0287 16.3733 50.1466 16.9077 50.3823 17.3763C50.618 17.8301 50.9495 18.1888 51.3768 18.4524C51.804 18.7159 52.2902 18.8477 52.8353 18.8477Z"/>
+          <path d="M62.8109 21.2635L58.2806 10.2826H61.2861L64.2694 17.9472L67.2528 10.2826H70.2583L65.728 21.2635H62.8109Z"/>
+          <path d="M75.7678 21.527C74.6776 21.527 73.7126 21.2854 72.8729 20.8023C72.0331 20.3045 71.3701 19.6237 70.884 18.7598C70.4125 17.896 70.1768 16.9004 70.1768 15.773C70.1768 14.6457 70.4199 13.6501 70.906 12.7862C71.407 11.9224 72.0847 11.2489 72.9392 10.7658C73.8084 10.268 74.8029 10.0191 75.9225 10.0191C76.8949 10.0191 77.7862 10.2753 78.5965 10.7877C79.4216 11.2855 80.0772 12.0249 80.5633 13.0059C81.0643 13.9722 81.3147 15.1508 81.3147 16.5417H73.2265C73.3001 17.2738 73.6169 17.8594 74.1767 18.2986C74.7366 18.7232 75.3701 18.9355 76.0772 18.9355C76.6813 18.9355 77.1748 18.8111 77.5579 18.5622C77.9409 18.2986 78.2356 17.9619 78.4418 17.5519L81.0495 18.5622C80.7401 19.1771 80.335 19.7115 79.8341 20.1654C79.3479 20.6046 78.766 20.9414 78.0883 21.1756C77.4106 21.4099 76.6371 21.527 75.7678 21.527ZM73.3811 14.3894H78.1545C78.1103 13.9356 77.963 13.5695 77.7126 13.2914C77.4621 13.0132 77.1675 12.8082 76.8286 12.6764C76.4898 12.5447 76.1583 12.4788 75.8341 12.4788C75.5247 12.4788 75.1859 12.5447 74.8176 12.6764C74.464 12.7936 74.1472 12.9912 73.8673 13.2694C73.6021 13.5476 73.4401 13.9209 73.3811 14.3894Z"/>
+          <path d="M82.4937 21.2635V10.2826H85.4107V12.3031C85.8675 11.6149 86.442 11.1025 87.1345 10.7658C87.8416 10.4144 88.5709 10.2387 89.3223 10.2387V13.0498C88.6446 13.0498 88.0037 13.1303 87.3997 13.2914C86.8103 13.4524 86.3315 13.716 85.9632 14.082C85.5949 14.448 85.4107 14.9165 85.4107 15.4875V21.2635H82.4937Z"/>
+          <path d="M90.8937 21.2635V10.2826H93.634L93.7666 11.776C94.1202 11.205 94.5695 10.7731 95.1146 10.4803C95.6744 10.1728 96.308 10.0191 97.0151 10.0191C97.8844 10.0191 98.6284 10.1947 99.2471 10.5461C99.8659 10.8975 100.337 11.4466 100.661 12.1933C100.986 12.9253 101.14 13.877 101.126 15.0483V21.2635H98.2085V15.6413C98.2085 14.8946 98.1201 14.3162 97.9433 13.9063C97.7812 13.4963 97.5455 13.2035 97.2361 13.0278C96.9267 12.8375 96.5658 12.7423 96.1533 12.7423C95.4019 12.7277 94.82 12.9546 94.4074 13.4231C94.0097 13.8916 93.8108 14.5871 93.8108 15.5095V21.2635H90.8937Z"/>
+          <path d="M103.196 21.2635V10.2826H105.936L106.069 11.7101C106.407 11.1538 106.842 10.7365 107.372 10.4583C107.903 10.1655 108.492 10.0191 109.14 10.0191C110.039 10.0191 110.79 10.2094 111.395 10.5901C112.013 10.9707 112.463 11.5564 112.743 12.347C113.067 11.6003 113.523 11.0293 114.113 10.634C114.702 10.224 115.387 10.0191 116.168 10.0191C117.464 10.0191 118.451 10.429 119.129 11.2489C119.807 12.0542 120.146 13.2987 120.146 14.9824V21.2635H117.229V15.6413C117.229 14.8946 117.148 14.3162 116.986 13.9063C116.824 13.4963 116.603 13.2035 116.323 13.0278C116.043 12.8375 115.711 12.7423 115.328 12.7423C114.621 12.7277 114.076 12.9546 113.693 13.4231C113.31 13.8916 113.118 14.5871 113.118 15.5095V21.2635H110.201V15.6413C110.201 14.8946 110.12 14.3162 109.958 13.9063C109.811 13.4963 109.59 13.2035 109.295 13.0278C109.015 12.8375 108.684 12.7423 108.301 12.7423C107.593 12.7277 107.048 12.9546 106.665 13.4231C106.297 13.8916 106.113 14.5871 106.113 15.5095V21.2635H103.196Z"/>
+          <path d="M126.946 21.527C125.856 21.527 124.891 21.2854 124.051 20.8023C123.211 20.3045 122.548 19.6237 122.062 18.7598C121.59 17.896 121.355 16.9004 121.355 15.773C121.355 14.6457 121.598 13.6501 122.084 12.7862C122.585 11.9224 123.263 11.2489 124.117 10.7658C124.986 10.268 125.981 10.0191 127.1 10.0191C128.073 10.0191 128.964 10.2753 129.774 10.7877C130.6 11.2855 131.255 12.0249 131.741 13.0059C132.242 13.9722 132.493 15.1508 132.493 16.5417H124.404C124.478 17.2738 124.795 17.8594 125.355 18.2986C125.915 18.7232 126.548 18.9355 127.255 18.9355C127.859 18.9355 128.353 18.8111 128.736 18.5622C129.119 18.2986 129.414 17.9619 129.62 17.5519L132.227 18.5622C131.918 19.1771 131.513 19.7115 131.012 20.1654C130.526 20.6046 129.944 20.9414 129.266 21.1756C128.588 21.4099 127.815 21.527 126.946 21.527ZM124.559 14.3894H129.332C129.288 13.9356 129.141 13.5695 128.891 13.2914C128.64 13.0132 128.345 12.8082 128.007 12.6764C127.668 12.5447 127.336 12.4788 127.012 12.4788C126.703 12.4788 126.364 12.5447 125.996 12.6764C125.642 12.7936 125.325 12.9912 125.045 13.2694C124.78 13.5476 124.618 13.9209 124.559 14.3894Z"/>
+          <path d="M133.93 21.2635V10.2826H136.67L136.803 11.776C137.156 11.205 137.606 10.7731 138.151 10.4803C138.711 10.1728 139.344 10.0191 140.051 10.0191C140.92 10.0191 141.664 10.1947 142.283 10.5461C142.902 10.8975 143.373 11.4466 143.698 12.1933C144.022 12.9253 144.176 13.877 144.162 15.0483V21.2635H141.245V15.6413C141.245 14.8946 141.156 14.3162 140.979 13.9063C140.817 13.4963 140.582 13.2035 140.272 13.0278C139.963 12.8375 139.602 12.7423 139.189 12.7423C138.438 12.7277 137.856 12.9546 137.444 13.4231C137.046 13.8916 136.847 14.5871 136.847 15.5095V21.2635H133.93Z"/>
+          <path d="M150.526 21.527C149.303 21.527 148.375 21.2269 147.742 20.6266C147.123 20.0263 146.813 19.1698 146.813 18.0571V12.7423H145.023V10.2826H146.813V6.85656H149.731V10.2826H152.493V12.7423H149.731V17.4202C149.731 17.8887 149.834 18.2474 150.04 18.4963C150.246 18.7306 150.548 18.8477 150.946 18.8477C151.093 18.8477 151.255 18.8184 151.432 18.7598C151.609 18.6866 151.793 18.5841 151.985 18.4524L153.001 20.6266C152.648 20.8901 152.25 21.1024 151.808 21.2635C151.381 21.4392 150.953 21.527 150.526 21.527Z"/>
+          <path d="M186.422 21.2635V5.89025H191.66C192.72 5.89025 193.649 6.0513 194.444 6.37341C195.24 6.69551 195.859 7.18599 196.3 7.84485C196.742 8.48906 196.963 9.29432 196.963 10.2606C196.963 10.8609 196.809 11.4173 196.499 11.9297C196.205 12.4275 195.785 12.8594 195.24 13.2255C195.962 13.5915 196.514 14.082 196.897 14.6969C197.295 15.2972 197.494 16.8711 197.494 16.8711C197.494 16.8711 197.28 18.6061 196.853 19.265C196.426 19.9238 195.829 20.4216 195.063 20.7584C194.297 21.0951 193.398 21.2635 192.367 21.2635H186.422ZM189.383 18.6061H192.08C192.801 18.6061 193.369 18.4304 193.781 18.079C194.194 17.713 194.4 17.2298 194.4 16.6296C194.4 16 194.172 15.5095 193.715 15.1581C193.258 14.7921 192.632 14.6091 191.836 14.6091H189.383V18.6061ZM189.383 12.1494H191.726C192.389 12.1494 192.912 11.981 193.295 11.6442C193.678 11.3075 193.87 10.8316 193.87 10.2167C193.87 9.60179 193.656 9.12595 193.229 8.7892C192.801 8.45245 192.22 8.28408 191.483 8.28408H189.383V12.1494Z"/>
+          <path d="M202.673 21.527C201.347 21.527 200.316 21.2342 199.58 20.6486C198.858 20.0629 198.497 19.2357 198.497 18.1669C198.497 16.9956 198.887 16.1171 199.668 15.5315C200.464 14.9312 201.576 14.631 203.005 14.631H205.613C205.509 13.9575 205.296 13.4451 204.972 13.0937C204.648 12.7277 204.184 12.5447 203.58 12.5447C203.108 12.5447 202.681 12.6472 202.298 12.8521C201.915 13.0571 201.591 13.3719 201.325 13.7965L198.762 12.918C198.968 12.4495 199.27 11.9956 199.668 11.5564C200.066 11.1025 200.581 10.7365 201.215 10.4583C201.863 10.1655 202.651 10.0191 203.58 10.0191C204.699 10.0191 205.627 10.2314 206.364 10.656C207.115 11.0805 207.668 11.6808 208.021 12.4568C208.39 13.2182 208.566 14.1259 208.552 15.1801L208.485 21.2635H205.767L205.723 19.9897C205.443 20.4875 205.045 20.8682 204.53 21.1317C204.029 21.3953 203.41 21.527 202.673 21.527ZM203.16 19.1112C203.631 19.1112 204.058 19.0014 204.441 18.7818C204.824 18.5622 205.126 18.2767 205.347 17.9253C205.568 17.5739 205.679 17.2079 205.679 16.8272V16.7833H204.021C203.064 16.7833 202.401 16.9004 202.033 17.1347C201.664 17.3543 201.48 17.6691 201.48 18.079C201.48 18.4011 201.627 18.6574 201.922 18.8477C202.217 19.0234 202.629 19.1112 203.16 19.1112Z"/>
+          <path d="M210.512 21.2635V10.2826H213.429V12.3031C213.886 11.6149 214.461 11.1025 215.153 10.7658C215.86 10.4144 216.59 10.2387 217.341 10.2387V13.0498C216.663 13.0498 216.022 13.1303 215.418 13.2914C214.829 13.4524 214.35 13.716 213.982 14.082C213.614 14.448 213.429 14.9165 213.429 15.4875V21.2635H210.512Z"/>
+          <path d="M224.7 21.527C223.948 21.527 223.293 21.3733 222.733 21.0658C222.173 20.7437 221.702 20.2898 221.318 19.7042L221.208 21.2635H218.446V5.89025H221.363V11.776C221.731 11.205 222.195 10.7731 222.755 10.4803C223.315 10.1728 223.963 10.0191 224.7 10.0191C225.716 10.0191 226.593 10.2533 227.329 10.7218C228.081 11.1904 228.663 11.8565 229.075 12.7204C229.488 13.5695 229.694 14.5871 229.694 15.773C229.694 16.9443 229.488 17.9619 229.075 18.8257C228.663 19.6896 228.081 20.3557 227.329 20.8242C226.593 21.2928 225.716 21.527 224.7 21.527ZM223.948 18.8697C224.479 18.8697 224.943 18.7379 225.34 18.4743C225.753 18.2108 226.077 17.8448 226.313 17.3763C226.549 16.9077 226.666 16.3733 226.666 15.773C226.666 15.1728 226.549 14.6384 226.313 14.1698C226.092 13.7013 225.775 13.3426 225.363 13.0937C224.965 12.8302 224.501 12.6984 223.97 12.6984C223.469 12.6984 223.02 12.8302 222.622 13.0937C222.225 13.3572 221.915 13.7233 221.694 14.1918C221.473 14.6457 221.363 15.1728 221.363 15.773C221.363 16.3733 221.473 16.9077 221.694 17.3763C221.915 17.8448 222.217 18.2108 222.6 18.4743C222.998 18.7379 223.447 18.8697 223.948 18.8697Z"/>
+          <path d="M234.674 21.527C233.348 21.527 232.317 21.2342 231.58 20.6486C230.858 20.0629 230.497 19.2357 230.497 18.1669C230.497 16.9956 230.887 16.1171 231.668 15.5315C232.464 14.9312 233.576 14.631 235.005 14.631H237.613C237.51 13.9575 237.296 13.4451 236.972 13.0937C236.648 12.7277 236.184 12.5447 235.58 12.5447C235.108 12.5447 234.681 12.6472 234.298 12.8521C233.915 13.0571 233.591 13.3719 233.326 13.7965L230.762 12.918C230.969 12.4495 231.271 11.9956 231.668 11.5564C232.066 11.1025 232.582 10.7365 233.215 10.4583C233.863 10.1655 234.652 10.0191 235.58 10.0191C236.7 10.0191 237.628 10.2314 238.364 10.656C239.116 11.0805 239.668 11.6808 240.022 12.4568C240.39 13.2182 240.567 14.1259 240.552 15.1801L240.486 21.2635H237.768L237.723 19.9897C237.443 20.4875 237.046 20.8682 236.53 21.1317C236.029 21.3953 235.41 21.527 234.674 21.527ZM235.16 19.1112C235.631 19.1112 236.059 19.0014 236.442 18.7818C236.825 18.5622 237.127 18.2767 237.348 17.9253C237.569 17.5739 237.679 17.2079 237.679 16.8272V16.7833H236.022C235.064 16.7833 234.401 16.9004 234.033 17.1347C233.665 17.3543 233.48 17.6691 233.48 18.079C233.48 18.4011 233.628 18.6574 233.922 18.8477C234.217 19.0234 234.63 19.1112 235.16 19.1112Z"/>
+          <path d="M246.758 21.527C245.742 21.527 244.858 21.2928 244.107 20.8242C243.37 20.3557 242.795 19.6896 242.383 18.8257C241.97 17.9619 241.764 16.9443 241.764 15.773C241.764 14.5871 241.97 13.5695 242.383 12.7204C242.795 11.8565 243.37 11.1904 244.107 10.7218C244.858 10.2533 245.742 10.0191 246.758 10.0191C247.48 10.0191 248.121 10.1728 248.681 10.4803C249.256 10.7731 249.72 11.1977 250.073 11.754V5.89025H252.99V21.2635H250.228L250.14 19.7262C249.771 20.2972 249.3 20.7437 248.725 21.0658C248.151 21.3733 247.495 21.527 246.758 21.527ZM247.51 18.8697C247.996 18.8697 248.423 18.7525 248.792 18.5183C249.175 18.2694 249.477 17.9253 249.698 17.4861C249.919 17.0468 250.044 16.549 250.073 15.9927V15.5534C250.044 14.9971 249.919 14.5066 249.698 14.082C249.477 13.6428 249.175 13.306 248.792 13.0717C248.409 12.8228 247.974 12.6984 247.488 12.6984C246.957 12.6984 246.486 12.8302 246.073 13.0937C245.676 13.3426 245.359 13.7013 245.123 14.1698C244.902 14.6384 244.792 15.1728 244.792 15.773C244.792 16.3733 244.909 16.9077 245.145 17.3763C245.381 17.8448 245.698 18.2108 246.095 18.4743C246.508 18.7379 246.979 18.8697 247.51 18.8697Z"/>
+          <path d="M260.409 21.527C259.289 21.527 258.287 21.2854 257.403 20.8023C256.534 20.3045 255.849 19.6237 255.348 18.7598C254.862 17.896 254.619 16.9004 254.619 15.773C254.619 14.6457 254.862 13.6501 255.348 12.7862C255.834 11.9224 256.512 11.2489 257.381 10.7658C258.25 10.268 259.245 10.0191 260.364 10.0191C261.499 10.0191 262.501 10.268 263.37 10.7658C264.239 11.2489 264.917 11.9224 265.403 12.7862C265.889 13.6501 266.132 14.6457 266.132 15.773C266.132 16.9004 265.889 17.896 265.403 18.7598C264.917 19.6237 264.239 20.3045 263.37 20.8023C262.515 21.2854 261.528 21.527 260.409 21.527ZM260.409 18.8477C260.954 18.8477 261.433 18.7159 261.845 18.4524C262.258 18.1888 262.574 17.8301 262.795 17.3763C263.031 16.9077 263.149 16.3733 263.149 15.773C263.149 15.1728 263.031 14.6457 262.795 14.1918C262.56 13.7233 262.228 13.3572 261.801 13.0937C261.388 12.8302 260.91 12.6984 260.364 12.6984C259.834 12.6984 259.355 12.8302 258.928 13.0937C258.515 13.3572 258.191 13.7233 257.956 14.1918C257.72 14.6457 257.602 15.1728 257.602 15.773C257.602 16.3733 257.72 16.9077 257.956 17.3763C258.191 17.8301 258.523 18.1888 258.95 18.4524C259.377 18.7159 259.863 18.8477 260.409 18.8477Z"/>
+          <path d="M271.536 21.527C270.829 21.527 270.166 21.4245 269.547 21.2196C268.928 20.9999 268.383 20.6925 267.912 20.2972C267.44 19.8872 267.072 19.3894 266.807 18.8038L269.304 17.6618C269.525 18.0131 269.827 18.3206 270.21 18.5841C270.593 18.833 271.035 18.9575 271.536 18.9575C272.022 18.9575 272.398 18.8916 272.663 18.7598C272.928 18.6134 273.061 18.4085 273.061 18.1449C273.061 17.8814 272.95 17.691 272.729 17.5739C272.523 17.4421 272.236 17.3323 271.867 17.2445L270.851 16.9809C269.79 16.7028 268.95 16.2635 268.332 15.6632C267.728 15.0483 267.426 14.3455 267.426 13.5549C267.426 12.4275 267.787 11.5564 268.508 10.9415C269.245 10.3265 270.284 10.0191 271.624 10.0191C272.317 10.0191 272.958 10.1215 273.547 10.3265C274.151 10.5315 274.667 10.817 275.094 11.183C275.521 11.5491 275.816 11.9737 275.978 12.4568L273.569 13.5549C273.466 13.2621 273.216 13.0278 272.818 12.8521C272.42 12.6618 272.022 12.5666 271.624 12.5666C271.227 12.5666 270.917 12.6545 270.696 12.8302C270.49 12.9912 270.387 13.2182 270.387 13.511C270.387 13.7013 270.49 13.8624 270.696 13.9941C270.902 14.1113 271.197 14.2138 271.58 14.3016L273.017 14.653C273.739 14.8287 274.313 15.1142 274.74 15.5095C275.182 15.8902 275.499 16.3221 275.691 16.8052C275.897 17.2738 276 17.735 276 18.1888C276 18.8477 275.801 19.4333 275.403 19.9458C275.02 20.4436 274.49 20.8316 273.812 21.1098C273.149 21.3879 272.39 21.527 271.536 21.527Z"/>
+          <path d="M165.302 21.527C164.182 21.527 163.18 21.2855 162.296 20.8023C161.427 20.3045 160.742 19.6237 160.241 18.7598C159.755 17.896 159.512 16.9004 159.512 15.773C159.512 14.6457 159.755 13.6501 160.241 12.7862C160.727 11.9224 161.405 11.2489 162.274 10.7658C163.144 10.268 164.138 10.0191 165.258 10.0191C166.392 10.0191 167.394 10.268 168.263 10.7658C169.132 11.2489 169.81 11.9224 170.296 12.7862C170.782 13.6501 171.026 14.6457 171.026 15.773C171.026 16.9004 170.782 17.896 170.296 18.7598C169.81 19.6237 169.132 20.3045 168.263 20.8023C167.409 21.2855 166.422 21.527 165.302 21.527ZM165.302 18.8477C165.847 18.8477 166.326 18.7159 166.738 18.4524C167.151 18.1888 167.468 17.8301 167.689 17.3763C167.924 16.9077 168.042 16.3733 168.042 15.773C168.042 15.1728 167.924 14.6457 167.689 14.1918C167.453 13.7233 167.121 13.3572 166.694 13.0937C166.282 12.8302 165.803 12.6984 165.258 12.6984C164.727 12.6984 164.249 12.8302 163.821 13.0937C163.409 13.3572 163.085 13.7233 162.849 14.1918C162.613 14.6457 162.495 15.1728 162.495 15.773C162.495 16.3733 162.613 16.9077 162.849 17.3763C163.085 17.8301 163.416 18.1888 163.843 18.4524C164.271 18.7159 164.757 18.8477 165.302 18.8477Z"/>
+          <path d="M173.144 21.2635V12.6105H171.309V10.2826H173.144V9.18451C173.144 8.01321 173.446 7.10546 174.05 6.46125C174.654 5.8024 175.574 5.47297 176.812 5.47297C177.239 5.47297 177.689 5.54618 178.16 5.69259C178.646 5.839 179.088 6.0147 179.486 6.21967L178.403 8.30604C178.167 8.18891 177.954 8.10106 177.762 8.04249C177.571 7.98393 177.394 7.95465 177.232 7.95465C176.834 7.95465 176.539 8.09374 176.348 8.37192C176.156 8.63547 176.061 9.06738 176.061 9.66767V10.2826H178.779V12.6105H176.061V21.2635H173.144Z"/>
+          <path d="M12.5786 0C11.6253 2.46943 10.6536 5.03986 8.57466 7.00774C9.21998 6.80573 10.3493 6.62461 11.0753 6.64203V17.0283L7.988 17.4636C7.878 17.4532 7.84133 17.2895 7.84133 17.0666C7.54434 13.8413 6.74135 11.1316 5.81736 8.32779C5.75136 7.94466 4.58171 6.48181 5.4837 6.73955C5.5937 6.75348 6.80002 7.2202 6.60935 6.99729C4.96671 5.38119 2.56508 4.21788 0.233112 3.87306C0.0277812 3.8243 -0.0932171 3.92183 0.0901136 4.14822C3.18474 8.6726 5.77336 14.012 5.75136 20.3475C6.95401 20.3475 9.86897 19.6718 11.0753 19.6718V27H12.5969L12.9453 6.53406L12.5786 0Z"/>
+          <path d="M12.5786 0C13.5319 2.46943 14.5036 5.03986 16.5825 7.00774C15.9372 6.80573 14.8079 6.62461 14.0819 6.64203V17.0283L17.1692 17.4636C17.2792 17.4532 17.3159 17.2895 17.3159 17.0666C17.6129 13.8413 18.4158 11.1316 19.3398 8.32779C19.4058 7.94466 20.5755 6.48181 19.6735 6.73955C19.5635 6.75348 18.3572 7.2202 18.5478 6.99729C20.1905 5.38119 22.5921 4.21788 24.9241 3.87306C25.1294 3.8243 25.2504 3.92183 25.0671 4.14822C21.9725 8.6726 19.3838 14.012 19.4058 20.3475C18.2032 20.3475 15.2882 19.6718 15.2882 19.6718V27H12.5603L12.2119 6.53406L12.5786 0Z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Alpha banner -->
+<div class="bg-bb-blue-10 border-b border-bb-blue-40/40">
+  <div class="container">
+    <div class="stage py-2 text-[0.9rem]">
+      This service is in <a href="#" class="link-bb font-medium">Alpha</a>. Your feedback helps us improve it.
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<main>
+  <div class="container">
+    <div class="px-4 py-6 sm:py-8" id="app" role="region" aria-live="polite"></div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-bb-blue-100 text-bb-white-00 mt-8">
+  <div class="container">
+    <div class="stage py-8 text-[0.95rem]">
+      <p class="font-medium mb-1">National Insurance and Social Security Scheme of Barbados</p>
+      <p class="text-bb-white-00/80 mb-4">A service built with workers, for workers.</p>
+      <div class="flex flex-wrap gap-x-5 gap-y-2 mb-5">
+        <a href="#" class="underline underline-offset-2 hover:no-underline">Privacy</a>
+        <a href="#" class="underline underline-offset-2 hover:no-underline">Accessibility</a>
+        <a href="#" class="underline underline-offset-2 hover:no-underline">Contact NISSS</a>
+      </div>
+      <p class="text-bb-white-00/70 text-[0.85rem]">&copy; 2026 Government of Barbados</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────
+   State
+   ───────────────────────────────────────────────────────── */
+const state = {
+  screen: 'landing',
+  data: {
+    workerType: null,
+    goodMonth: 2500,
+    slowMonth: 800,
+    slowMonthsPerYear: 3,
+    hasDependants: null,
+    dependantsCount: 0,
+    contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
+    monthlyContribution: 150,
+    alreadyHasNis: null,
+    firstName: '',
+    contact: '',
+    contactMethod: null,
+  },
+  errors: {},
+  expandedScenario: null,
+};
+
+const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
+
+/* ─────────────────────────────────────────────────────────
+   Icons (lightweight inline SVGs)
+   ───────────────────────────────────────────────────────── */
+const ICONS = {
+  /* worker types */
+  freelancer: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8M12 18v3M7 9h10M7 13h6"/></svg>`,
+  delivery: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M3 17h.5M8.5 17h7M20.5 17h.5M14 6h3l3 6"/><path d="M5 13l2-7h7l3 11"/></svg>`,
+  taxi: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M5 11l1.5-4a2 2 0 0 1 2-1.5h7a2 2 0 0 1 2 1.5L19 11"/><path d="M3 11h18v6a1 1 0 0 1-1 1h-1.5a1.5 1.5 0 0 1-1.5-1.5V16H8v.5A1.5 1.5 0 0 1 6.5 18H5a1 1 0 0 1-1-1v-6z"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>`,
+  creative: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="17.5" cy="15.5" r="1.5"/><circle cx="13.5" cy="19.5" r="1.5"/><path d="M12 2a10 10 0 1 0 0 20c1 0 1.5-.5 1.5-1.5 0-1.5-1.5-2-1.5-3.5 0-1 1-1.5 2-1.5h2A4 4 0 0 0 20 11c0-5-3.5-9-8-9z"/></svg>`,
+  vendor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M3 9l2-4h14l2 4M3 9v11h18V9M3 9h18M8 9v4M16 9v4"/></svg>`,
+  tradesperson: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M14.7 6.3a3.5 3.5 0 0 0-4.4 4.4L3 18l3 3 7.3-7.3a3.5 3.5 0 0 0 4.4-4.4l-2.4 2.4-1.6-1.6 2.4-2.4z"/></svg>`,
+  domestic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>`,
+  other: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>`,
+  agri: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 22v-9"/><path d="M12 13c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6z"/><path d="M12 16c0-2.8-2.2-5-5-5 0 2.8 2.2 5 5 5z"/></svg>`,
+  beauty: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M11 3l1.7 5.1a3 3 0 0 0 1.9 1.9L19.7 11.7l-5.1 1.7a3 3 0 0 0-1.9 1.9L11 20.4l-1.7-5.1a3 3 0 0 0-1.9-1.9L2.3 11.7l5.1-1.7a3 3 0 0 0 1.9-1.9L11 3z"/><path d="M18.5 16.5l.5 1.6 1.6.5-1.6.5-.5 1.6-.5-1.6-1.6-.5 1.6-.5.5-1.6z"/></svg>`,
+
+  /* benefits */
+  sickness: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 21s-7-4.35-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.65-7 10-7 10z" stroke="none" fill="currentColor" opacity=".12"/><path d="M3 13h4l2-4 3 8 2-4h7"/></svg>`,
+  maternity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="12" cy="5" r="2.5"/><path d="M9 22V14a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v8M7 13c.5-2 1.5-3.5 2.5-4M17 13c-.5-2-1.5-3.5-2.5-4"/></svg>`,
+  paternity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="8" cy="6" r="2"/><circle cx="16" cy="7" r="2"/><path d="M5 22v-7a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v7M13 22v-6a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v6"/></svg>`,
+  invalidity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="10" cy="5" r="2"/><circle cx="10" cy="17" r="4"/><path d="M10 7v6l4 2M14 16l3 3"/></svg>`,
+  survivors: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5M15 20c0-2 1.5-4 4-4s4 2 4 4"/></svg>`,
+  pension: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 3v18M5 21h14"/><path d="M12 11s-4-1-4-4a4 4 0 0 1 8 0c0 3-4 4-4 4z" fill="currentColor" opacity=".12"/></svg>`,
+
+  /* utility */
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M4 12l5 5 11-11"/></svg>`,
+  arrowLeft: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>`,
+  arrowRight: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`,
+  shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`,
+  chevDown: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 chev"><path d="M6 9l6 6 6-6"/></svg>`,
+  warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>`,
+  spark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/></svg>`,
+  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+  doc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>`,
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+  building: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10M9 7h.01M15 7h.01M9 10h.01M15 10h.01"/></svg>`,
+  globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>`,
+  card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>`,
+  chart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>`,
+  download: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>`,
+  bell: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
+  circleCheck: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>`,
+  circleMinus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>`,
+  store: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 9l2-4h14l2 4M3 9v11h18V9M3 9h18M9 14h6"/></svg>`,
+  bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>`,
+  heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+};
+
+/* ─────────────────────────────────────────────────────────
+   Data sets
+   ───────────────────────────────────────────────────────── */
+const WORKER_TYPES = [
+  { id: 'delivery',     title: 'Drive or deliver for an app',                  example: 'Rideshare, food or parcel delivery',                       icon: 'delivery' },
+  { id: 'tradesperson', title: 'Trades or construction',                       example: 'Mechanic, electrician, mason, handyman',                   icon: 'tradesperson' },
+  { id: 'vendor',       title: 'Sell food, goods or crafts',                   example: 'Market vendor, caterer, online seller',                    icon: 'vendor' },
+  { id: 'freelancer',   title: 'Freelance or online work',                     example: 'Design, writing, coding, content creators',                icon: 'freelancer' },
+  { id: 'professional', title: 'Work in a profession on your own account',     example: 'Consultants, accountants, lawyers, doctors, engineers',    icon: 'freelancer' },
+  { id: 'rental',       title: 'Rent your place to visitors',                  example: 'Airbnb, short-let hosting',                                icon: 'other' },
+  { id: 'domestic',     title: 'Domestic or care work',                        example: 'Household help, childcare, elder care',                    icon: 'domestic' },
+  { id: 'agribusiness', title: 'Agribusiness',                                 example: 'Farmers, agroprocessors, growers',                         icon: 'agri' },
+  { id: 'arts',         title: 'Arts & entertainment',                         example: 'Musicians, singers, dancers, designers',                   icon: 'creative' },
+  { id: 'beauty',       title: 'Beauty & wellness',                            example: 'Stylists, estheticians, makeup, yoga, coaches',            icon: 'beauty' },
+  { id: 'other',        title: 'Something else',                               example: 'Any other self-employed work',                             icon: 'other' },
+];
+
+const BENEFITS = [
+  { id: 'sickness',   title: 'Sickness Benefit',           real: 'If you cannot work because you are unwell, you still get money to live on.',                                          icon: 'sickness',   color: 'teal' },
+  { id: 'maternity',  title: 'Maternity Benefit',          real: 'Income while you take time off to have your baby — so you can rest and recover.',                                     icon: 'maternity',  color: 'pink' },
+  { id: 'paternity',  title: 'Paternity Benefit',          real: 'A short paid break for new fathers to be with their family.',                                                          icon: 'paternity',  color: 'blue' },
+  { id: 'invalidity', title: 'Invalidity Pension',         real: 'If a long illness or accident stops you from working, you get ongoing support.',                                       icon: 'invalidity', color: 'purple' },
+  { id: 'survivors',  title: "Survivors' Benefit",         real: 'If something happens to you, your partner, children, or parents get help.',                                            icon: 'survivors',  color: 'yellow' },
+  { id: 'pension',    title: 'Old-Age Contributory Pension', real: 'A monthly income when you stop working — built up over the years from what you put in.',                              icon: 'pension',    color: 'green' },
+];
+
+const COLOR_MAP = {
+  teal:   { bg: 'bg-bb-teal-10',   text: 'text-bb-teal-00',   border: 'border-bb-teal-40' },
+  pink:   { bg: 'bg-bb-red-10',    text: 'text-bb-pink-00',   border: 'border-bb-red-40' },
+  blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-blue-00',   border: 'border-bb-blue-40' },
+  purple: { bg: 'bg-[#f3eaf6]',    text: 'text-bb-purple-00', border: 'border-[#d9c1e1]' },
+  yellow: { bg: 'bg-bb-yellow-10', text: 'text-bb-yellow-00', border: 'border-bb-yellow-40' },
+  green:  { bg: 'bg-bb-green-10',  text: 'text-bb-green-00',  border: 'border-bb-green-40' },
+};
+
+/* ─────────────────────────────────────────────────────────
+   Helpers
+   ───────────────────────────────────────────────────────── */
+const fmtMoney = n => 'BDS$' + Math.round(n).toLocaleString('en-BB');
+
+/* ─────────────────────────────────────────────────────────
+   NIS benefit calculation constants & helpers
+   Sources: official nis.gov.bb benefit pages + NISSS meeting 2026-06-02.
+   • Self-employed contribution rate 17.25% (incl. RNR) — meeting 02:14:03.
+   • Benefits are a % of INSURABLE EARNINGS, not of the contribution — meeting 02:16:33.
+   • Max insurable earnings $5,360/mo (max annual contribution $11,095.20) — meeting 02:12:39.
+   All figures are estimates and must be confirmed/validated by NISSS Benefits.
+   ───────────────────────────────────────────────────────── */
+const NIS = {
+  SE_RATE: 0.1725,            // self-employed contribution rate (incl. RNR)
+  MAX_MONTHLY_INSURABLE: 5360,
+  MIN_ANNUAL_CONTRIBUTION: 1200,
+  // replacement rates (share of insurable earnings)
+  SICKNESS_RATE: 2 / 3,       // 66⅔%
+  MATERNITY_RATE: 1.0,        // 100%
+  PATERNITY_RATE: 1.0,        // 100%
+  INVALIDITY_RATE: 0.40,      // 40% of average insurable earnings (up to 60%)
+  INVALIDITY_MIN_WK: 254,     // minimum invalidity pension per week
+  // fixed amounts
+  FUNERAL_GRANT: 2220,
+  CHILD_GRANT: 1280,
+  // durations / ages
+  SICKNESS_MAX_WEEKS: 52,
+  PATERNITY_WEEKS: 3,
+  PENSIONABLE_AGE: 67,
+};
+
+// Annual contribution -> monthly insurable earnings (capped at the ceiling).
+function monthlyInsurableFromContribution(annualContribution) {
+  const raw = (annualContribution / NIS.SE_RATE) / 12;
+  return Math.min(NIS.MAX_MONTHLY_INSURABLE, raw);
+}
+// Monthly insurable earnings -> weekly insurable earnings.
+const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
+
+function progressBar(currentId) {
+  const idx = JOURNEY.indexOf(currentId);
+  if (idx === -1) return '';
+  const total = JOURNEY.length;
+  return `
+    <div class="mb-6" aria-label="Progress">
+      <div class="flex items-center justify-between mb-2 text-[0.85rem] text-bb-mid-grey-00">
+        <span class="font-medium text-bb-blue-00">Step ${idx + 1} of ${total}</span>
+        <span>${Math.round(((idx + 1) / total) * 100)}% through the guide</span>
+      </div>
+      <div class="flex gap-1.5" role="progressbar" aria-valuenow="${idx + 1}" aria-valuemin="1" aria-valuemax="${total}">
+        ${JOURNEY.map((_, i) => `
+          <div class="h-1.5 flex-1 rounded-full ${i <= idx ? 'bg-bb-teal-00' : 'bg-bb-grey-00'}"></div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+function backBtn(target) {
+  return `
+    <button type="button" onclick="nav('${target}')"
+      class="link-bb inline-flex items-center gap-1.5 mb-4 px-2 py-2 -ml-2 rounded-sm text-[1rem]">
+      ${ICONS.arrowLeft}<span>Back</span>
+    </button>`;
+}
+
+// alpha.gov.bb form section caption — left-bordered service label that sits above the H1.
+function serviceCaption(text = 'NISSS for self-employed and gig workers') {
+  return `
+    <p class="border-bb-blue-40 border-l-4 py-xs pl-s text-bb-mid-grey-00 text-[1rem] mb-4">
+      ${text}
+    </p>`;
+}
+
+// Primary action — alpha.gov.bb button styling (rounded-sm, 20px on desktop,
+// 18px on mobile so long labels don't wrap awkwardly on narrow screens,
+// inset hover/active shadows). Width: full-column.
+function primaryBtn(label, action, opts = {}) {
+  const disabled = opts.disabled ? 'disabled' : '';
+  return `
+    <button type="button" onclick="${action}" ${disabled}
+      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
+    </button>`;
+}
+
+function secondaryBtn(label, action) {
+  return `
+    <button type="button" onclick="${action}"
+      class="btn-secondary w-full inline-flex items-center justify-center px-xm py-s rounded-sm text-[1rem] sm:text-[1.125rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      ${label}
+    </button>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 1 — Landing
+   ───────────────────────────────────────────────────────── */
+function screenLanding() {
+  return `
+    <div class="screen stage">
+      <div class="hero-bg -mx-4 px-4 pt-2 pb-8 rounded-b-3xl">
+        <div class="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-bb-teal-10 text-bb-teal-00 text-[0.85rem] font-medium max-w-full">
+          ${ICONS.shield}<span>From NISSS Barbados</span>
+        </div>
+
+        <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.1] tracking-tight text-bb-blue-00 mb-4">
+          Protect your income.<br/>
+          <span class="text-bb-teal-00">Protect your future.</span>
+        </h1>
+
+        <p class="text-[1.15rem] text-bb-mid-grey-00 mb-6">
+          You work for yourself — driving, delivering, freelancing, building, selling, creating. NISSS is how you look after yourself when life happens.
+        </p>
+
+        <div class="space-y-3 mb-2">
+          ${primaryBtn('See what benefits you may qualify for', "nav('worker-type')")}
+          ${secondaryBtn('Estimate my contributions', "nav('plan')")}
+          <button type="button" onclick="nav('register-path')"
+            class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
+            I'm ready to register for NISSS
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-3">What is NISSS, simply?</h2>
+        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+          NISSS stands for the <strong class="text-bb-blue-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn — and it's there when you need it: when you're sick, when you have a baby, when you retire.
+        </p>
+        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+          Self-employed Bajans can join too. You choose how much you put in, based on what you actually earn. It's <strong class="text-bb-blue-00">voluntary</strong> and there's no penalty for slow months.
+        </p>
+
+        <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-5 mb-6">
+          <p class="font-semibold text-bb-blue-00 mb-3">What NISSS can help with</p>
+          <ul class="space-y-2.5">
+            ${[
+              ['sickness', 'Money to live on if you get sick'],
+              ['maternity', 'Income when you have a baby'],
+              ['invalidity', 'Support if a long illness stops you working'],
+              ['pension', 'A pension when you retire'],
+              ['survivors', 'Help for your family if something happens'],
+            ].map(([icon, text]) => `
+              <li class="flex items-start gap-3">
+                <span class="text-bb-teal-00 mt-0.5">${ICONS[icon]}</span>
+                <span class="text-[1.05rem] text-bb-blue-00">${text}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <button type="button" onclick="nav('benefits-quick')"
+          class="link-bb inline-flex items-center gap-1.5 text-[1rem] font-medium">
+          Learn more about each one ${ICONS.arrowRight}
+        </button>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-bb-grey-00">
+        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">Already contributing?</h2>
+        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+          See where you stand. Track your payments, check what benefits you qualify for, and pay what's due.
+        </p>
+        <button type="button" onclick="nav('tracker')"
+          class="text-left rounded-2xl border-2 border-bb-blue-100 bg-white p-4 w-full flex items-center gap-3 hover:bg-bb-blue-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
+          <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-100 text-white">
+            ${ICONS.chart}
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block font-semibold text-[1.05rem] text-bb-blue-00">Track my NISSS contributions</span>
+            <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5">View your dashboard and recent payments</span>
+          </span>
+          <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
+        </button>
+      </div>
+
+      <p class="text-[0.95rem] text-bb-mid-grey-00 flex items-center gap-2 mt-8 pt-6 border-t border-bb-grey-00">
+        ${ICONS.lock}
+        <span>This is a guide only. Nothing you enter here is saved or shared.</span>
+      </p>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 2 — Worker type
+   ───────────────────────────────────────────────────────── */
+function screenWorkerType() {
+  return `
+    <div class="screen stage">
+      ${backBtn('landing')}
+      ${progressBar('worker-type')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        What kind of work do you do?
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Pick the one that's closest. It just helps us tailor the examples.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6" role="radiogroup" aria-label="Type of work">
+        ${WORKER_TYPES.map(w => {
+          const selected = state.data.workerType === w.id;
+          return `
+            <button type="button" role="radio" aria-checked="${selected}"
+              onclick="selectWorker('${w.id}')"
+              class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-start gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+                ${ICONS[w.icon]}
+              </span>
+              <span class="flex-1 min-w-0">
+                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${w.title}</span>
+                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5 leading-snug">${w.example}</span>
+              </span>
+              <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+                ${ICONS.check}
+              </span>
+            </button>`;
+        }).join('')}
+      </div>
+
+      <h2 class="font-bold text-[1.35rem] sm:text-[1.5rem] leading-[1.25] text-bb-blue-00 mb-1">
+        Do you already pay National Insurance through a main job?
+      </h2>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+        If yes, you can still pay for your self-employed income on top.
+      </p>
+
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Main job NIS status">
+        ${[
+          { id: 'yes', label: 'Yes — I have a job that pays NIS for me' },
+          { id: 'no',  label: 'No — my self-employed work is how I earn' }
+        ].map(opt => {
+          const selected = state.data.hasMainJob === opt.id;
+          return `
+            <button type="button" role="radio" aria-checked="${selected}"
+              onclick="selectMainJob('${opt.id}')"
+              class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+                ${ICONS.check}
+              </span>
+              <span class="text-[1.05rem] text-bb-black-00">${opt.label}</span>
+            </button>`;
+        }).join('')}
+      </div>
+
+      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob })}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 3 — Income reality
+   ───────────────────────────────────────────────────────── */
+function screenIncomeReality() {
+  const d = state.data;
+  const pctGood = Math.min(100, (d.goodMonth / 6000) * 100);
+  const pctSlow = Math.min(100, (d.slowMonth / 6000) * 100);
+
+  return `
+    <div class="screen stage">
+      ${backBtn('worker-type')}
+      ${progressBar('income-reality')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Let's talk about your earnings.
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Be honest — there are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
+      </p>
+
+      <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
+        <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
+          What does a good month look like?
+        </label>
+        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine — drag the slider or type below.</p>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.goodMonth)}</span>
+          <span class="text-bb-mid-grey-00">/ month</span>
+        </div>
+        <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.min(6000, d.goodMonth)}"
+          oninput="updateIncomeField('goodMonth', this.value, 'slider')"
+          aria-label="Good month earnings slider"
+          style="background-size: ${pctGood}% 100%" />
+        <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
+          <span>BDS$0</span><span>BDS$6,000+</span>
+        </div>
+        <div class="mt-4">
+          <label for="goodMonth-typed" class="sr-only">Or type your good month earnings</label>
+          <div class="relative inline-flex w-full rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+            <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
+            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+              value="${d.goodMonth}"
+              oninput="updateIncomeField('goodMonth', this.value, 'typed')"
+              aria-label="Good month earnings in Barbadian dollars"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
+        <label for="slowMonth" class="block font-semibold text-bb-blue-00 mb-1">
+          And a slow month?
+        </label>
+        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is quiet — slow season, hurricane month, sickness. Drag the slider or type below.</p>
+        <div class="flex items-baseline gap-2 mb-3">
+          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.slowMonth)}</span>
+          <span class="text-bb-mid-grey-00">/ month</span>
+        </div>
+        <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.min(6000, d.slowMonth)}"
+          oninput="updateIncomeField('slowMonth', this.value, 'slider')"
+          aria-label="Slow month earnings slider"
+          style="background-size: ${pctSlow}% 100%" />
+        <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
+          <span>BDS$0</span><span>BDS$6,000+</span>
+        </div>
+        <div class="mt-4">
+          <label for="slowMonth-typed" class="sr-only">Or type your slow month earnings</label>
+          <div class="relative inline-flex w-full rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+            <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
+            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+              value="${d.slowMonth}"
+              oninput="updateIncomeField('slowMonth', this.value, 'typed')"
+              aria-label="Slow month earnings in Barbadian dollars"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
+        <label for="goodMonthsPerYear" class="block font-semibold text-bb-blue-00 mb-1">
+          How many good months do you usually have in a year?
+        </label>
+        <div class="flex items-center gap-3 mt-3">
+          <span class="text-[0.95rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
+          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+            <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
+              value="${d.goodMonthsPerYear || ''}"
+              placeholder="e.g. 8"
+              oninput="state.data.goodMonthsPerYear = Math.max(1, Math.min(12, parseInt(this.value,10) || 0))"
+              aria-label="Number of good months per year"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+        </div>
+      </div>
+
+      ${primaryBtn('Continue', "nav('your-situation')")}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 3b — Your situation
+   ───────────────────────────────────────────────────────── */
+function screenYourSituation() {
+  const d = state.data;
+
+  function radioGroup(name, options, onClick) {
+    return options.map(o => {
+      const selected = d[name] === o.id;
+      const handler = onClick ? onClick(o) : `state.data.${name} = '${o.id}'; render();`;
+      return `
+        <button type="button" role="radio" aria-checked="${selected}"
+          onclick="${handler}"
+          class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+          <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+            ${ICONS.check}
+          </span>
+          <span class="text-[1.05rem] text-bb-black-00">${o.label}</span>
+        </button>`;
+    }).join('');
+  }
+
+  return `
+    <div class="screen stage">
+      ${backBtn('income-reality')}
+      ${progressBar('your-situation')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Tell us a bit more about your situation.
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        This helps us show you what would happen if you couldn't earn for a while.
+      </p>
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
+      <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
+        ${radioGroup('hasDependants', [
+          { id: 'yes', label: 'Yes — others rely on what I earn' },
+          { id: 'no',  label: "No — it's just me" }
+        ], o => `setDependants('${o.id}')`)}
+      </div>
+
+      ${d.hasDependants === 'yes' ? `
+        <div class="mb-6">
+          <label for="dependantsCount" class="block font-semibold text-bb-blue-00 mb-1">How many people depend on your income?</label>
+          <p class="text-[0.95rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
+          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+            <input id="dependantsCount" type="number" inputmode="numeric" min="1" max="20" step="1"
+              value="${d.dependantsCount || ''}"
+              placeholder="e.g. 2"
+              oninput="updateDependantsCount(this.value)"
+              aria-label="Number of people who depend on your income"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+        </div>` : ''}
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
+        ${radioGroup('hasSavings', [
+          { id: 'yes',      label: 'Yes' },
+          { id: 'no',       label: 'No' },
+          { id: 'not-sure', label: 'Not sure' }
+        ])}
+      </div>
+
+      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
+      <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Current NIS status">
+        ${radioGroup('payingNIS', [
+          { id: 'yes',            label: 'Yes — I pay it' },
+          { id: 'registered',     label: "I'm registered but not paying" },
+          { id: 'no',             label: 'No' }
+        ])}
+      </div>
+
+      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS })}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 4 — Risk awareness (now runs AFTER income, so the
+   figures below reflect what the user actually earns)
+   ───────────────────────────────────────────────────────── */
+function screenRiskAwareness() {
+  const d = state.data;
+  const monthsLost = (d.goodMonth + d.slowMonth) / 2;
+  const twoWeeksLost = Math.round(monthsLost / 2);
+  const yearLost = Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)));
+
+  return `
+    <div class="screen stage">
+      ${backBtn('your-situation')}
+      ${progressBar('risk-awareness')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        What if something happened tomorrow?
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        These numbers are based on what you just told us you earn. Tap any card to see what it could cost you — and how NISSS helps.
+      </p>
+
+      <div class="space-y-3 mb-6">
+        ${[
+          {
+            id: 'sick', icon: 'sickness', title: 'You get sick for two weeks.',
+            without: `That's about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food, bills still due.`,
+            withNis: 'NISSS sickness benefit pays part of your usual earnings while you recover, so you can rest without panic.',
+          },
+          {
+            id: 'injury', icon: 'invalidity', title: 'You get hurt and cannot work for months.',
+            without: 'No safety net. Savings go fast. Family steps in or things get hard.',
+            withNis: 'NISSS invalidity benefit gives ongoing support if you can\'t work for the long term.',
+          },
+          {
+            id: 'baby', icon: 'maternity', title: "You're starting a family.",
+            without: 'Time off means no money — many parents go back to work too soon.',
+            withNis: 'NISSS maternity and paternity benefits pay you to take real time off with your baby.',
+          },
+          {
+            id: 'retire', icon: 'pension', title: "You're 67 and ready to slow down.",
+            without: `Without a pension, that's <strong>${fmtMoney(yearLost)}/year</strong> you'd need from somewhere else.`,
+            withNis: 'NISSS pays a monthly pension for life, built up from years of small contributions.',
+          },
+          {
+            id: 'family', icon: 'survivors', title: "Something happens to you.",
+            without: 'Your partner, kids, or parents lose the income you brought in.',
+            withNis: 'Survivors benefit and a funeral grant help your family keep going.',
+          },
+        ].map(s => `
+          <details class="scenario rounded-xl border border-bb-grey-00 bg-white overflow-hidden" ${state.expandedScenario === s.id ? 'open' : ''} onclick="toggleScenario('${s.id}', event)">
+            <summary class="p-4 flex items-start gap-3 hover:bg-bb-blue-10/30">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-red-10 text-bb-red-00">
+                ${ICONS[s.icon]}
+              </span>
+              <span class="flex-1 min-w-0">
+                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${s.title}</span>
+                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-1">Tap to see what happens</span>
+              </span>
+              <span class="shrink-0 text-bb-mid-grey-00 mt-2">${ICONS.chevDown}</span>
+            </summary>
+            <div class="px-4 pb-5 pt-1 space-y-3 border-t border-bb-grey-00">
+              <div class="rounded-lg bg-bb-red-10 border border-bb-red-40/60 p-3">
+                <p class="text-[0.85rem] uppercase tracking-wide text-bb-red-00 font-semibold mb-1">Without NISSS</p>
+                <p class="text-[0.98rem] text-bb-blue-00">${s.without}</p>
+              </div>
+              <div class="rounded-lg bg-bb-green-10 border border-bb-green-40 p-3">
+                <p class="text-[0.85rem] uppercase tracking-wide text-bb-green-00 font-semibold mb-1">With NISSS</p>
+                <p class="text-[0.98rem] text-bb-blue-00">${s.withNis}</p>
+              </div>
+            </div>
+          </details>
+        `).join('')}
+      </div>
+
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <p class="text-[1rem] text-bb-blue-00">
+          <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once — that's the point of a safety net.
+        </p>
+      </div>
+
+      ${primaryBtn("See what I should put in", "nav('plan')")}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 3 — Plan (combines contribution choice + protection levels +
+                    benefit estimates + future-self framing into ONE page)
+
+   When no tier is selected:  user sees the 3 tier cards.
+   When a tier IS selected:   the gradient "your plan" hero, benefit
+                              estimates, and protection bars appear
+                              inline below — no extra clicks.
+   ───────────────────────────────────────────────────────── */
+function screenPlan() {
+  const d = state.data;
+
+  // Annual income — uses defaults if user jumped here directly
+  const goodMonths = 12 - d.slowMonthsPerYear;
+  const annualIncome = (d.goodMonth * goodMonths) + (d.slowMonth * d.slowMonthsPerYear);
+  const monthlyAvg = annualIncome / 12;
+
+  // Tier amounts
+  const minMonthly    = 100;
+  const saferMonthly  = Math.max(150, Math.round(monthlyAvg * 0.10 / 10) * 10);
+  const strongMonthly = Math.max(225, Math.round(monthlyAvg * 0.15 / 10) * 10);
+
+  const tier = d.contributionTier; // null | 'minimum' | 'safer' | 'strong'
+  const chosen =
+    tier === 'minimum' ? minMonthly :
+    tier === 'safer'   ? saferMonthly :
+    tier === 'strong'  ? strongMonthly : null;
+
+  // Relative protection level — drives the bar fill in the hero.
+  // This is a QUALITATIVE indicator only (more contributions = more benefits).
+  // Exact benefit figures are not shown until NISSS confirms them.
+  const protectionPct =
+    tier === 'minimum' ? 40 :
+    tier === 'safer'   ? 70 :
+    tier === 'strong'  ? 95 : 0;
+  const protectionLabel =
+    tier === 'minimum' ? 'Basic benefits' :
+    tier === 'safer'   ? 'Better benefits' :
+    tier === 'strong'  ? 'Strongest benefits' : '';
+
+  // ── Estimated benefit amounts ────────────────────────────────
+  // The chosen monthly contribution implies a level of insurable EARNINGS
+  // (contribution ÷ 17.25%). Benefits are a share of those earnings.
+  // These are planning estimates only — NISSS Benefits confirms actuals.
+  const annualContribution = chosen ? chosen * 12 : 0;
+  const monthlyInsurable   = chosen ? monthlyInsurableFromContribution(annualContribution) : 0;
+  const weeklyInsurable    = weeklyInsurableFromMonthly(monthlyInsurable);
+
+  const sicknessWk  = weeklyInsurable * NIS.SICKNESS_RATE;            // 66⅔%
+  const maternityWk = weeklyInsurable * NIS.MATERNITY_RATE;          // 100%
+  const paternityWk = weeklyInsurable * NIS.PATERNITY_RATE;          // 100%
+  const invalidityWk = Math.max(NIS.INVALIDITY_MIN_WK, weeklyInsurable * NIS.INVALIDITY_RATE); // 40%, min $254
+  const pensionWk   = weeklyInsurable * NIS.INVALIDITY_RATE;          // ~40% base accrual
+
+  // small helper: "BDS$X a week (about BDS$Y a month)"
+  const perWeek = wk => `<strong class="tabular-nums">${fmtMoney(wk)}</strong> a week <span class="text-bb-mid-grey-00">(about ${fmtMoney(wk * 52 / 12)}/month)</span>`;
+
+  // Tier card definitions
+  const tiers = [
+    {
+      id: 'minimum', label: 'Minimum', monthly: minMonthly, tag: 'Basic', color: 'yellow',
+      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim — but you still qualify for every benefit.",
+    },
+    {
+      id: 'safer', label: 'Moderate', monthly: saferMonthly, tag: 'Recommended', color: 'green',
+      sub: 'A bigger share of your earnings, so you build more contributions and stronger benefits.',
+    },
+    {
+      id: 'strong', label: 'Stronger', monthly: strongMonthly, tag: 'Maximum', color: 'teal',
+      sub: 'The most you put in here — closer to what employees contribute, building the strongest benefits.',
+    },
+  ];
+
+  // Benefit descriptions — show estimated payout figures derived from the
+  // chosen tier's insurable earnings. Every figure is an estimate; the page
+  // carries a disclaimer that NISSS Benefits confirms the actual amount.
+  const benefitsInline = [
+    { id: 'sickness',   icon: 'sickness',   title: 'Sickness Benefit',
+      desc: tier ? `If you can't work because you're sick, NISSS pays about ${perWeek(sicknessWk)} — roughly two-thirds of your usual earnings — for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` : '' },
+    { id: 'maternity',  icon: 'maternity',  title: 'Maternity Benefit',
+      desc: tier ? `Paid time off when you have a baby — about ${perWeek(maternityWk)}, based on your earnings.` : '' },
+    { id: 'paternity',  icon: 'paternity',  title: 'Paternity Benefit',
+      desc: tier ? `A ${NIS.PATERNITY_WEEKS}-week paid break for new fathers — about ${perWeek(paternityWk)}.` : '' },
+    { id: 'invalidity', icon: 'invalidity', title: 'Invalidity Pension',
+      desc: tier ? `If a long illness stops you working, ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` : '' },
+    { id: 'survivors',  icon: 'survivors',  title: "Survivors' Benefit",
+      desc: tier ? `If anything happens to you, your partner, children or parents share a benefit of about ${perWeek(pensionWk)}, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` : '' },
+    { id: 'pension',    icon: 'pension',    title: 'Old-Age Contributory Pension',
+      desc: tier ? `A pension for life from age ${NIS.PENSIONABLE_AGE} — starting around ${perWeek(pensionWk)} and growing the longer you contribute.` : '' },
+  ];
+
+  return `
+    <div class="screen stage">
+      ${backBtn('risk-awareness')}
+      ${progressBar('plan')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        What should you put in?
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Pick a level. You'll see what it gets you below — no extra clicks.
+      </p>
+
+      <!-- Earnings summary -->
+      <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-4 mb-5">
+        <p class="text-[0.9rem] text-bb-mid-grey-00 mb-1">Based on what you told us</p>
+        <p class="text-[1.05rem] text-bb-blue-00">
+          Average earnings: <strong class="tabular-nums">${fmtMoney(monthlyAvg)}</strong>
+          <span class="text-bb-mid-grey-00">/ month</span>
+        </p>
+      </div>
+
+      <!-- Tier cards -->
+      <div class="space-y-3 mb-6" role="radiogroup" aria-label="Contribution tier">
+        ${tiers.map(t => {
+          const selected = tier === t.id;
+          const c = COLOR_MAP[t.color];
+          return `
+            <button type="button" role="radio" aria-checked="${selected}"
+              onclick="selectTier('${t.id}')"
+              class="selectable text-left rounded-xl border-2 ${selected ? '' : c.border + ' ' + c.bg} bg-white p-4 w-full focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <p class="font-semibold text-[1.05rem] text-bb-blue-00">${t.label}</p>
+                    <span class="chip bg-white ${c.text} border ${c.border}">${t.tag}</span>
+                  </div>
+                  <div class="mt-1 flex items-baseline gap-2">
+                    <span class="text-[1.5rem] font-bold ${c.text} tabular-nums">${fmtMoney(t.monthly)}</span>
+                    <span class="text-bb-mid-grey-00 text-[0.95rem]">/ month</span>
+                  </div>
+                  <p class="text-[0.92rem] text-bb-mid-grey-00 mt-2">${t.sub}</p>
+                </div>
+                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">${ICONS.check}</span>
+              </div>
+            </button>
+          `;
+        }).join('')}
+      </div>
+
+      ${tier ? `
+        <!-- Plan hero (the future-self moment — colour change on tier select) -->
+        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
+          <p class="text-[0.85rem] uppercase tracking-wide text-bb-teal-40 font-semibold mb-1">Your plan</p>
+          <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
+          <p class="text-[0.95rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
+
+          <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
+            <div>
+              <p class="text-[0.8rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
+              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12)}</p>
+            </div>
+            <div>
+              <p class="text-[0.8rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
+              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12 * 10)}</p>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-[0.9rem] text-white/90">Your protection level</span>
+              <span class="text-[0.9rem] font-semibold text-white">${protectionLabel}</span>
+            </div>
+            <div class="protect-bar bg-white/20">
+              <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
+            </div>
+            <p class="text-[0.8rem] text-white/70 mt-2">
+              The more you put in, the bigger your benefits. Figures below are estimates based on your insurable earnings.
+            </p>
+          </div>
+        </div>
+
+        <!-- Inline benefit estimates (no click-to-expand) -->
+        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">What this gets you</h2>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-4">
+          Six things, all included — sized to the level you picked.
+        </p>
+
+        <div class="space-y-3 mb-5">
+          ${benefitsInline.map(b => {
+            const def = BENEFITS.find(x => x.id === b.id);
+            const c = def ? COLOR_MAP[def.color] : COLOR_MAP.teal;
+            return `
+              <div class="rounded-2xl border ${c.border} ${c.bg} p-4">
+                <div class="flex items-start gap-3">
+                  <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white ${c.text}">${ICONS[b.icon]}</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">${b.title}</p>
+                    <p class="text-[0.95rem] text-bb-blue-00/80 leading-snug">${b.desc}</p>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+          <div class="rounded-2xl border border-bb-teal-40 bg-bb-teal-10 p-4">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-teal-00">${ICONS.shield}</span>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">Funeral Grant</p>
+                <p class="text-[0.95rem] text-bb-blue-00/80">A one-time payment of <strong class="tabular-nums">${fmtMoney(NIS.FUNERAL_GRANT)}</strong> to help your family with funeral costs. Included at every level.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
+          <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+          <p class="text-[0.95rem] text-bb-blue-00">
+            <strong>Slow month?</strong> Pay less or skip — no penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-bb-blue-10 border border-bb-blue-40 p-4 mb-6 flex items-start gap-3">
+          <span class="text-bb-blue-100 shrink-0 mt-0.5">${ICONS.clock}</span>
+          <p class="text-[0.95rem] text-bb-blue-00">
+            <strong>When your benefits start:</strong> you're protected after one full year of contributions — at least BDS$1,200 over the year. Keep paying and your benefits stay active.
+          </p>
+        </div>
+      ` : `
+        <div class="rounded-2xl bg-bb-grey-00/40 border border-bb-grey-00 p-5 mb-6 text-center">
+          <p class="text-[0.95rem] text-bb-mid-grey-00">↑ Pick a level to see what it gets you.</p>
+        </div>
+      `}
+
+      ${primaryBtn("I'm ready — show me next steps", "nav('next-steps')", { disabled: !tier })}
+      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
+        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
+      </p>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 6b — Benefits quick reference (from landing)
+   ───────────────────────────────────────────────────────── */
+function screenBenefitsQuick() {
+  return `
+    <div class="screen stage">
+      ${backBtn('landing')}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Six ways NISSS protects you.
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Quick read — about a minute.
+      </p>
+
+      <div class="space-y-3 mb-6">
+        ${BENEFITS.map(b => {
+          const c = COLOR_MAP[b.color];
+          return `
+            <div class="rounded-2xl border ${c.border} ${c.bg} p-4">
+              <div class="flex items-start gap-3">
+                <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white ${c.text}">
+                  ${ICONS[b.icon]}
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">${b.title}</p>
+                  <p class="text-[0.98rem] text-bb-blue-00/80 leading-snug">${b.real}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      ${primaryBtn('Start the full guide', "nav('worker-type')")}
+      <div class="mt-3">${secondaryBtn('Estimate my contributions', "nav('plan')")}</div>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 8 — Next steps (registration path)
+   ───────────────────────────────────────────────────────── */
+function screenNextSteps() {
+  return `
+    <div class="screen stage">
+      ${backBtn('plan')}
+      ${progressBar('next-steps')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Ready to take the next step?
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Choose what works best for you right now.
+      </p>
+
+      <div class="space-y-3 mb-6">
+        <button type="button" onclick="nav('register-path')"
+          class="text-left rounded-2xl border-2 border-bb-teal-00 bg-bb-teal-10 p-5 w-full hover:bg-bb-teal-40/30 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
+          <div class="flex items-start gap-3">
+            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white text-bb-teal-00">
+              ${ICONS.shield}
+            </span>
+            <div class="flex-1">
+              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Register with NISSS</p>
+              <p class="text-[0.95rem] text-bb-blue-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
+            </div>
+            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+          </div>
+        </button>
+
+        <button type="button" onclick="nav('payment-options')"
+          class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
+          <div class="flex items-start gap-3">
+            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+              ${ICONS.card}
+            </span>
+            <div class="flex-1">
+              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">See how to pay</p>
+              <p class="text-[0.95rem] text-bb-blue-00/80">SurePay, EZpay+, bank, online, in person — what works for you.</p>
+            </div>
+            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+          </div>
+        </button>
+
+        <button type="button" onclick="nav('register')"
+          class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
+          <div class="flex items-start gap-3">
+            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-yellow-10 text-bb-yellow-00">
+              ${ICONS.phone}
+            </span>
+            <div class="flex-1">
+              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Have someone call me</p>
+              <p class="text-[0.95rem] text-bb-blue-00/80">Not ready yet? An NISSS officer will reach out and answer questions.</p>
+            </div>
+            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+          </div>
+        </button>
+      </div>
+
+      <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 flex items-start gap-3">
+        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
+        <p class="text-[0.95rem] text-bb-blue-00">
+          You can step away at any time. Joining is voluntary, and you choose how much to contribute.
+        </p>
+      </div>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 9 — Register path (already have NISSS?)
+   ───────────────────────────────────────────────────────── */
+function screenRegisterPath() {
+  return `
+    <div class="screen stage">
+      ${backBtn(state.screen === 'register-path' && JOURNEY.indexOf('next-steps') > -1 && state.data.workerType ? 'next-steps' : 'landing')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Do you already have an NISSS number?
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        If you worked for an employer before, you probably do. It's the same number for life.
+      </p>
+
+      <div class="space-y-3 mb-6" role="radiogroup">
+        ${[
+          { id: 'yes',    label: "Yes, I have one",                sub: "I worked for someone before, or registered already." },
+          { id: 'no',     label: "No, I never registered",         sub: "I've always worked for myself." },
+          { id: 'unsure', label: "I'm not sure",                   sub: "Let's find out together." },
+        ].map(o => {
+          const selected = state.data.alreadyHasNis === o.id;
+          return `
+            <button type="button" role="radio" aria-checked="${selected}"
+              onclick="setHasNis('${o.id}')"
+              class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 w-full flex items-start gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
+                ${ICONS.check}
+              </span>
+              <span class="flex-1">
+                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${o.label}</span>
+                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5">${o.sub}</span>
+              </span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+
+      ${primaryBtn('Continue', "goToRegistrationGuide()", { disabled: !state.data.alreadyHasNis })}
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 10 — Registration guide
+   ───────────────────────────────────────────────────────── */
+function screenRegistrationGuide() {
+  const has = state.data.alreadyHasNis;
+
+  const docsAlready = [
+    { icon: 'doc',  title: 'Your NISSS number',                  sub: 'On your ID, an old payslip, or NISSS card.' },
+    { icon: 'card', title: 'A valid Barbados ID',              sub: 'National ID, passport, or driver\'s licence.' },
+  ];
+  const docsNew = [
+    { icon: 'card', title: 'A valid Barbados ID',              sub: 'National ID, passport, or driver\'s licence.' },
+    { icon: 'doc',  title: 'Proof of address',                 sub: 'Recent utility bill or bank statement.' },
+    { icon: 'card', title: 'Your bank account details',         sub: 'For sending you benefits when you need them.' },
+  ];
+  const docs = has === 'yes' ? docsAlready : docsNew;
+
+  const intro = {
+    yes: "You already have an NISSS number — let's link it to self-employed status.",
+    no:  "We'll set you up with a new NISSS number. It's yours for life.",
+    unsure: "Let's check first — bring your ID and we'll look it up.",
+  }[has] || '';
+
+  return `
+    <div class="screen stage">
+      ${backBtn('register-path')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        How to register
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">${intro}</p>
+
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What you'll need</h2>
+      <div class="space-y-2 mb-6">
+        ${docs.map(d => `
+          <div class="rounded-xl border border-bb-grey-00 bg-white p-4 flex items-start gap-3">
+            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-blue-00">${ICONS[d.icon]}</span>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-[1rem] text-bb-blue-00">${d.title}</p>
+              <p class="text-[0.9rem] text-bb-mid-grey-00 mt-0.5">${d.sub}</p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Three ways to do it</h2>
+      <div class="space-y-3 mb-6">
+        ${[
+          { icon: 'globe',    title: 'Online',         sub: has === 'yes'
+            ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page</a>. Takes about 10 minutes.'
+            : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page</a>. Takes about 10 minutes.',
+          tag: 'Easiest' },
+          { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown — or any branch.', tag: 'In person' },
+          { icon: 'phone',    title: 'By phone',         sub: 'Call 246-431-7400 and an officer will help you over the phone.', tag: 'No screen' },
+        ].map(o => `
+          <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-teal-10 text-bb-teal-00">${ICONS[o.icon]}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${o.title}</p>
+                  <span class="chip bg-bb-yellow-10 text-bb-yellow-00 border border-bb-yellow-40">${o.tag}</span>
+                </div>
+                <p class="text-[0.95rem] text-bb-mid-grey-00">${o.sub}</p>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
+        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <p class="text-[0.98rem] text-bb-blue-00">
+          <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up — so it's cheaper to start sooner. Ask when you register.
+        </p>
+      </div>
+
+      <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.shield}</span>
+        <p class="text-[0.98rem] text-bb-blue-00">
+          <strong>It's never too late.</strong> Even if you start close to retirement and don't build enough contributions for a full pension, you may still qualify for a <strong>one-time grant</strong>. Starting now always counts for something.
+        </p>
+      </div>
+
+      ${primaryBtn('See payment options', "nav('payment-options')")}
+      <div class="mt-3">${secondaryBtn('Have someone call me first', "nav('register')")}</div>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 11 — Payment options
+   ───────────────────────────────────────────────────────── */
+function screenPaymentOptions() {
+  return `
+    <div class="screen stage">
+      ${backBtn('registration-guide')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        How to pay your NISSS contributions
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+        Pay weekly, monthly, or in a lump sum — whatever fits your cash flow.
+      </p>
+
+      <div class="space-y-3 mb-6">
+        ${[
+          { icon: 'globe',    title: 'NISSS online portal',  sub: 'Pay from your phone, anytime. Get a receipt right away.',     tag: 'Quickest', color: 'teal' },
+          { icon: 'store',    title: 'SurePay',            sub: 'Pay cash or card at any SurePay location across the island.', tag: 'Cash OK',  color: 'green' },
+          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
+          { icon: 'card',     title: 'Bank transfer',      sub: 'Standing order or one-off transfer from your bank account.',  tag: 'Set & forget', color: 'blue' },
+          { icon: 'building', title: 'In person at NISSS',   sub: 'Pay at the NISSS office. Get help if you have questions.',     tag: 'Face to face', color: 'purple' },
+        ].map(p => {
+          const c = COLOR_MAP[p.color];
+          return `
+          <div class="rounded-2xl border ${c.border} ${c.bg} p-4">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white ${c.text}">${ICONS[p.icon]}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${p.title}</p>
+                  <span class="chip bg-white border border-bb-grey-00 ${c.text}">${p.tag}</span>
+                </div>
+                <p class="text-[0.95rem] text-bb-blue-00/80">${p.sub}</p>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">How often should you pay?</h2>
+      <div class="grid grid-cols-3 gap-2 mb-6">
+        ${[
+          { title: 'Weekly',  sub: 'Smaller amounts more often.' },
+          { title: 'Monthly', sub: 'The usual choice.' },
+          { title: 'Yearly',  sub: 'One lump sum.' },
+        ].map(o => `
+          <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
+            <p class="font-semibold text-[1rem] text-bb-blue-00">${o.title}</p>
+            <p class="text-[0.85rem] text-bb-mid-grey-00 mt-1">${o.sub}</p>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+        <div>
+          <p class="font-semibold text-bb-blue-00 mb-1">If you stop contributing</p>
+          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No problem in the short term — life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
+          <p class="text-[0.95rem] text-bb-blue-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
+        </div>
+      </div>
+
+      ${primaryBtn('Register now', "nav('register')")}
+      <div class="mt-3">${secondaryBtn('Back to the start', "nav('landing')")}</div>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 12 — Register interest (call me)
+   ───────────────────────────────────────────────────────── */
+function screenRegister() {
+  const e = state.errors;
+  const d = state.data;
+  const monthly = (d.contributionTier === 'minimum' ? 100 :
+                   d.contributionTier === 'safer'   ? Math.max(150, Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)) / 12 * 0.10 / 10) * 10) :
+                   d.contributionTier === 'strong'  ? Math.max(225, Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)) / 12 * 0.15 / 10) * 10) :
+                   d.monthlyContribution || 150);
+
+  return `
+    <div class="screen stage">
+      ${backBtn('next-steps')}
+      ${serviceCaption()}
+
+      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+        Tell us where to reach you
+      </h1>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-5">
+        An NISSS officer will reach out. No spam. No paperwork. No pressure.
+      </p>
+
+      <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.lock}</span>
+        <p class="text-[0.95rem] text-bb-blue-00">
+          Your details stay private with NISSS and are used only to get in touch with you.
+        </p>
+      </div>
+
+      ${Object.keys(e).length ? `
+        <div class="rounded-lg border-2 border-bb-red-00 bg-bb-red-10 p-4 mb-6" role="alert" tabindex="-1" id="error-summary">
+          <p class="font-semibold text-bb-red-00 mb-2">There is a problem</p>
+          <ul class="space-y-1 list-disc pl-5">
+            ${Object.entries(e).map(([id, msg]) => `<li><a href="#${id}" class="text-bb-red-00 underline">${msg}</a></li>`).join('')}
+          </ul>
+        </div>
+      ` : ''}
+
+      <form novalidate onsubmit="submitForm(event)" class="space-y-5">
+
+        <div>
+          <label for="firstName" class="block font-semibold text-bb-blue-00 mb-1">First name</label>
+          <p class="text-[0.9rem] text-bb-mid-grey-00 mb-2">So we know what to call you.</p>
+          <div class="relative inline-flex w-full rounded-sm border-2 ${e.firstName ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+            <input id="firstName" name="firstName" type="text" autocomplete="given-name"
+              value="${d.firstName.replace(/"/g, '&quot;')}"
+              oninput="state.data.firstName = this.value"
+              class="w-full p-3.5 outline-none rounded-[inherit] text-[1.05rem]" />
+          </div>
+          ${e.firstName ? `<p class="mt-1 text-bb-red-00 text-[0.95rem]">${e.firstName}</p>` : ''}
+        </div>
+
+        <div>
+          <label for="contact" class="block font-semibold text-bb-blue-00 mb-1">Phone number or email</label>
+          <p class="text-[0.9rem] text-bb-mid-grey-00 mb-2">Whichever is easiest. We'll only message about NISSS.</p>
+          <div class="relative inline-flex w-full rounded-sm border-2 ${e.contact ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+            <input id="contact" name="contact" type="text"
+              value="${d.contact.replace(/"/g, '&quot;')}"
+              oninput="state.data.contact = this.value"
+              placeholder="e.g. 246-555-1234 or you@example.com"
+              class="w-full p-3.5 outline-none rounded-[inherit] text-[1.05rem] placeholder:text-bb-mid-grey-00/70" />
+          </div>
+          ${e.contact ? `<p class="mt-1 text-bb-red-00 text-[0.95rem]">${e.contact}</p>` : ''}
+        </div>
+
+        <fieldset>
+          <legend class="block font-semibold text-bb-blue-00 mb-2">How would you like us to contact you?</legend>
+          <div class="grid grid-cols-3 gap-2" role="radiogroup">
+            ${[
+              { id: 'whatsapp', label: 'WhatsApp' },
+              { id: 'sms',      label: 'Text' },
+              { id: 'email',    label: 'Email' },
+            ].map(o => {
+              const selected = d.contactMethod === o.id;
+              return `
+                <button type="button" role="radio" aria-checked="${selected}"
+                  onclick="state.data.contactMethod='${o.id}'; render()"
+                  class="selectable rounded-lg border-2 border-bb-grey-00 bg-white py-3 px-2 text-[1rem] font-medium text-bb-blue-00 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+                  ${o.label}
+                </button>`;
+            }).join('')}
+          </div>
+          ${e.contactMethod ? `<p class="mt-2 text-bb-red-00 text-[0.95rem]">${e.contactMethod}</p>` : ''}
+        </fieldset>
+
+        ${d.workerType || d.contributionTier ? `
+          <div class="rounded-xl bg-bb-blue-10/50 border border-bb-blue-10 p-4">
+            <p class="font-semibold text-bb-blue-00 mb-2">What you've told us</p>
+            <ul class="text-[0.95rem] text-bb-blue-00/80 space-y-1.5">
+              ${d.workerType ? `<li>${ICONS.check ? '· ' : ''}Work: <strong>${(WORKER_TYPES.find(w => w.id === d.workerType) || {}).title || d.workerType}</strong></li>` : ''}
+              ${d.contributionTier ? `<li>· Plan: <strong>${fmtMoney(monthly)}/month</strong></li>` : ''}
+            </ul>
+            <button type="button" onclick="nav('plan')" class="link-bb mt-3 text-[0.95rem]">Change</button>
+          </div>
+        ` : ''}
+
+        <button type="submit"
+          class="btn-primary w-full rounded-lg px-6 py-4 text-[1.125rem] font-semibold inline-flex items-center justify-center gap-2 mt-2">
+          Submit
+        </button>
+        <p class="text-center text-[0.85rem] text-bb-mid-grey-00">
+          By submitting, you agree we can contact you about NISSS.
+        </p>
+      </form>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN — Contribution tracker (returning user dashboard)
+   ───────────────────────────────────────────────────────── */
+function screenTracker() {
+  // Mock data — feels real for testing but everything is fictional
+  const profile = {
+    name: 'Marcus',
+    nisNumber: '482137',
+    workerType: 'Delivery rider',
+    joined: 'March 2024',
+    monthlyTarget: 150,
+  };
+
+  // Recent 6 months — last entry is "due"
+  const history = [
+    { month: 'Nov 2026', amount: 150, status: 'due',    date: 'Due 15 Dec' },
+    { month: 'Oct 2026', amount: 150, status: 'paid',   date: 'Paid 14 Nov' },
+    { month: 'Sep 2026', amount: 150, status: 'paid',   date: 'Paid 12 Oct' },
+    { month: 'Aug 2026', amount: 0,   status: 'missed', date: 'Slow month'  },
+    { month: 'Jul 2026', amount: 200, status: 'paid',   date: 'Paid 10 Aug, topped up' },
+    { month: 'Jun 2026', amount: 150, status: 'paid',   date: 'Paid 12 Jul' },
+  ];
+
+  const paid = history.filter(h => h.status === 'paid');
+  const yearTotal = paid.reduce((sum, h) => sum + h.amount, 0) + 1350; // simulate earlier in year
+  const allTime = 4200; // simulate prior years
+  const monthsActive = 28;
+
+  // Eligibility progress (mock thresholds)
+  const eligibility = [
+    { id: 'sickness',  title: 'Sickness benefit',   need: 26, have: 26, unit: 'weeks',   note: 'You qualify.' },
+    { id: 'maternity', title: 'Maternity benefit',  need: 26, have: 26, unit: 'weeks',   note: 'You qualify.' },
+    { id: 'invalidity',title: 'Invalidity benefit', need: 156, have: 96, unit: 'weeks',  note: '60 weeks to go.' },
+    { id: 'pension',   title: 'Old age pension',    need: 500, have: 96, unit: 'weeks',  note: 'Keep contributing — every week counts.' },
+  ];
+
+  const overallStatus = 'On track';
+
+  return `
+    <div class="screen stage">
+      ${backBtn('landing')}
+
+      <!-- Future-feature preview banner -->
+      <div class="rounded-2xl bg-bb-purple-00/5 border border-bb-purple-100/40 p-4 mb-5 flex items-start gap-3">
+        <span class="text-bb-purple-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <p class="text-[0.92rem] text-bb-blue-00">
+          <strong>A glimpse of what's coming.</strong> Today most people can't see how much they've put in or what they qualify for. This is an example of a future feature — the details below are made up to show the idea.
+        </p>
+      </div>
+
+      <!-- Header card -->
+      <div class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div>
+            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back,</p>
+            <p class="text-[1.6rem] font-bold leading-tight">${profile.name}</p>
+          </div>
+          <span class="chip bg-bb-green-100 text-bb-green-00 border border-bb-green-40">
+            ${ICONS.circleCheck}<span>${overallStatus}</span>
+          </span>
+        </div>
+        <div class="grid grid-cols-2 gap-4 pt-3 border-t border-white/20 text-[0.92rem]">
+          <div>
+            <p class="text-bb-teal-40">NISSS number</p>
+            <p class="font-bold tabular-nums">${profile.nisNumber}</p>
+          </div>
+          <div>
+            <p class="text-bb-teal-40">Work category</p>
+            <p class="font-bold">${profile.workerType}</p>
+          </div>
+          <div>
+            <p class="text-bb-teal-40">Member since</p>
+            <p class="font-bold">${profile.joined}</p>
+          </div>
+          <div>
+            <p class="text-bb-teal-40">Monthly plan</p>
+            <p class="font-bold tabular-nums">${fmtMoney(profile.monthlyTarget)}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next payment due -->
+      <div class="rounded-2xl border-2 border-bb-yellow-40 bg-bb-yellow-10 p-5 mb-5">
+        <div class="flex items-start gap-3 mb-3">
+          <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-yellow-00">${ICONS.bell}</span>
+          <div class="flex-1 min-w-0">
+            <p class="text-[0.85rem] uppercase tracking-wide text-bb-yellow-00 font-semibold">Due in 18 days</p>
+            <p class="font-bold text-[1.25rem] text-bb-blue-00 leading-tight">November contribution</p>
+            <p class="text-[0.95rem] text-bb-mid-grey-00 mt-0.5">${fmtMoney(150)} · Due 15 December 2026</p>
+          </div>
+        </div>
+        <div class="space-y-2">
+          ${primaryBtn('Pay now', "nav('payment-options')", { arrow: false })}
+          ${secondaryBtn('Set up auto-pay', "alert('In a real service, this would link your bank or wallet for automatic monthly payments.')")}
+        </div>
+      </div>
+
+      <!-- This year stats -->
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Your contributions</h2>
+      <div class="grid grid-cols-3 gap-2 mb-5">
+        <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
+          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(yearTotal)}</p>
+          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">This year</p>
+        </div>
+        <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
+          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(allTime)}</p>
+          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">All time</p>
+        </div>
+        <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
+          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${monthsActive}</p>
+          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">Months active</p>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Recent activity</h2>
+      <div class="rounded-2xl border border-bb-grey-00 bg-white divide-y divide-bb-grey-00 mb-3">
+        ${history.map(h => {
+          const statusStyle = {
+            paid:   { bg: 'bg-bb-green-10',  fg: 'text-bb-green-00',  label: 'Paid',     icon: 'circleCheck' },
+            due:    { bg: 'bg-bb-yellow-10', fg: 'text-bb-yellow-00', label: 'Due soon', icon: 'bell'        },
+            missed: { bg: 'bg-bb-grey-00',   fg: 'text-bb-mid-grey-00', label: 'Skipped', icon: 'circleMinus'},
+          }[h.status];
+          return `
+            <div class="flex items-center gap-3 p-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full ${statusStyle.bg} ${statusStyle.fg}">
+                ${ICONS[statusStyle.icon]}
+              </span>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-[1rem] text-bb-blue-00">${h.month}</p>
+                <p class="text-[0.88rem] text-bb-mid-grey-00 mt-0.5">${h.date}</p>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="font-bold text-[1.05rem] text-bb-blue-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : '—'}</p>
+                <p class="text-[0.82rem] ${statusStyle.fg} font-medium">${statusStyle.label}</p>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <button type="button" onclick="alert('In a real service, this would show your full payment history and let you download a statement.')"
+        class="link-bb inline-flex items-center gap-1.5 text-[1rem] font-medium mb-6">
+        ${ICONS.download}<span>Download full statement</span>
+      </button>
+
+      <!-- Back-pay nudge -->
+      <div class="rounded-2xl bg-bb-blue-10/60 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <div>
+          <p class="font-semibold text-bb-blue-00 mb-1">You skipped August 2026</p>
+          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No worries — slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
+          <button type="button" onclick="alert('In a real service, this would let you back-pay BDS$150 for August 2026.')"
+            class="link-bb text-[0.95rem] font-medium">Back-pay BDS$150 →</button>
+        </div>
+      </div>
+
+      <!-- Eligibility progress -->
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What you qualify for</h2>
+      <p class="text-[0.95rem] text-bb-mid-grey-00 mb-4">
+        Each benefit needs a minimum number of contributions. Here's where you stand.
+      </p>
+      <div class="space-y-3 mb-6">
+        ${eligibility.map(b => {
+          const pct = Math.min(100, Math.round((b.have / b.need) * 100));
+          const isEligible = b.have >= b.need;
+          return `
+            <div class="rounded-xl border border-bb-grey-00 bg-white p-4">
+              <div class="flex items-center justify-between gap-3 mb-2">
+                <p class="font-semibold text-[1rem] text-bb-blue-00">${b.title}</p>
+                <span class="chip ${isEligible ? 'bg-bb-green-10 text-bb-green-00 border border-bb-green-40' : 'bg-bb-yellow-10 text-bb-yellow-00 border border-bb-yellow-40'}">
+                  ${isEligible ? ICONS.circleCheck : ICONS.calendar}
+                  <span>${isEligible ? 'Eligible' : 'In progress'}</span>
+                </span>
+              </div>
+              <div class="flex items-center justify-between mb-1.5 text-[0.85rem] text-bb-mid-grey-00 tabular-nums">
+                <span>${b.have} / ${b.need} ${b.unit}</span>
+                <span>${pct}%</span>
+              </div>
+              <div class="protect-bar">
+                <div class="protect-bar-fill" style="width: ${pct}%"></div>
+              </div>
+              <p class="text-[0.88rem] text-bb-mid-grey-00 mt-2">${b.note}</p>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- Secondary actions -->
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Manage your account</h2>
+      <div class="space-y-2 mb-6">
+        ${[
+          { icon: 'card',     title: 'Change my contribution amount',  sub: 'Adjust your monthly target',        action: "nav('plan')" },
+          { icon: 'phone',    title: 'Update my contact details',      sub: 'Phone, email, address',             action: "alert('In a real service, this would open the account settings.')" },
+          { icon: 'building', title: 'Talk to an NISSS officer',         sub: 'Get help with your account',        action: "nav('register')" },
+        ].map(a => `
+          <button type="button" onclick="${a.action}"
+            class="text-left rounded-xl border border-bb-grey-00 bg-white p-4 w-full flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
+            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-blue-00">${ICONS[a.icon]}</span>
+            <span class="flex-1 min-w-0">
+              <span class="block font-semibold text-[1rem] text-bb-blue-00">${a.title}</span>
+              <span class="block text-[0.88rem] text-bb-mid-grey-00 mt-0.5">${a.sub}</span>
+            </span>
+            <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
+          </button>
+        `).join('')}
+      </div>
+
+      <p class="text-[0.85rem] text-bb-mid-grey-00 text-center">
+        This is a prototype. Numbers shown here are for demonstration only.
+      </p>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   SCREEN 13 — Confirmation
+   ───────────────────────────────────────────────────────── */
+function screenConfirmation() {
+  const ref = window.__refNumber || ('GWP-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+  const d = state.data;
+  const safeName = d.firstName ? d.firstName.split(' ')[0].replace(/[<>]/g, '') : '';
+
+  return `
+    <div class="screen stage">
+      <div class="bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 sm:p-7 rounded-2xl mb-6 shadow-card-hover">
+        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/15 mb-4">
+          ${ICONS.check}
+        </div>
+        <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] mb-2">
+          Thanks${safeName ? ', ' + safeName : ''}.
+        </h1>
+        <p class="text-[1.05rem] text-white/90 mb-5">
+          We got your details. Someone from NISSS will reach out within 5 working days.
+        </p>
+        <div class="bg-white/10 rounded-lg p-3">
+          <p class="text-[0.85rem] uppercase tracking-wide text-bb-teal-40 font-semibold">Your reference</p>
+          <p class="text-[1.5rem] font-bold tabular-nums">${ref}</p>
+        </div>
+      </div>
+
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What happens next</h2>
+      <ol class="space-y-3 mb-6">
+        ${[
+          'We send a quick message to confirm we have your details.',
+          'An NISSS officer reaches out by your preferred method to answer questions.',
+          'When you are ready, they help you complete registration — there is no rush.',
+        ].map((step, i) => `
+          <li class="flex items-start gap-3">
+            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full bg-bb-blue-10 text-bb-blue-00 font-bold tabular-nums">${i + 1}</span>
+            <span class="text-[1.05rem] text-bb-blue-00 pt-1">${step}</span>
+          </li>
+        `).join('')}
+      </ol>
+
+      <div class="rounded-xl border border-bb-grey-00 bg-white p-4 mb-6">
+        <p class="text-[0.95rem] text-bb-mid-grey-00">
+          You can step away any time. Joining is voluntary, and you choose how much to contribute based on what you actually earn.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        ${primaryBtn('See my contribution dashboard', "nav('tracker')")}
+        ${secondaryBtn('Return to the start', "restart()")}
+        <button type="button" onclick="nav('benefits-quick')"
+          class="block text-center w-full text-bb-teal-00 underline underline-offset-2 py-3 text-[1rem] hover:no-underline">
+          Learn more about NISSS benefits
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Rendering + navigation
+   ───────────────────────────────────────────────────────── */
+const SCREENS = {
+  'landing': screenLanding,
+  'risk-awareness': screenRiskAwareness,
+  'worker-type': screenWorkerType,
+  'income-reality': screenIncomeReality,
+  'your-situation': screenYourSituation,
+  'plan': screenPlan,
+  'next-steps': screenNextSteps,
+  'benefits-quick': screenBenefitsQuick,
+  'register-path': screenRegisterPath,
+  'registration-guide': screenRegistrationGuide,
+  'payment-options': screenPaymentOptions,
+  'register': screenRegister,
+  'tracker': screenTracker,
+  'confirmation': screenConfirmation,
+};
+
+const TITLES = {
+  'landing': 'Protect your income – NISSS Barbados',
+  'risk-awareness': 'What if something happened? – NISSS Barbados',
+  'worker-type': 'What kind of work do you do? – NISSS Barbados',
+  'income-reality': "Let's talk about your earnings – NISSS Barbados",
+  'your-situation': "Your situation – NISSS Barbados",
+  'plan': 'Your contribution plan – NISSS Barbados',
+  'next-steps': 'Next steps – NISSS Barbados',
+  'benefits-quick': 'Six ways NISSS protects you – NISSS Barbados',
+  'register-path': 'Do you have an NISSS number? – NISSS Barbados',
+  'registration-guide': 'How to register – NISSS Barbados',
+  'payment-options': 'How to pay – NISSS Barbados',
+  'register': 'Tell us where to reach you – NISSS Barbados',
+  'tracker': 'Your NISSS contributions – NISSS Barbados',
+  'confirmation': 'Thanks – NISSS Barbados',
+};
+
+function render(opts = {}) {
+  const root = document.getElementById('app');
+  root.innerHTML = (SCREENS[state.screen] || screenLanding)();
+  document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
+  // Scroll to top ONLY when navigating between screens, not on in-page re-renders
+  // (selecting cards, picking radio options, etc.)
+  if (opts.scroll) {
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+  if (Object.keys(state.errors).length && document.getElementById('error-summary')) {
+    document.getElementById('error-summary').focus();
+  }
+}
+
+function nav(screen) {
+  state.screen = screen;
+  state.errors = {};
+  state.expandedScenario = null;
+  render({ scroll: true });
+}
+
+function selectWorker(id) {
+  state.data.workerType = id;
+  render();
+}
+function selectMainJob(id) {
+  state.data.hasMainJob = id;
+  render();
+}
+function nextFromWorkerType() {
+  if (!state.data.workerType) return;
+  nav('income-reality');
+}
+
+function updateIncomeField(field, v, source) {
+  const num = Math.max(0, Math.min(20000, parseInt(v, 10) || 0));
+  state.data[field] = num;
+
+  // Update the big read-only display value
+  const display = document.getElementById(field + '-display');
+  if (display) display.textContent = fmtMoney(num);
+
+  // Update slider (unless the slider itself was the source — leaves the thumb where the user dragged it)
+  const slider = document.getElementById(field);
+  if (slider) {
+    if (source !== 'slider') slider.value = Math.min(6000, num);
+    slider.style.backgroundSize = Math.min(100, (num / 6000) * 100) + '% 100%';
+  }
+
+  // Update typed input (unless the input itself was the source — avoids cursor jumping while typing)
+  if (source !== 'typed') {
+    const typed = document.getElementById(field + '-typed');
+    if (typed) typed.value = num;
+  }
+}
+
+function setDependants(id) {
+  state.data.hasDependants = id;
+  if (id === 'yes' && !state.data.dependantsCount) state.data.dependantsCount = 1;
+  if (id === 'no') state.data.dependantsCount = 0;
+  render();
+}
+
+function updateDependantsCount(v) {
+  const num = Math.max(0, Math.min(20, parseInt(v, 10) || 0));
+  state.data.dependantsCount = num;
+}
+
+function toggleScenario(id, ev) {
+  // Let the native details/summary handle open state; we just track which is open for re-render fidelity
+  // Defer state update so the click-on-summary toggling completes naturally
+  setTimeout(() => {
+    const el = ev.currentTarget;
+    if (!el) return;
+    state.expandedScenario = el.open ? id : null;
+  }, 0);
+}
+
+function selectTier(id) {
+  state.data.contributionTier = id;
+  render();
+}
+
+function setHasNis(id) {
+  state.data.alreadyHasNis = id;
+  render();
+}
+
+function goToRegistrationGuide() {
+  if (!state.data.alreadyHasNis) return;
+  nav('registration-guide');
+}
+
+function submitForm(ev) {
+  ev.preventDefault();
+  const e = {};
+  if (!state.data.firstName.trim()) e.firstName = 'Tell us your first name';
+  if (!state.data.contact.trim()) e.contact = 'Add a phone number or email';
+  else if (state.data.contact.includes('@')) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.data.contact.trim()))
+      e.contact = 'Check that email looks right (for example, you@example.com)';
+  } else {
+    if (state.data.contact.replace(/\D/g, '').length < 7)
+      e.contact = 'Add a phone number we can reach you on';
+  }
+  if (!state.data.contactMethod) e.contactMethod = 'Choose how we should reach you';
+
+  state.errors = e;
+  if (Object.keys(e).length) {
+    render();
+    return;
+  }
+  window.__refNumber = 'GWP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+  nav('confirmation');
+}
+
+function restart() {
+  state.data = {
+    workerType: null,
+    goodMonth: 2500,
+    slowMonth: 800,
+    slowMonthsPerYear: 3,
+    hasDependants: null,
+    dependantsCount: 0,
+    contributionTier: null,
+    monthlyContribution: 150,
+    alreadyHasNis: null,
+    firstName: '',
+    contact: '',
+    contactMethod: null,
+  };
+  state.errors = {};
+  state.expandedScenario = null;
+  window.__refNumber = null;
+  nav('landing');
+}
+
+// Initial render — first render scrolls to top for screen-reader users landing on the page
+render({ scroll: true });
+</script>
+
+<!-- Review comments (prototype). Reviewers select text to leave a comment.
+     Saves locally per browser by default; set COMMENTS_CONFIG.apiBase in
+     comments.js to your database API to share comments. Remove for production. -->
+<script src="comments.js" defer></script>
+</body>
+</html>

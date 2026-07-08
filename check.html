@@ -107,12 +107,10 @@
   /* Screen transitions */
   .screen { animation: fade 0.32s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-  /* Honour reduced-motion: no screen fade/slide, no animated bar fill */
-  @media (prefers-reduced-motion: reduce) {
-    .screen { animation: none; }
-    .protect-bar-fill, .selectable, .chev { transition: none; }
-  }
+  /* Entrance animation runs on real navigation only. In-place re-renders
+     (selecting a card or radio rebuilds the screen) add .no-anim to #app
+     so the fade does not replay on every press. */
+  .no-anim .screen { animation: none; }
 
   /* Selectable cards */
   .selectable { transition: all .18s ease; }
@@ -201,6 +199,23 @@
     background: linear-gradient(90deg, #1fbf84, #30c0c8);
     transition: width .5s cubic-bezier(.22,1,.36,1);
   }
+
+  /* Honour reduced-motion: no screen fade/slide, no animated transitions.
+     This block must stay at the END of the stylesheet: the base .selectable,
+     .chev and .protect-bar-fill rules above have equal specificity, so
+     source order decides which transition declaration wins. */
+  @media (prefers-reduced-motion: reduce) {
+    .screen { animation: none; }
+    .protect-bar-fill, .selectable, .chev { transition: none; }
+    /* Catch-all: Tailwind utility transitions (transition-all on input
+       wrappers, button colour fades) must not move either. */
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -271,6 +286,9 @@
   <div class="container">
     <div class="px-4 py-6 sm:py-8" id="app"></div>
   </div>
+  <!-- Scoped announcer for content revealed by a selection (lives outside
+       #app so re-renders do not destroy it mid-announcement). -->
+  <p id="reveal-status" class="sr-only" role="status"></p>
 </main>
 
 <!-- Footer -->
@@ -495,9 +513,24 @@ function primaryBtn(label, action, opts = {}) {
 }
 
 // Pressing a not-ready Continue: announce + show why it does nothing yet.
+// Clear first, then set on the next frame: writing identical text into a
+// role=status element is deduped by AT, so a second press would be silent.
 function showDisabledHint(btn) {
   const el = btn.nextElementSibling;
-  if (el && el.classList.contains('disabled-hint')) el.textContent = btn.dataset.hint || '';
+  if (!el || !el.classList.contains('disabled-hint')) return;
+  const msg = btn.dataset.hint || '';
+  el.textContent = '';
+  requestAnimationFrame(() => { el.textContent = msg; });
+}
+
+// Announce content revealed by a selection (plan details, the dependants
+// count question). Short, polite, and scoped, not a whole-app live region.
+// Same clear-then-set pattern so an identical message re-announces.
+function announce(msg) {
+  const el = document.getElementById('reveal-status');
+  if (!el) return;
+  el.textContent = '';
+  requestAnimationFrame(() => { el.textContent = msg; });
 }
 
 function secondaryBtn(label, action) {
@@ -838,8 +871,22 @@ function screenYourSituation() {
         ])}
       </div>
 
-      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS, hint: 'Answer all three questions above to continue.' })}
+      <div id="situation-continue">${situationContinue()}</div>
     </div>`;
+}
+
+// Continue button for the your-situation screen. Lives in its own helper so
+// updateDependantsCount() can refresh it in place while the user types
+// (a full render() would fight the caret in the count field). The hint names
+// the actual blocker instead of always saying "all three questions".
+function situationContinue() {
+  const d = state.data;
+  const missingRadios = !d.hasDependants || !d.hasSavings || !d.payingNIS;
+  const missingCount = d.hasDependants === 'yes' && !d.dependantsCount;
+  const hint = missingRadios
+    ? 'Answer all the questions above to continue.'
+    : 'Enter how many people depend on your income to continue.';
+  return primaryBtn('Continue', "nav('risk-awareness')", { disabled: missingRadios || missingCount, hint });
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1549,7 +1596,7 @@ function screenRegister() {
               const selected = d.contactMethod === o.id;
               return `
                 <button type="button" role="radio" aria-checked="${selected}"
-                  onclick="state.data.contactMethod='${o.id}'; render()"
+                  onclick="selectContactMethod('${o.id}')"
                   class="selectable rounded-lg border-2 border-bb-grey-00 bg-white py-3 px-2 text-[1rem] font-medium text-bb-blue-00 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
                   ${o.label}
                 </button>`;
@@ -1909,6 +1956,9 @@ function setupRadioGroups(root) {
 // Selection re-renders the screen, and render() restores focus to the
 // equivalent radio, so focus (and scroll) stay put.
 document.getElementById('app').addEventListener('keydown', (ev) => {
+  // Leave OS shortcuts alone (Ctrl+Home, Cmd+Arrow scrolling, etc.):
+  // modified keys must not change the answer.
+  if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const radio = ev.target.closest('[role="radio"]');
   if (!radio) return;
   const group = radio.closest('[role="radiogroup"]');
@@ -1926,17 +1976,35 @@ document.getElementById('app').addEventListener('keydown', (ev) => {
   radios[next].click();
 });
 
+// Safari does not move focus to a button on mouse click, so
+// document.activeElement is unreliable for restoring focus after an in-place
+// re-render there. Record the activated radio's identity at click time
+// (capture phase runs before the inline onclick handlers call render()).
+let lastActivated = null;
+document.getElementById('app').addEventListener('click', (ev) => {
+  const el = ev.target.closest('[role="radio"]');
+  lastActivated = el && el.dataset.rg !== undefined
+    ? { rg: el.dataset.rg, ri: el.dataset.ri }
+    : null;
+}, true);
+
 function render(opts = {}) {
   const root = document.getElementById('app');
 
   // Remember where focus was, so in-place re-renders (selecting a card or
-  // radio rebuilds the whole screen) don't dump focus on <body>.
+  // radio rebuilds the whole screen) don't dump focus on <body>. Prefer the
+  // click-time record; fall back to activeElement (keyboard activation).
   const prev = document.activeElement;
-  let restore = null;
-  if (prev && prev !== document.body && root.contains(prev)) {
+  let restore = lastActivated;
+  lastActivated = null;
+  if (!restore && prev && prev !== document.body && root.contains(prev)) {
     if (prev.dataset && prev.dataset.rg !== undefined) restore = { rg: prev.dataset.rg, ri: prev.dataset.ri };
     else if (prev.id) restore = { id: prev.id };
   }
+
+  // Entrance animation only on real navigation; in-place re-renders would
+  // replay the fade on every arrow press.
+  root.classList.toggle('no-anim', !opts.scroll);
 
   root.innerHTML = (SCREENS[state.screen] || screenLanding)();
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
@@ -1947,7 +2015,10 @@ function render(opts = {}) {
   if (opts.scroll) {
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
-  if (Object.keys(state.errors).length && document.getElementById('error-summary')) {
+  // Focus the error summary only on a render caused by a submit attempt.
+  // Re-renders from answering a field (e.g. picking a contact method while
+  // errors are showing) must keep focus where the user is working.
+  if (opts.focusErrors && Object.keys(state.errors).length && document.getElementById('error-summary')) {
     document.getElementById('error-summary').focus();
   } else if (opts.focusHeading) {
     // Screen change: move focus to the new screen's H1 so screen readers
@@ -2009,15 +2080,30 @@ function updateIncomeField(field, v, source) {
 }
 
 function setDependants(id) {
+  const was = state.data.hasDependants;
   state.data.hasDependants = id;
-  if (id === 'yes' && !state.data.dependantsCount) state.data.dependantsCount = 1;
-  if (id === 'no') state.data.dependantsCount = 0;
+  if (id === 'yes' && !state.data.dependantsCount) {
+    // Restore what the user last typed; arrow-scanning through "No" and
+    // back must not wipe it. Default to 1 for a first-time "Yes".
+    state.data.dependantsCount = state.data.lastDependantsCount || 1;
+  }
+  if (id === 'no') {
+    if (state.data.dependantsCount) state.data.lastDependantsCount = state.data.dependantsCount;
+    state.data.dependantsCount = 0;
+  }
   render();
+  if (id === 'yes' && was !== 'yes') {
+    announce('A question about how many people depend on you was added below.');
+  }
 }
 
 function updateDependantsCount(v) {
   const num = Math.max(0, Math.min(20, parseInt(v, 10) || 0));
   state.data.dependantsCount = num;
+  // Keep the Continue button honest: clearing the count must disable it
+  // again. Refresh the button in place, with no full re-render while typing.
+  const holder = document.getElementById('situation-continue');
+  if (holder) holder.innerHTML = situationContinue();
 }
 
 function toggleScenario(id, ev) {
@@ -2031,8 +2117,12 @@ function toggleScenario(id, ev) {
 }
 
 function selectTier(id) {
+  const firstPick = !state.data.contributionTier;
   state.data.contributionTier = id;
   render();
+  // The first pick reveals the plan hero and benefit cards below the group,
+  // so tell screen-reader users. Later tier changes just update the figures.
+  if (firstPick) announce('Your plan details are shown below.');
 }
 
 function setHasNis(id) {
@@ -2043,6 +2133,14 @@ function setHasNis(id) {
 function goToRegistrationGuide() {
   if (!state.data.alreadyHasNis) return;
   nav('registration-guide');
+}
+
+function selectContactMethod(id) {
+  state.data.contactMethod = id;
+  // Answering the question resolves its error; any other errors stay until
+  // the next submit attempt.
+  delete state.errors.contactMethod;
+  render();
 }
 
 function submitForm(ev) {
@@ -2061,7 +2159,7 @@ function submitForm(ev) {
 
   state.errors = e;
   if (Object.keys(e).length) {
-    render();
+    render({ focusErrors: true });
     return;
   }
   window.__refNumber = 'GWP-' + Math.random().toString(36).substring(2, 7).toUpperCase();

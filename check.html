@@ -351,11 +351,11 @@ const WORKER_TYPES = [
 
 const BENEFITS = [
   { id: 'sickness',   title: 'Sickness Benefit',           real: 'If you cannot work because you are unwell, you still get money to live on.',                                          icon: 'sickness',   color: 'teal' },
-  { id: 'maternity',  title: 'Maternity Benefit',          real: 'Income while you take time off to have your baby — so you can rest and recover.',                                     icon: 'maternity',  color: 'pink' },
+  { id: 'maternity',  title: 'Maternity Benefit',          real: 'Income while you take time off to have your baby, so you can rest and recover.',                                     icon: 'maternity',  color: 'pink' },
   { id: 'paternity',  title: 'Paternity Benefit',          real: 'A short paid break for new fathers to be with their family.',                                                          icon: 'paternity',  color: 'blue' },
   { id: 'invalidity', title: 'Invalidity Pension',         real: 'If a long illness or accident stops you from working, you get ongoing support.',                                       icon: 'invalidity', color: 'purple' },
   { id: 'survivors',  title: "Survivors' Benefit",         real: 'If something happens to you, your partner, children, or parents get help.',                                            icon: 'survivors',  color: 'yellow' },
-  { id: 'pension',    title: 'Old-Age Contributory Pension', real: 'A monthly income when you stop working — built up over the years from what you put in.',                              icon: 'pension',    color: 'green' },
+  { id: 'pension',    title: 'Old-Age Contributory Pension', real: 'A monthly income when you stop working, built up over the years from what you put in.',                              icon: 'pension',    color: 'green' },
 ];
 
 const COLOR_MAP = {
@@ -478,7 +478,7 @@ function screenLanding() {
         </h1>
 
         <p class="text-[1.15rem] text-bb-mid-grey-00 mb-6">
-          You work for yourself — driving, delivering, freelancing, building, selling, creating. NISSS is how you look after yourself when life happens.
+          You work for yourself: driving, delivering, freelancing, building, selling, creating. NISSS is how you look after yourself when life happens.
         </p>
 
         <div class="space-y-3 mb-2">
@@ -494,7 +494,7 @@ function screenLanding() {
       <div class="mt-10">
         <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-3">What is NISSS, simply?</h2>
         <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
-          NISSS stands for the <strong class="text-bb-blue-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn — and it's there when you need it: when you're sick, when you have a baby, when you retire.
+          NISSS stands for the <strong class="text-bb-blue-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn. It's there when you need it: when you're sick, when you have a baby, when you retire.
         </p>
         <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
           Self-employed Bajans can join too. You choose how much you put in, based on what you actually earn. It's <strong class="text-bb-blue-00">voluntary</strong> and there's no penalty for slow months.
@@ -596,8 +596,8 @@ function screenWorkerType() {
 
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Main job NIS status">
         ${[
-          { id: 'yes', label: 'Yes — I have a job that pays NIS for me' },
-          { id: 'no',  label: 'No — my self-employed work is how I earn' }
+          { id: 'yes', label: 'Yes, I have a job that pays NIS for me' },
+          { id: 'no',  label: 'No, my self-employed work is how I earn' }
         ].map(opt => {
           const selected = state.data.hasMainJob === opt.id;
           return `
@@ -634,14 +634,14 @@ function screenIncomeReality() {
         Let's talk about your earnings.
       </h1>
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        Be honest — there are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
+        Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
         <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
           What does a good month look like?
         </label>
-        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine — drag the slider or type below.</p>
+        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
           <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.goodMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
@@ -670,7 +670,7 @@ function screenIncomeReality() {
         <label for="slowMonth" class="block font-semibold text-bb-blue-00 mb-1">
           And a slow month?
         </label>
-        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is quiet — slow season, hurricane month, sickness. Drag the slider or type below.</p>
+        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
           <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.slowMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
@@ -754,8 +754,8 @@ function screenYourSituation() {
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
       <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
         ${radioGroup('hasDependants', [
-          { id: 'yes', label: 'Yes — others rely on what I earn' },
-          { id: 'no',  label: "No — it's just me" }
+          { id: 'yes', label: 'Yes, others rely on what I earn' },
+          { id: 'no',  label: "No, it's just me" }
         ], o => `setDependants('${o.id}')`)}
       </div>
 
@@ -785,7 +785,7 @@ function screenYourSituation() {
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Current NIS status">
         ${radioGroup('payingNIS', [
-          { id: 'yes',            label: 'Yes — I pay it' },
+          { id: 'yes',            label: 'Yes, I pay it' },
           { id: 'registered',     label: "I'm registered but not paying" },
           { id: 'no',             label: 'No' }
         ])}
@@ -815,14 +815,14 @@ function screenRiskAwareness() {
         What if something happened tomorrow?
       </h1>
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        These numbers are based on what you just told us you earn. Tap any card to see what it could cost you — and how NISSS helps.
+        These numbers are based on what you just told us you earn. Tap any card to see what it could cost you, and how NISSS helps.
       </p>
 
       <div class="space-y-3 mb-6">
         ${[
           {
             id: 'sick', icon: 'sickness', title: 'You get sick for two weeks.',
-            without: `That's about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food, bills still due.`,
+            without: `That's about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn: rent, food, bills still due.`,
             withNis: 'NISSS sickness benefit pays part of your usual earnings while you recover, so you can rest without panic.',
           },
           {
@@ -832,7 +832,7 @@ function screenRiskAwareness() {
           },
           {
             id: 'baby', icon: 'maternity', title: "You're starting a family.",
-            without: 'Time off means no money — many parents go back to work too soon.',
+            without: 'Time off means no money. Many parents go back to work too soon.',
             withNis: 'NISSS maternity and paternity benefits pay you to take real time off with your baby.',
           },
           {
@@ -874,7 +874,7 @@ function screenRiskAwareness() {
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[1rem] text-bb-blue-00">
-          <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once — that's the point of a safety net.
+          <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.
         </p>
       </div>
 
@@ -943,7 +943,7 @@ function screenPlan() {
   const tiers = [
     {
       id: 'minimum', label: 'Minimum', monthly: minMonthly, tag: 'Basic', color: 'yellow',
-      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim — but you still qualify for every benefit.",
+      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim, but you still qualify for every benefit.",
     },
     {
       id: 'safer', label: 'Moderate', monthly: saferMonthly, tag: 'Recommended', color: 'green',
@@ -951,7 +951,7 @@ function screenPlan() {
     },
     {
       id: 'strong', label: 'Stronger', monthly: strongMonthly, tag: 'Maximum', color: 'teal',
-      sub: 'The most you put in here — closer to what employees contribute, building the strongest benefits.',
+      sub: "The most you put in here. It's closer to what employees contribute and builds the strongest benefits.",
     },
   ];
 
@@ -960,17 +960,17 @@ function screenPlan() {
   // carries a disclaimer that NISSS Benefits confirms the actual amount.
   const benefitsInline = [
     { id: 'sickness',   icon: 'sickness',   title: 'Sickness Benefit',
-      desc: tier ? `If you can't work because you're sick, NISSS pays about ${perWeek(sicknessWk)} — roughly two-thirds of your usual earnings — for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` : '' },
+      desc: tier ? `If you can't work because you're sick, NISSS pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` : '' },
     { id: 'maternity',  icon: 'maternity',  title: 'Maternity Benefit',
-      desc: tier ? `Paid time off when you have a baby — about ${perWeek(maternityWk)}, based on your earnings.` : '' },
+      desc: tier ? `Paid time off when you have a baby: about ${perWeek(maternityWk)}, based on your earnings.` : '' },
     { id: 'paternity',  icon: 'paternity',  title: 'Paternity Benefit',
-      desc: tier ? `A ${NIS.PATERNITY_WEEKS}-week paid break for new fathers — about ${perWeek(paternityWk)}.` : '' },
+      desc: tier ? `A ${NIS.PATERNITY_WEEKS}-week paid break for new fathers: about ${perWeek(paternityWk)}.` : '' },
     { id: 'invalidity', icon: 'invalidity', title: 'Invalidity Pension',
       desc: tier ? `If a long illness stops you working, ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` : '' },
     { id: 'survivors',  icon: 'survivors',  title: "Survivors' Benefit",
       desc: tier ? `If anything happens to you, your partner, children or parents share a benefit of about ${perWeek(pensionWk)}, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` : '' },
     { id: 'pension',    icon: 'pension',    title: 'Old-Age Contributory Pension',
-      desc: tier ? `A pension for life from age ${NIS.PENSIONABLE_AGE} — starting around ${perWeek(pensionWk)} and growing the longer you contribute.` : '' },
+      desc: tier ? `A pension for life from age ${NIS.PENSIONABLE_AGE}, starting around ${perWeek(pensionWk)} and growing the longer you contribute.` : '' },
   ];
 
   return `
@@ -983,7 +983,7 @@ function screenPlan() {
         What should you put in?
       </h1>
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        Pick a level. You'll see what it gets you below — no extra clicks.
+        Pick a level. You'll see what it gets you below. No extra clicks.
       </p>
 
       <!-- Earnings summary -->
@@ -1058,7 +1058,7 @@ function screenPlan() {
         <!-- Inline benefit estimates (no click-to-expand) -->
         <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">What this gets you</h2>
         <p class="text-[1rem] text-bb-mid-grey-00 mb-4">
-          Six things, all included — sized to the level you picked.
+          Six things, all included, sized to the level you picked.
         </p>
 
         <div class="space-y-3 mb-5">
@@ -1091,14 +1091,14 @@ function screenPlan() {
         <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
           <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
           <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>Slow month?</strong> Pay less or skip — no penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.
+            <strong>Slow month?</strong> Pay less or skip. No penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.
           </p>
         </div>
 
         <div class="rounded-2xl bg-bb-blue-10 border border-bb-blue-40 p-4 mb-6 flex items-start gap-3">
           <span class="text-bb-blue-100 shrink-0 mt-0.5">${ICONS.clock}</span>
           <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>When your benefits start:</strong> you're protected after one full year of contributions — at least BDS$1,200 over the year. Keep paying and your benefits stay active.
+            <strong>When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.
           </p>
         </div>
       ` : `
@@ -1107,7 +1107,7 @@ function screenPlan() {
         </div>
       `}
 
-      ${primaryBtn("I'm ready — show me next steps", "nav('next-steps')", { disabled: !tier })}
+      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { disabled: !tier })}
       <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
         Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
       </p>
@@ -1126,7 +1126,7 @@ function screenBenefitsQuick() {
         Six ways NISSS protects you.
       </h1>
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        Quick read — about a minute.
+        Quick read: about a minute.
       </p>
 
       <div class="space-y-3 mb-6">
@@ -1193,7 +1193,7 @@ function screenNextSteps() {
             </span>
             <div class="flex-1">
               <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">See how to pay</p>
-              <p class="text-[0.95rem] text-bb-blue-00/80">SurePay, EZpay+, bank, online, in person — what works for you.</p>
+              <p class="text-[0.95rem] text-bb-blue-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1284,9 +1284,9 @@ function screenRegistrationGuide() {
   const docs = has === 'yes' ? docsAlready : docsNew;
 
   const intro = {
-    yes: "You already have an NISSS number — let's link it to self-employed status.",
+    yes: "You already have an NISSS number. Let's link it to self-employed status.",
     no:  "We'll set you up with a new NISSS number. It's yours for life.",
-    unsure: "Let's check first — bring your ID and we'll look it up.",
+    unsure: "Let's check first. Bring your ID and we'll look it up.",
   }[has] || '';
 
   return `
@@ -1319,7 +1319,7 @@ function screenRegistrationGuide() {
             ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page</a>. Takes about 10 minutes.'
             : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page</a>. Takes about 10 minutes.',
           tag: 'Easiest' },
-          { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown — or any branch.', tag: 'In person' },
+          { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown, or any branch.', tag: 'In person' },
           { icon: 'phone',    title: 'By phone',         sub: 'Call 246-431-7400 and an officer will help you over the phone.', tag: 'No screen' },
         ].map(o => `
           <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
@@ -1340,7 +1340,7 @@ function screenRegistrationGuide() {
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[0.98rem] text-bb-blue-00">
-          <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up — so it's cheaper to start sooner. Ask when you register.
+          <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
         </p>
       </div>
 
@@ -1369,7 +1369,7 @@ function screenPaymentOptions() {
         How to pay your NISSS contributions
       </h1>
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        Pay weekly, monthly, or in a lump sum — whatever fits your cash flow.
+        Pay weekly, monthly, or in a lump sum, whatever fits your cash flow.
       </p>
 
       <div class="space-y-3 mb-6">
@@ -1415,7 +1415,7 @@ function screenPaymentOptions() {
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
         <div>
           <p class="font-semibold text-bb-blue-00 mb-1">If you stop contributing</p>
-          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No problem in the short term — life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
+          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
           <p class="text-[0.95rem] text-bb-blue-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
         </div>
       </div>
@@ -1566,7 +1566,7 @@ function screenTracker() {
     { id: 'sickness',  title: 'Sickness benefit',   need: 26, have: 26, unit: 'weeks',   note: 'You qualify.' },
     { id: 'maternity', title: 'Maternity benefit',  need: 26, have: 26, unit: 'weeks',   note: 'You qualify.' },
     { id: 'invalidity',title: 'Invalidity benefit', need: 156, have: 96, unit: 'weeks',  note: '60 weeks to go.' },
-    { id: 'pension',   title: 'Old age pension',    need: 500, have: 96, unit: 'weeks',  note: 'Keep contributing — every week counts.' },
+    { id: 'pension',   title: 'Old age pension',    need: 500, have: 96, unit: 'weeks',  note: 'Keep contributing. Every week counts.' },
   ];
 
   const overallStatus = 'On track';
@@ -1579,7 +1579,7 @@ function screenTracker() {
       <div class="rounded-2xl bg-bb-purple-00/5 border border-bb-purple-100/40 p-4 mb-5 flex items-start gap-3">
         <span class="text-bb-purple-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[0.92rem] text-bb-blue-00">
-          <strong>A glimpse of what's coming.</strong> Today most people can't see how much they've put in or what they qualify for. This is an example of a future feature — the details below are made up to show the idea.
+          <strong>A glimpse of what's coming.</strong> Today most people can't see how much they've put in or what they qualify for. This is an example of a future feature. The details below are made up to show the idea.
         </p>
       </div>
 
@@ -1666,7 +1666,7 @@ function screenTracker() {
                 <p class="text-[0.88rem] text-bb-mid-grey-00 mt-0.5">${h.date}</p>
               </div>
               <div class="text-right shrink-0">
-                <p class="font-bold text-[1.05rem] text-bb-blue-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : '—'}</p>
+                <p class="font-bold text-[1.05rem] text-bb-blue-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : 'None'}</p>
                 <p class="text-[0.82rem] ${statusStyle.fg} font-medium">${statusStyle.label}</p>
               </div>
             </div>
@@ -1684,7 +1684,7 @@ function screenTracker() {
         <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <div>
           <p class="font-semibold text-bb-blue-00 mb-1">You skipped August 2026</p>
-          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No worries — slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
+          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No worries. Slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
           <button type="button" onclick="alert('In a real service, this would let you back-pay BDS$150 for August 2026.')"
             class="link-bb text-[0.95rem] font-medium">Back-pay BDS$150 →</button>
         </div>
@@ -1778,7 +1778,7 @@ function screenConfirmation() {
         ${[
           'We send a quick message to confirm we have your details.',
           'An NISSS officer reaches out by your preferred method to answer questions.',
-          'When you are ready, they help you complete registration — there is no rush.',
+          'When you are ready, they help you complete registration. There is no rush.',
         ].map((step, i) => `
           <li class="flex items-start gap-3">
             <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full bg-bb-blue-10 text-bb-blue-00 font-bold tabular-nums">${i + 1}</span>

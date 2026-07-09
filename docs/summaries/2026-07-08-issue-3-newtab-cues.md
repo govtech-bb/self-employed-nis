@@ -73,3 +73,47 @@ All 14 wizard screens were rendered with zero page errors and zero
 console errors, confirming the template-literal edits did not break
 the app. The `landing-page-how-to.html` check opened the "Register
 with NIS" disclosure so both CTAs actually rendered.
+
+## Dev-sync (2026-07-09)
+
+Merged `origin/dev` (now including PR #43 / issue #31 and PR #44 /
+issue #33) into this branch.
+
+### What became moot
+
+PR #43 deleted `screenRegistrationGuide` entirely and replaced it with
+direct `primaryLink` routing on the register-path screen (yes → NIS
+self-employment form, no → new-applicant form, unsure → contact). The
+two cued links this branch had added inside that screen went with it —
+the modify-vs-delete conflict was resolved toward dev's deletion.
+Dev's `primaryLink` helper already carried its own sr-only cue, so no
+coverage was lost.
+
+### Cue added to a new dev link
+
+Dev's contact screen ("NISSS website" card, `nis.gov.bb`) arrived
+without a cue; one was added, keeping the contract that every
+non-chrome external link is cued.
+
+### Constant refactor (dedupe)
+
+`check.html` now defines a single top-level constant:
+
+    const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
+
+used at every template-literal cue site: the `primaryLink` helper
+(normalising its wording from "opens the NIS website in a new tab" to
+the standard cue), the payment-options EZpay+ link, and the contact
+NISSS website link. The two card `sub:` strings were converted from
+single-quoted strings to template literals so the constant
+interpolates. Static HTML files keep their literal spans (no JS
+there). No visible text changed.
+
+### Verification (re-run post-merge)
+
+Playwright + Chromium against a local HTTP server. All 12 screens in
+the SCREENS map driven (register-path exercised with all three
+answers) with zero page errors. Full external-link inventory: 11
+`target="_blank"` anchors across the 4 pages — 8 non-chrome links all
+cued with `rel` containing `noopener` and visible text unchanged; the
+3 footer Careers (greenhouse.io) chrome links correctly carry no cue.

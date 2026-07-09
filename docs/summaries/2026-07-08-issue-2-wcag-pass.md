@@ -195,3 +195,61 @@ untouched. External links' inner content belongs to a parallel PR and was not mo
   sr-only context inside them.
 - VoiceOver pass is still a manual step; the scripted checks cover the mechanics
   (focus order, announcements via role/status semantics) but not actual SR output.
+
+## Dev-sync + second review batch (2026-07-09)
+
+### Merging origin/dev
+
+Dev gained two merges after this branch was cut: PR #43 (issue #31, direct
+NISSS-number routing) and PR #44 (issue #33, Lucide icons). PR #43 went further
+than a routing tweak: under the "interactive tool collects no data" decision it
+deleted `screenRegistrationGuide`, `screenRegister`, `screenConfirmation`,
+`goToRegistrationGuide`, `selectContactMethod`, `submitForm`, `restart`, and the
+`firstName`/`contact`/`contactMethod` state, leaving a 12-screen map. Three
+conflict regions in `check.html`, all resolved toward dev's routing:
+
+| Region | Resolution |
+| --- | --- |
+| register-path Continue | Kept dev's answer-based routing (`primaryLink` to the NIS form for yes/no, `nav('contact')` for unsure). Carried this branch's aria-disabled + hint pattern onto the unanswered default case, so the gated Continue still explains itself when pressed. |
+| screenRegister form (contact field + contact-method radiogroup) | Kept dev's deletion. This branch's radiogroup `aria-label` and `selectContactMethod` error-clearing edits are moot. The chip contrast fix this branch made in the deleted registration guide was carried over to the surviving `screenContact` "ways to reach them" chips (`text-bb-yellow-00` on `bg-bb-yellow-10` fails contrast; now `text-bb-yellow-dark`). |
+| goToRegistrationGuide / selectContactMethod / submitForm / restart | Kept dev's deletion; this branch's `render({ focusErrors: true })` submit change goes with them. The generic error plumbing in `render()` stays as dev has it. |
+
+Post-merge integrity, verified in Chromium: 12 screens, `registration-guide`
+absent from the map, `goToRegistrationGuide` undefined, every `nav()` target in
+the file is a SCREENS key, all screens render with Lucide icons and zero page
+errors.
+
+### Second review batch (5 findings)
+
+1. **Dead `#contactMethod` error-summary link — moot after the sync.** The
+   register form, its error summary, and the `contactMethod` radiogroup were all
+   deleted on dev; no reference survives in the merged file.
+2. **Silent tier changes.** `selectTier()` now announces every tier CHANGE: the
+   first pick keeps "Your plan details are shown below.", later changes say
+   "Estimates updated for the <tier> plan." Re-picking the already-selected tier
+   announces nothing.
+3. **Tracker h1 lacked context.** The h1 was the bare mock name ("Marcus"), so
+   the focused heading told screen-reader users nothing about the screen. It now
+   reads "Your NISSS contributions" (matching the page title), with the name
+   moved into the "Welcome back, Marcus" subtitle above it. Same card layout.
+4. **Duplicate live-region helpers.** `showDisabledHint()` and `announce()` both
+   implemented the clear-then-requestAnimationFrame write. Extracted a shared
+   `setLiveRegion(el, msg)` used by both.
+5. **Redundant reduced-motion rules.** The specific `.screen`,
+   `.protect-bar-fill`, `.selectable`, `.chev` rules inside the
+   prefers-reduced-motion block were subsumed by the `*, ::before, ::after`
+   `!important` catch-all and were removed. Under emulated reduced motion,
+   `.selectable`'s computed transition-duration and `.screen`'s
+   animation-duration are 0.01ms (imperceptible; duration-based rather than
+   `transition-property: none`, so any code waiting on transitionend keeps
+   working).
+
+### Verification
+
+Playwright + Chromium + axe, mobile viewport (390x844): 80/80 checks pass.
+axe (wcag2a/2aa/21a/21aa/22a/22aa + best-practice) reports zero violations on
+all 12 wizard screens and all 4 pages (index, check, how-to,
+landing-page-how-to). Skip link, radio arrow-key selection with focus retention,
+gated-Continue hint announcement, register-path routing for all four answer
+states (including sr-only new-tab cues on the NIS links), and reduced-motion
+behaviour all re-verified after the merge.

@@ -279,6 +279,9 @@ const state = {
 
 const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
 
+/* Screen-reader cue appended to every external (target="_blank") link. */
+const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
+
 /* ─────────────────────────────────────────────────────────
    Icons (lightweight inline SVGs)
    ───────────────────────────────────────────────────────── */
@@ -456,7 +459,7 @@ function primaryLink(label, href) {
   return `
     <a href="${href}" target="_blank" rel="noopener noreferrer"
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
-      ${label}<span class="sr-only"> (opens the NIS website in a new tab)</span> ${ICONS.arrowRight}
+      ${label}${NEW_TAB_CUE} ${ICONS.arrowRight}
     </a>`;
 }
 
@@ -1309,7 +1312,7 @@ function screenPaymentOptions() {
         ${[
           { icon: 'globe',    title: 'NISSS online portal',  sub: 'Pay from your phone, anytime. Get a receipt right away.',     tag: 'Quickest', color: 'teal' },
           { icon: 'store',    title: 'SurePay',            sub: 'Pay cash or card at any SurePay location across the island.', tag: 'Cash OK',  color: 'green' },
-          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
+          { icon: 'bolt',     title: 'EZpay+',           sub: `Pay 24/7 on the government's payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb${NEW_TAB_CUE}</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.`, tag: 'Sign-in needed', color: 'yellow' },
           { icon: 'card',     title: 'Bank transfer',      sub: 'Standing order or one-off transfer from your bank account.',  tag: 'Set & forget', color: 'blue' },
           { icon: 'building', title: 'In person at NISSS',   sub: 'Pay at the NISSS office. Get help if you have questions.',     tag: 'Face to face', color: 'purple' },
         ].map(p => {
@@ -1371,7 +1374,7 @@ function screenContact() {
   const ways = [
     { icon: 'phone',    title: 'Call NISSS',      sub: 'Call <a href="tel:2464317400" class="link-bb font-medium">246-431-7400</a> and an officer will help you over the phone.', tag: 'Quickest' },
     { icon: 'building', title: 'Visit an office', sub: 'Walk in to the Frank Walcott Building, Bridgetown, or any branch. Bring a valid Barbados ID.', tag: 'In person' },
-    { icon: 'globe',    title: 'NISSS website',   sub: 'Find forms and guidance at <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">nis.gov.bb</a>.', tag: 'Self-serve' },
+    { icon: 'globe',    title: 'NISSS website',   sub: `Find forms and guidance at <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">nis.gov.bb${NEW_TAB_CUE}</a>.`, tag: 'Self-serve' },
   ];
 
   return `

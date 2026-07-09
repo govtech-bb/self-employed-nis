@@ -201,14 +201,12 @@
   }
 
   /* Honour reduced-motion: no screen fade/slide, no animated transitions.
-     This block must stay at the END of the stylesheet: the base .selectable,
-     .chev and .protect-bar-fill rules above have equal specificity, so
-     source order decides which transition declaration wins. */
+     This block stays at the END of the stylesheet so nothing declared later
+     can reintroduce motion. The !important catch-all covers everything:
+     the .screen fade, the .selectable/.chev/.protect-bar-fill transitions,
+     and Tailwind utility transitions (transition-all on input wrappers,
+     button colour fades). */
   @media (prefers-reduced-motion: reduce) {
-    .screen { animation: none; }
-    .protect-bar-fill, .selectable, .chev { transition: none; }
-    /* Catch-all: Tailwind utility transitions (transition-all on input
-       wrappers, button colour fades) must not move either. */
     *, ::before, ::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
@@ -507,25 +505,27 @@ function primaryBtn(label, action, opts = {}) {
     </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
 }
 
-// Pressing a not-ready Continue: announce + show why it does nothing yet.
-// Clear first, then set on the next frame: writing identical text into a
-// role=status element is deduped by AT, so a second press would be silent.
-function showDisabledHint(btn) {
-  const el = btn.nextElementSibling;
-  if (!el || !el.classList.contains('disabled-hint')) return;
-  const msg = btn.dataset.hint || '';
+// Write a message into a live region. Clear first, then set on the next
+// frame: writing identical text into a role=status element is deduped by
+// AT, so a repeated message would otherwise be silent.
+function setLiveRegion(el, msg) {
+  if (!el) return;
   el.textContent = '';
   requestAnimationFrame(() => { el.textContent = msg; });
 }
 
-// Announce content revealed by a selection (plan details, the dependants
-// count question). Short, polite, and scoped, not a whole-app live region.
-// Same clear-then-set pattern so an identical message re-announces.
+// Pressing a not-ready Continue: announce + show why it does nothing yet.
+function showDisabledHint(btn) {
+  const el = btn.nextElementSibling;
+  if (!el || !el.classList.contains('disabled-hint')) return;
+  setLiveRegion(el, btn.dataset.hint || '');
+}
+
+// Announce content revealed or updated by a selection (plan details, the
+// dependants count question). Short, polite, and scoped, not a whole-app
+// live region.
 function announce(msg) {
-  const el = document.getElementById('reveal-status');
-  if (!el) return;
-  el.textContent = '';
-  requestAnimationFrame(() => { el.textContent = msg; });
+  setLiveRegion(document.getElementById('reveal-status'), msg);
 }
 
 // External link styled as a primary button. Use when the action leaves the tool
@@ -1576,8 +1576,8 @@ function screenTracker() {
       <div class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
         <div class="flex items-start justify-between gap-3 mb-3">
           <div>
-            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back,</p>
-            <h1 class="text-[1.6rem] font-bold leading-tight">${profile.name}</h1>
+            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back, ${profile.name}</p>
+            <h1 class="text-[1.6rem] font-bold leading-tight">Your NISSS contributions</h1>
           </div>
           <span class="chip bg-bb-green-10 text-bb-green-00 border border-bb-green-40">
             ${ICONS.circleCheck}<span>${overallStatus}</span>
@@ -1951,12 +1951,20 @@ function toggleScenario(id, ev) {
 }
 
 function selectTier(id) {
-  const firstPick = !state.data.contributionTier;
+  const prev = state.data.contributionTier;
   state.data.contributionTier = id;
   render();
   // The first pick reveals the plan hero and benefit cards below the group,
-  // so tell screen-reader users. Later tier changes just update the figures.
-  if (firstPick) announce('Your plan details are shown below.');
+  // so tell screen-reader users. Every later CHANGE silently rewrites all
+  // the benefit figures, so say that too. Re-picking the same tier changes
+  // nothing and says nothing.
+  if (prev === id) return;
+  if (!prev) {
+    announce('Your plan details are shown below.');
+  } else {
+    const label = { minimum: 'Minimum', safer: 'Moderate', strong: 'Stronger' }[id] || id;
+    announce(`Estimates updated for the ${label} plan.`);
+  }
 }
 
 function setHasNis(id) {

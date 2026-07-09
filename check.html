@@ -331,6 +331,12 @@ const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awaren
 /* Screen-reader cue appended to every external (target="_blank") link. */
 const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
 
+// Hidden, not removed (#48): the tracker is a future-feature preview with no
+// live data, so its only entry point is switched off. Flip to true to restore
+// the "Already contributing?" section on the landing page; screenTracker and
+// its SCREENS/TITLES entries stay intact either way.
+const SHOW_TRACKER_ENTRY = false;
+
 /* ─────────────────────────────────────────────────────────
    Icons (lightweight inline SVGs)
    ───────────────────────────────────────────────────────── */
@@ -614,6 +620,7 @@ function screenLanding() {
         </button>
       </div>
 
+      ${!SHOW_TRACKER_ENTRY ? '' : `
       <div class="mt-10 pt-6 border-t border-bb-grey-00">
         <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">Already contributing?</h2>
         <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
@@ -630,7 +637,7 @@ function screenLanding() {
           </span>
           <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
         </button>
-      </div>
+      </div>`}
 
       <p class="text-[0.95rem] text-bb-mid-grey-00 flex items-center gap-2 mt-8 pt-6 border-t border-bb-grey-00">
         ${ICONS.lock}

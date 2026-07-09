@@ -157,8 +157,8 @@
 
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-yellow-100 focus:text-black-00 focus:px-4 focus:py-2 focus:font-bold">Skip to main content</a>
 
-  <!-- ============ PAGE CHROME (banner + alpha banner + header) ============ -->
-  <div>
+  <!-- ============ PAGE CHROME (banner + alpha banner + header) as one <header> landmark so the official banner and alpha banner are inside a landmark ============ -->
+  <header>
     <!-- Official banner -->
     <div class="bg-blue-100 text-white-00">
       <div class="container">
@@ -188,7 +188,7 @@
     <!-- Yellow header with GOVBB logo.
          NOTE: the live site's hamburger menu needs React. For this standalone file the
          primary nav links show at every width (no JS). In the repo, use the app's MobileNav. -->
-    <header class="relative bg-yellow-100">
+    <div class="relative bg-yellow-100">
       <div class="container">
         <div class="flex items-center gap-3 py-s lg:py-xm">
           <a aria-label="Go to the alpha.gov.bb homepage" href="/">
@@ -203,11 +203,11 @@
           </nav>
         </div>
       </div>
-    </header>
-  </div>
+    </div>
+  </header>
 
   <!-- ============ MAIN CONTENT ============ -->
-  <main id="main">
+  <main id="main" tabindex="-1" class="outline-none">
     <div class="container">
       <article class="max-w-3xl py-8 space-y-5">
 

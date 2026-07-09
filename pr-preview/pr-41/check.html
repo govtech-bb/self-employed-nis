@@ -107,12 +107,10 @@
   /* Screen transitions */
   .screen { animation: fade 0.32s ease-out; }
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-  /* Honour reduced-motion: no screen fade/slide, no animated bar fill */
-  @media (prefers-reduced-motion: reduce) {
-    .screen { animation: none; }
-    .protect-bar-fill, .selectable, .chev { transition: none; }
-  }
+  /* Entrance animation runs on real navigation only. In-place re-renders
+     (selecting a card or radio rebuilds the screen) add .no-anim to #app
+     so the fade does not replay on every press. */
+  .no-anim .screen { animation: none; }
 
   /* Selectable cards */
   .selectable { transition: all .18s ease; }
@@ -201,6 +199,21 @@
     background: linear-gradient(90deg, #1fbf84, #30c0c8);
     transition: width .5s cubic-bezier(.22,1,.36,1);
   }
+
+  /* Honour reduced-motion: no screen fade/slide, no animated transitions.
+     This block stays at the END of the stylesheet so nothing declared later
+     can reintroduce motion. The !important catch-all covers everything:
+     the .screen fade, the .selectable/.chev/.protect-bar-fill transitions,
+     and Tailwind utility transitions (transition-all on input wrappers,
+     button colour fades). */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -271,6 +284,9 @@
   <div class="container">
     <div class="px-4 py-6 sm:py-8" id="app"></div>
   </div>
+  <!-- Scoped announcer for content revealed by a selection (lives outside
+       #app so re-renders do not destroy it mid-announcement). -->
+  <p id="reveal-status" class="sr-only" role="status"></p>
 </main>
 
 <!-- Footer -->
@@ -305,9 +321,6 @@ const state = {
     contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
     monthlyContribution: 150,
     alreadyHasNis: null,
-    firstName: '',
-    contact: '',
-    contactMethod: null,
   },
   errors: {},
   expandedScenario: null,
@@ -315,54 +328,55 @@ const state = {
 
 const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
 
+/* Screen-reader cue appended to every external (target="_blank") link. */
+const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
+
 /* ─────────────────────────────────────────────────────────
    Icons (lightweight inline SVGs)
    ───────────────────────────────────────────────────────── */
 const ICONS = {
   /* worker types */
-  freelancer: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 21h8M12 18v3M7 9h10M7 13h6"/></svg>`,
-  delivery: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="6" cy="17" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M3 17h.5M8.5 17h7M20.5 17h.5M14 6h3l3 6"/><path d="M5 13l2-7h7l3 11"/></svg>`,
-  taxi: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M5 11l1.5-4a2 2 0 0 1 2-1.5h7a2 2 0 0 1 2 1.5L19 11"/><path d="M3 11h18v6a1 1 0 0 1-1 1h-1.5a1.5 1.5 0 0 1-1.5-1.5V16H8v.5A1.5 1.5 0 0 1 6.5 18H5a1 1 0 0 1-1-1v-6z"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/></svg>`,
-  creative: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="13.5" cy="6.5" r="1.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="17.5" cy="15.5" r="1.5"/><circle cx="13.5" cy="19.5" r="1.5"/><path d="M12 2a10 10 0 1 0 0 20c1 0 1.5-.5 1.5-1.5 0-1.5-1.5-2-1.5-3.5 0-1 1-1.5 2-1.5h2A4 4 0 0 0 20 11c0-5-3.5-9-8-9z"/></svg>`,
-  vendor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M3 9l2-4h14l2 4M3 9v11h18V9M3 9h18M8 9v4M16 9v4"/></svg>`,
-  tradesperson: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M14.7 6.3a3.5 3.5 0 0 0-4.4 4.4L3 18l3 3 7.3-7.3a3.5 3.5 0 0 0 4.4-4.4l-2.4 2.4-1.6-1.6 2.4-2.4z"/></svg>`,
-  domestic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>`,
-  other: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>`,
-  agri: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 22v-9"/><path d="M12 13c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6z"/><path d="M12 16c0-2.8-2.2-5-5-5 0 2.8 2.2 5 5 5z"/></svg>`,
-  beauty: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M11 3l1.7 5.1a3 3 0 0 0 1.9 1.9L19.7 11.7l-5.1 1.7a3 3 0 0 0-1.9 1.9L11 20.4l-1.7-5.1a3 3 0 0 0-1.9-1.9L2.3 11.7l5.1-1.7a3 3 0 0 0 1.9-1.9L11 3z"/><path d="M18.5 16.5l.5 1.6 1.6.5-1.6.5-.5 1.6-.5-1.6-1.6-.5 1.6-.5.5-1.6z"/></svg>`,
+  freelancer: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z"/><path d="M20.054 15.987H3.946"/></svg>`,
+  delivery: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>`,
+  creative: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></svg>`,
+  vendor: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg>`,
+  tradesperson: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg>`,
+  domestic: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>`,
+  other: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
+  agri: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3"/><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4"/><path d="M5 21h14"/></svg>`,
+  beauty: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg>`,
 
   /* benefits */
-  sickness: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 21s-7-4.35-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.65-7 10-7 10z" stroke="none" fill="currentColor" opacity=".12"/><path d="M3 13h4l2-4 3 8 2-4h7"/></svg>`,
-  maternity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="12" cy="5" r="2.5"/><path d="M9 22V14a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v8M7 13c.5-2 1.5-3.5 2.5-4M17 13c-.5-2-1.5-3.5-2.5-4"/></svg>`,
-  paternity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="8" cy="6" r="2"/><circle cx="16" cy="7" r="2"/><path d="M5 22v-7a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v7M13 22v-6a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v6"/></svg>`,
-  invalidity: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="10" cy="5" r="2"/><circle cx="10" cy="17" r="4"/><path d="M10 7v6l4 2M14 16l3 3"/></svg>`,
-  survivors: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5M15 20c0-2 1.5-4 4-4s4 2 4 4"/></svg>`,
-  pension: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M12 3v18M5 21h14"/><path d="M12 11s-4-1-4-4a4 4 0 0 1 8 0c0 3-4 4-4 4z" fill="currentColor" opacity=".12"/></svg>`,
+  sickness: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>`,
+  maternity: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M15 12h.01"/><path d="M19.38 6.813A9 9 0 0 1 20.8 10.2a2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/><path d="M9 12h.01"/></svg>`,
+  paternity: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg>`,
+  invalidity: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg>`,
+  survivors: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762"/></svg>`,
+  pension: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/></svg>`,
 
   /* utility */
-  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M4 12l5 5 11-11"/></svg>`,
-  arrowLeft: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>`,
-  arrowRight: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`,
-  shield: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 2l8 3v6c0 5-3.5 9.5-8 11-4.5-1.5-8-6-8-11V5l8-3z"/></svg>`,
-  lock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`,
-  chevDown: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 chev"><path d="M6 9l6 6 6-6"/></svg>`,
-  warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>`,
-  spark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/></svg>`,
-  clock: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
-  doc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>`,
-  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
-  building: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10M9 7h.01M15 7h.01M9 10h.01M15 10h.01"/></svg>`,
-  globe: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>`,
-  card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>`,
-  chart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>`,
-  download: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>`,
-  bell: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>`,
-  circleCheck: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>`,
-  circleMinus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>`,
-  store: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 9l2-4h14l2 4M3 9v11h18V9M3 9h18M9 14h6"/></svg>`,
-  bolt: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>`,
-  calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>`,
-  heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  check: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20 6 9 17l-5-5"/></svg>`,
+  arrowLeft: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>`,
+  arrowRight: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
+  shield: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>`,
+  lock: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  chevDown: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 chev"><path d="m6 9 6 6 6-6"/></svg>`,
+  warning: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+  spark: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg>`,
+  clock: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+  doc: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>`,
+  phone: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>`,
+  building: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M12 6h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M16 6h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/><path d="M8 6h.01"/><path d="M9 22v-3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/><rect x="4" y="2" width="16" height="20" rx="2"/></svg>`,
+  globe: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>`,
+  card: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>`,
+  chart: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></svg>`,
+  download: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>`,
+  bell: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>`,
+  circleCheck: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`,
+  circleMinus: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>`,
+  store: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"/><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"/><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"/></svg>`,
+  bolt: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>`,
+  calendar: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>`,
 };
 
 /* ─────────────────────────────────────────────────────────
@@ -494,10 +508,39 @@ function primaryBtn(label, action, opts = {}) {
     </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
 }
 
+// Write a message into a live region. Clear first, then set on the next
+// frame: writing identical text into a role=status element is deduped by
+// AT, so a repeated message would otherwise be silent.
+function setLiveRegion(el, msg) {
+  if (!el) return;
+  el.textContent = '';
+  requestAnimationFrame(() => { el.textContent = msg; });
+}
+
 // Pressing a not-ready Continue: announce + show why it does nothing yet.
 function showDisabledHint(btn) {
   const el = btn.nextElementSibling;
-  if (el && el.classList.contains('disabled-hint')) el.textContent = btn.dataset.hint || '';
+  if (!el || !el.classList.contains('disabled-hint')) return;
+  setLiveRegion(el, btn.dataset.hint || '');
+}
+
+// Announce content revealed or updated by a selection (plan details, the
+// dependants count question). Short, polite, and scoped, not a whole-app
+// live region.
+function announce(msg) {
+  setLiveRegion(document.getElementById('reveal-status'), msg);
+}
+
+// External link styled as a primary button. Use when the action leaves the tool
+// for the real NIS site: a real <a> gives keyboard, middle-click, "open in new
+// tab" and screen-reader semantics a <button onclick> can't. Opens in a new tab
+// and tells screen-reader users so.
+function primaryLink(label, href) {
+  return `
+    <a href="${href}" target="_blank" rel="noopener noreferrer"
+      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      ${label}${NEW_TAB_CUE} ${ICONS.arrowRight}
+    </a>`;
 }
 
 function secondaryBtn(label, action) {
@@ -838,8 +881,22 @@ function screenYourSituation() {
         ])}
       </div>
 
-      ${primaryBtn('Continue', "nav('risk-awareness')", { disabled: !d.hasDependants || (d.hasDependants === 'yes' && !d.dependantsCount) || !d.hasSavings || !d.payingNIS, hint: 'Answer all three questions above to continue.' })}
+      <div id="situation-continue">${situationContinue()}</div>
     </div>`;
+}
+
+// Continue button for the your-situation screen. Lives in its own helper so
+// updateDependantsCount() can refresh it in place while the user types
+// (a full render() would fight the caret in the count field). The hint names
+// the actual blocker instead of always saying "all three questions".
+function situationContinue() {
+  const d = state.data;
+  const missingRadios = !d.hasDependants || !d.hasSavings || !d.payingNIS;
+  const missingCount = d.hasDependants === 'yes' && !d.dependantsCount;
+  const hint = missingRadios
+    ? 'Answer all the questions above to continue.'
+    : 'Enter how many people depend on your income to continue.';
+  return primaryBtn('Continue', "nav('risk-awareness')", { disabled: missingRadios || missingCount, hint });
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1246,15 +1303,15 @@ function screenNextSteps() {
           </div>
         </button>
 
-        <button type="button" onclick="nav('register')"
+        <button type="button" onclick="nav('contact')"
           class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
           <div class="flex items-start gap-3">
             <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-yellow-10 text-bb-yellow-00">
               ${ICONS.phone}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Have someone call me</p>
-              <p class="text-[0.95rem] text-bb-blue-00/80">Not ready yet? An NISSS officer will reach out and answer questions.</p>
+              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Contact NISSS</p>
+              <p class="text-[0.95rem] text-bb-blue-00/80">Have a question? Call or visit an office and an officer will help.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1309,98 +1366,23 @@ function screenRegisterPath() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "goToRegistrationGuide()", { disabled: !state.data.alreadyHasNis, hint: 'Choose one of the options above to continue.' })}
-    </div>`;
-}
-
-/* ─────────────────────────────────────────────────────────
-   SCREEN 10 — Registration guide
-   ───────────────────────────────────────────────────────── */
-function screenRegistrationGuide() {
-  const has = state.data.alreadyHasNis;
-
-  const docsAlready = [
-    { icon: 'doc',  title: 'Your NISSS number',                  sub: 'On your ID, an old payslip, or NISSS card.' },
-    { icon: 'card', title: 'A valid Barbados ID',              sub: 'National ID, passport, or driver\'s licence.' },
-  ];
-  const docsNew = [
-    { icon: 'card', title: 'A valid Barbados ID',              sub: 'National ID, passport, or driver\'s licence.' },
-    { icon: 'doc',  title: 'Proof of address',                 sub: 'Recent utility bill or bank statement.' },
-    { icon: 'card', title: 'Your bank account details',         sub: 'For sending you benefits when you need them.' },
-  ];
-  const docs = has === 'yes' ? docsAlready : docsNew;
-
-  const intro = {
-    yes: "You already have an NISSS number. Let's link it to self-employed status.",
-    no:  "We'll set you up with a new NISSS number. It's yours for life.",
-    unsure: "Let's check first. Bring your ID and we'll look it up.",
-  }[has] || '';
-
-  return `
-    <div class="screen stage">
-      ${backBtn('register-path')}
-      ${serviceCaption()}
-
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
-        How to register
-      </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">${intro}</p>
-
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What you'll need</h2>
-      <div class="space-y-2 mb-6">
-        ${docs.map(d => `
-          <div class="rounded-xl border border-bb-grey-00 bg-white p-4 flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-blue-00">${ICONS[d.icon]}</span>
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-[1rem] text-bb-blue-00">${d.title}</p>
-              <p class="text-[0.9rem] text-bb-mid-grey-00 mt-0.5">${d.sub}</p>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Three ways to do it</h2>
-      <div class="space-y-3 mb-6">
-        ${[
-          { icon: 'globe',    title: 'Online',         sub: has === 'yes'
-            ? 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-page/" target="_blank" rel="noopener" class="link-bb font-medium">NIS self-employment registration page</a>. Takes about 10 minutes.'
-            : 'Fill in the form on the <a href="https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/" target="_blank" rel="noopener" class="link-bb font-medium">NIS new applicant registration page</a>. Takes about 10 minutes.',
-          tag: 'Easiest' },
-          { icon: 'building', title: 'At an NISSS office', sub: 'Walk in to Frank Walcott Building, Bridgetown, or any branch.', tag: 'In person' },
-          { icon: 'phone',    title: 'By phone',         sub: 'Call 246-431-7400 and an officer will help you over the phone.', tag: 'No screen' },
-        ].map(o => `
-          <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
-            <div class="flex items-start gap-3">
-              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-teal-10 text-bb-teal-00">${ICONS[o.icon]}</span>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap mb-1">
-                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${o.title}</p>
-                  <span class="chip bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40">${o.tag}</span>
-                </div>
-                <p class="text-[0.95rem] text-bb-mid-grey-00">${o.sub}</p>
-              </div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[0.98rem] text-bb-blue-00">
-          <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
-        </p>
-      </div>
-
-      <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.shield}</span>
-        <p class="text-[0.98rem] text-bb-blue-00">
-          <strong>It's never too late.</strong> Even if you start close to retirement and don't build enough contributions for a full pension, you may still qualify for a <strong>one-time grant</strong>. Starting now always counts for something.
-        </p>
-      </div>
-
-      ${primaryBtn('See payment options', "nav('payment-options')")}
-      <div class="mt-3">${secondaryBtn('Have someone call me first', "nav('register')")}</div>
-    </div>`;
+      ${(() => {
+        // Route straight to the right destination for each answer:
+        //   yes → NIS self-employment registration form (they already have a number)
+        //   no  → NIS new-applicant registration form
+        //   unsure → contact page, so they can check their status before registering
+        //            (sending them to the new-applicant form risks a duplicate)
+        switch (state.data.alreadyHasNis) {
+          case 'yes':
+            return primaryLink('Continue', 'https://www.nis.gov.bb/self-employment-registration-form-page/');
+          case 'no':
+            return primaryLink('Continue', 'https://www.nis.gov.bb/self-employment-registration-form-new-nis-applicant/');
+          case 'unsure':
+            return primaryBtn('Continue', "nav('contact')");
+          default:
+            return primaryBtn('Continue', '', { disabled: true, hint: 'Choose one of the options above to continue.' });
+        }
+      })()}    </div>`;
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1409,7 +1391,7 @@ function screenRegistrationGuide() {
 function screenPaymentOptions() {
   return `
     <div class="screen stage">
-      ${backBtn('registration-guide')}
+      ${backBtn('next-steps')}
       ${serviceCaption()}
 
       <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
@@ -1423,7 +1405,7 @@ function screenPaymentOptions() {
         ${[
           { icon: 'globe',    title: 'NISSS online portal',  sub: 'Pay from your phone, anytime. Get a receipt right away.',     tag: 'Quickest', color: 'teal' },
           { icon: 'store',    title: 'SurePay',            sub: 'Pay cash or card at any SurePay location across the island.', tag: 'Cash OK',  color: 'green' },
-          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
+          { icon: 'bolt',     title: 'EZpay+',           sub: `Pay 24/7 on the government's payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb${NEW_TAB_CUE}</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.`, tag: 'Sign-in needed', color: 'yellow' },
           { icon: 'card',     title: 'Bank transfer',      sub: 'Standing order or one-off transfer from your bank account.',  tag: 'Set & forget', color: 'blue' },
           { icon: 'building', title: 'In person at NISSS',   sub: 'Pay at the NISSS office. Get help if you have questions.',     tag: 'Face to face', color: 'purple' },
         ].map(p => {
@@ -1467,116 +1449,79 @@ function screenPaymentOptions() {
         </div>
       </div>
 
-      ${primaryBtn('Register now', "nav('register')")}
+      ${primaryBtn('Register now', "nav('register-path')")}
       <div class="mt-3">${secondaryBtn('Back to the start', "nav('landing')")}</div>
     </div>`;
 }
 
 /* ─────────────────────────────────────────────────────────
-   SCREEN 12 — Register interest (call me)
+   SCREEN 12 — Contact NISSS (user-initiated)
    ───────────────────────────────────────────────────────── */
-function screenRegister() {
-  const e = state.errors;
-  const d = state.data;
-  const monthly = (d.contributionTier === 'minimum' ? 100 :
-                   d.contributionTier === 'safer'   ? Math.max(150, Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)) / 12 * 0.10 / 10) * 10) :
-                   d.contributionTier === 'strong'  ? Math.max(225, Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)) / 12 * 0.15 / 10) * 10) :
-                   d.monthlyContribution || 150);
+function screenContact() {
+  const unsure = state.data.alreadyHasNis === 'unsure';
+
+  const lead = unsure
+    ? "Not sure if you already have an NISSS number? NISSS can check for you. Here's how to reach them."
+    : "Have a question, or ready to get set up? Here's how to reach NISSS. An officer can help you.";
+
+  const ways = [
+    { icon: 'phone',    title: 'Call NISSS',      sub: 'Call <a href="tel:2464317400" class="link-bb font-medium">246-431-7400</a> and an officer will help you over the phone.', tag: 'Quickest' },
+    { icon: 'building', title: 'Visit an office', sub: 'Walk in to the Frank Walcott Building, Bridgetown, or any branch. Bring a valid Barbados ID.', tag: 'In person' },
+    { icon: 'globe',    title: 'NISSS website',   sub: `Find forms and guidance at <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">nis.gov.bb${NEW_TAB_CUE}</a>.`, tag: 'Self-serve' },
+  ];
 
   return `
     <div class="screen stage">
-      ${backBtn('next-steps')}
+      ${backBtn(unsure ? 'register-path' : 'next-steps')}
       ${serviceCaption()}
 
       <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
-        Tell us where to reach you
+        Contact NISSS
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-5">
-        An NISSS officer will reach out. No spam. No paperwork. No pressure.
-      </p>
+      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">${lead}</p>
 
-      <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-        <p class="text-[0.95rem] text-bb-blue-00">
-          Your details stay private with NISSS and are used only to get in touch with you.
-        </p>
-      </div>
-
-      ${Object.keys(e).length ? `
-        <div class="rounded-lg border-2 border-bb-red-00 bg-bb-red-10 p-4 mb-6" role="alert" tabindex="-1" id="error-summary">
-          <p class="font-semibold text-bb-red-00 mb-2">There is a problem</p>
-          <ul class="space-y-1 list-disc pl-5">
-            ${Object.entries(e).map(([id, msg]) => `<li><a href="#${id}" class="text-bb-red-00 underline">${msg}</a></li>`).join('')}
-          </ul>
+      ${unsure ? `
+        <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
+          <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
+          <p class="text-[0.98rem] text-bb-blue-00">
+            Ask them to look up your number before you register. If you already have one, you keep it for life, so there is no need to sign up again.
+          </p>
         </div>
       ` : ''}
 
-      <form novalidate onsubmit="submitForm(event)" class="space-y-5">
-
-        <div>
-          <label for="firstName" class="block font-semibold text-bb-blue-00 mb-1">First name</label>
-          <p class="text-[0.9rem] text-bb-mid-grey-00 mb-2">So we know what to call you.</p>
-          <div class="relative inline-flex w-full rounded-sm border-2 ${e.firstName ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
-            <input id="firstName" name="firstName" type="text" autocomplete="given-name"
-              value="${d.firstName.replace(/"/g, '&quot;')}"
-              oninput="state.data.firstName = this.value"
-              class="w-full p-3.5 outline-none rounded-[inherit] text-[1.05rem]" />
+      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Ways to reach them</h2>
+      <div class="space-y-3 mb-6">
+        ${ways.map(o => `
+          <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-teal-10 text-bb-teal-00">${ICONS[o.icon]}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${o.title}</p>
+                  <span class="chip bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40">${o.tag}</span>
+                </div>
+                <p class="text-[0.95rem] text-bb-mid-grey-00">${o.sub}</p>
+              </div>
+            </div>
           </div>
-          ${e.firstName ? `<p class="mt-1 text-bb-red-00 text-[0.95rem]">${e.firstName}</p>` : ''}
-        </div>
+        `).join('')}
+      </div>
 
-        <div>
-          <label for="contact" class="block font-semibold text-bb-blue-00 mb-1">Phone number or email</label>
-          <p class="text-[0.9rem] text-bb-mid-grey-00 mb-2">Whichever is easiest. We'll only message about NISSS.</p>
-          <div class="relative inline-flex w-full rounded-sm border-2 ${e.contact ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
-            <input id="contact" name="contact" type="text"
-              value="${d.contact.replace(/"/g, '&quot;')}"
-              oninput="state.data.contact = this.value"
-              placeholder="e.g. 246-555-1234 or you@example.com"
-              class="w-full p-3.5 outline-none rounded-[inherit] text-[1.05rem] placeholder:text-bb-mid-grey-00/70" />
-          </div>
-          ${e.contact ? `<p class="mt-1 text-bb-red-00 text-[0.95rem]">${e.contact}</p>` : ''}
-        </div>
-
-        <fieldset>
-          <legend class="block font-semibold text-bb-blue-00 mb-2">How would you like us to contact you?</legend>
-          <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="How would you like us to contact you?">
-            ${[
-              { id: 'whatsapp', label: 'WhatsApp' },
-              { id: 'sms',      label: 'Text' },
-              { id: 'email',    label: 'Email' },
-            ].map(o => {
-              const selected = d.contactMethod === o.id;
-              return `
-                <button type="button" role="radio" aria-checked="${selected}"
-                  onclick="state.data.contactMethod='${o.id}'; render()"
-                  class="selectable rounded-lg border-2 border-bb-grey-00 bg-white py-3 px-2 text-[1rem] font-medium text-bb-blue-00 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
-                  ${o.label}
-                </button>`;
-            }).join('')}
-          </div>
-          ${e.contactMethod ? `<p class="mt-2 text-bb-red-00 text-[0.95rem]">${e.contactMethod}</p>` : ''}
-        </fieldset>
-
-        ${d.workerType || d.contributionTier ? `
-          <div class="rounded-xl bg-bb-blue-10/50 border border-bb-blue-10 p-4">
-            <p class="font-semibold text-bb-blue-00 mb-2">What you've told us</p>
-            <ul class="text-[0.95rem] text-bb-blue-00/80 space-y-1.5">
-              ${d.workerType ? `<li>${ICONS.check ? '· ' : ''}Work: <strong>${(WORKER_TYPES.find(w => w.id === d.workerType) || {}).title || d.workerType}</strong></li>` : ''}
-              ${d.contributionTier ? `<li>· Plan: <strong>${fmtMoney(monthly)}/month</strong></li>` : ''}
-            </ul>
-            <button type="button" onclick="nav('plan')" class="link-bb mt-3 text-[0.95rem]">Change</button>
-          </div>
-        ` : ''}
-
-        <button type="submit"
-          class="btn-primary w-full rounded-lg px-6 py-4 text-[1.125rem] font-semibold inline-flex items-center justify-center gap-2 mt-2">
-          Submit
-        </button>
-        <p class="text-center text-[0.85rem] text-bb-mid-grey-00">
-          By submitting, you agree we can contact you about NISSS.
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
+        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <p class="text-[0.98rem] text-bb-blue-00">
+          <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
         </p>
-      </form>
+      </div>
+
+      <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
+        <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.shield}</span>
+        <p class="text-[0.98rem] text-bb-blue-00">
+          <strong>It's never too late.</strong> Even if you start close to retirement and don't build enough contributions for a full pension, you may still qualify for a <strong>one-time grant</strong>. Starting now always counts for something.
+        </p>
+      </div>
+
+      ${secondaryBtn('Back to the start', "nav('landing')")}
     </div>`;
 }
 
@@ -1634,8 +1579,8 @@ function screenTracker() {
       <div class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
         <div class="flex items-start justify-between gap-3 mb-3">
           <div>
-            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back,</p>
-            <h1 class="text-[1.6rem] font-bold leading-tight">${profile.name}</h1>
+            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back, ${profile.name}</p>
+            <h1 class="text-[1.6rem] font-bold leading-tight">Your NISSS contributions</h1>
           </div>
           <span class="chip bg-bb-green-10 text-bb-green-00 border border-bb-green-40">
             ${ICONS.circleCheck}<span>${overallStatus}</span>
@@ -1774,7 +1719,7 @@ function screenTracker() {
         ${[
           { icon: 'card',     title: 'Change my contribution amount',  sub: 'Adjust your monthly target',        action: "nav('plan')" },
           { icon: 'phone',    title: 'Update my contact details',      sub: 'Phone, email, address',             action: "alert('In a real service, this would open the account settings.')" },
-          { icon: 'building', title: 'Talk to an NISSS officer',         sub: 'Get help with your account',        action: "nav('register')" },
+          { icon: 'building', title: 'Talk to an NISSS officer',         sub: 'Get help with your account',        action: "nav('contact')" },
         ].map(a => `
           <button type="button" onclick="${a.action}"
             class="text-left rounded-xl border border-bb-grey-00 bg-white p-4 w-full flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
@@ -1795,63 +1740,6 @@ function screenTracker() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   SCREEN 13 — Confirmation
-   ───────────────────────────────────────────────────────── */
-function screenConfirmation() {
-  const ref = window.__refNumber || ('GWP-' + Math.random().toString(36).substring(2, 8).toUpperCase());
-  const d = state.data;
-  const safeName = d.firstName ? d.firstName.split(' ')[0].replace(/[<>]/g, '') : '';
-
-  return `
-    <div class="screen stage">
-      <div class="bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 sm:p-7 rounded-2xl mb-6 shadow-card-hover">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/15 mb-4">
-          ${ICONS.check}
-        </div>
-        <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] mb-2">
-          Thanks${safeName ? ', ' + safeName : ''}.
-        </h1>
-        <p class="text-[1.05rem] text-white/90 mb-5">
-          We got your details. Someone from NISSS will reach out within 5 working days.
-        </p>
-        <div class="bg-white/10 rounded-lg p-3">
-          <p class="text-[0.85rem] uppercase tracking-wide text-bb-teal-40 font-semibold">Your reference</p>
-          <p class="text-[1.5rem] font-bold tabular-nums">${ref}</p>
-        </div>
-      </div>
-
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What happens next</h2>
-      <ol class="space-y-3 mb-6">
-        ${[
-          'We send a quick message to confirm we have your details.',
-          'An NISSS officer reaches out by your preferred method to answer questions.',
-          'When you are ready, they help you complete registration. There is no rush.',
-        ].map((step, i) => `
-          <li class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full bg-bb-blue-10 text-bb-blue-00 font-bold tabular-nums">${i + 1}</span>
-            <span class="text-[1.05rem] text-bb-blue-00 pt-1">${step}</span>
-          </li>
-        `).join('')}
-      </ol>
-
-      <div class="rounded-xl border border-bb-grey-00 bg-white p-4 mb-6">
-        <p class="text-[0.95rem] text-bb-mid-grey-00">
-          You can step away any time. Joining is voluntary, and you choose how much to contribute based on what you actually earn.
-        </p>
-      </div>
-
-      <div class="space-y-3">
-        ${primaryBtn('See my contribution dashboard', "nav('tracker')")}
-        ${secondaryBtn('Return to the start', "restart()")}
-        <button type="button" onclick="nav('benefits-quick')"
-          class="block text-center w-full text-bb-teal-00 underline underline-offset-2 py-3 text-[1rem] hover:no-underline">
-          Learn more about NISSS benefits
-        </button>
-      </div>
-    </div>`;
-}
-
-/* ─────────────────────────────────────────────────────────
    Rendering + navigation
    ───────────────────────────────────────────────────────── */
 const SCREENS = {
@@ -1864,11 +1752,9 @@ const SCREENS = {
   'next-steps': screenNextSteps,
   'benefits-quick': screenBenefitsQuick,
   'register-path': screenRegisterPath,
-  'registration-guide': screenRegistrationGuide,
   'payment-options': screenPaymentOptions,
-  'register': screenRegister,
+  'contact': screenContact,
   'tracker': screenTracker,
-  'confirmation': screenConfirmation,
 };
 
 const TITLES = {
@@ -1881,11 +1767,9 @@ const TITLES = {
   'next-steps': 'Next steps – NISSS Barbados',
   'benefits-quick': 'Six ways NISSS protects you – NISSS Barbados',
   'register-path': 'Do you have an NISSS number? – NISSS Barbados',
-  'registration-guide': 'How to register – NISSS Barbados',
   'payment-options': 'How to pay – NISSS Barbados',
-  'register': 'Tell us where to reach you – NISSS Barbados',
+  'contact': 'Contact NISSS – NISSS Barbados',
   'tracker': 'Your NISSS contributions – NISSS Barbados',
-  'confirmation': 'Thanks – NISSS Barbados',
 };
 
 /* Roving tabindex for the custom role="radio" groups (ARIA radio-group
@@ -1909,6 +1793,9 @@ function setupRadioGroups(root) {
 // Selection re-renders the screen, and render() restores focus to the
 // equivalent radio, so focus (and scroll) stay put.
 document.getElementById('app').addEventListener('keydown', (ev) => {
+  // Leave OS shortcuts alone (Ctrl+Home, Cmd+Arrow scrolling, etc.):
+  // modified keys must not change the answer.
+  if (ev.ctrlKey || ev.metaKey || ev.altKey) return;
   const radio = ev.target.closest('[role="radio"]');
   if (!radio) return;
   const group = radio.closest('[role="radiogroup"]');
@@ -1926,17 +1813,35 @@ document.getElementById('app').addEventListener('keydown', (ev) => {
   radios[next].click();
 });
 
+// Safari does not move focus to a button on mouse click, so
+// document.activeElement is unreliable for restoring focus after an in-place
+// re-render there. Record the activated radio's identity at click time
+// (capture phase runs before the inline onclick handlers call render()).
+let lastActivated = null;
+document.getElementById('app').addEventListener('click', (ev) => {
+  const el = ev.target.closest('[role="radio"]');
+  lastActivated = el && el.dataset.rg !== undefined
+    ? { rg: el.dataset.rg, ri: el.dataset.ri }
+    : null;
+}, true);
+
 function render(opts = {}) {
   const root = document.getElementById('app');
 
   // Remember where focus was, so in-place re-renders (selecting a card or
-  // radio rebuilds the whole screen) don't dump focus on <body>.
+  // radio rebuilds the whole screen) don't dump focus on <body>. Prefer the
+  // click-time record; fall back to activeElement (keyboard activation).
   const prev = document.activeElement;
-  let restore = null;
-  if (prev && prev !== document.body && root.contains(prev)) {
+  let restore = lastActivated;
+  lastActivated = null;
+  if (!restore && prev && prev !== document.body && root.contains(prev)) {
     if (prev.dataset && prev.dataset.rg !== undefined) restore = { rg: prev.dataset.rg, ri: prev.dataset.ri };
     else if (prev.id) restore = { id: prev.id };
   }
+
+  // Entrance animation only on real navigation; in-place re-renders would
+  // replay the fade on every arrow press.
+  root.classList.toggle('no-anim', !opts.scroll);
 
   root.innerHTML = (SCREENS[state.screen] || screenLanding)();
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
@@ -1947,7 +1852,10 @@ function render(opts = {}) {
   if (opts.scroll) {
     window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
-  if (Object.keys(state.errors).length && document.getElementById('error-summary')) {
+  // Focus the error summary only on a render caused by a submit attempt.
+  // Re-renders from answering a field (e.g. picking a contact method while
+  // errors are showing) must keep focus where the user is working.
+  if (opts.focusErrors && Object.keys(state.errors).length && document.getElementById('error-summary')) {
     document.getElementById('error-summary').focus();
   } else if (opts.focusHeading) {
     // Screen change: move focus to the new screen's H1 so screen readers
@@ -2009,15 +1917,30 @@ function updateIncomeField(field, v, source) {
 }
 
 function setDependants(id) {
+  const was = state.data.hasDependants;
   state.data.hasDependants = id;
-  if (id === 'yes' && !state.data.dependantsCount) state.data.dependantsCount = 1;
-  if (id === 'no') state.data.dependantsCount = 0;
+  if (id === 'yes' && !state.data.dependantsCount) {
+    // Restore what the user last typed; arrow-scanning through "No" and
+    // back must not wipe it. Default to 1 for a first-time "Yes".
+    state.data.dependantsCount = state.data.lastDependantsCount || 1;
+  }
+  if (id === 'no') {
+    if (state.data.dependantsCount) state.data.lastDependantsCount = state.data.dependantsCount;
+    state.data.dependantsCount = 0;
+  }
   render();
+  if (id === 'yes' && was !== 'yes') {
+    announce('A question about how many people depend on you was added below.');
+  }
 }
 
 function updateDependantsCount(v) {
   const num = Math.max(0, Math.min(20, parseInt(v, 10) || 0));
   state.data.dependantsCount = num;
+  // Keep the Continue button honest: clearing the count must disable it
+  // again. Refresh the button in place, with no full re-render while typing.
+  const holder = document.getElementById('situation-continue');
+  if (holder) holder.innerHTML = situationContinue();
 }
 
 function toggleScenario(id, ev) {
@@ -2031,62 +1954,25 @@ function toggleScenario(id, ev) {
 }
 
 function selectTier(id) {
+  const prev = state.data.contributionTier;
   state.data.contributionTier = id;
   render();
+  // The first pick reveals the plan hero and benefit cards below the group,
+  // so tell screen-reader users. Every later CHANGE silently rewrites all
+  // the benefit figures, so say that too. Re-picking the same tier changes
+  // nothing and says nothing.
+  if (prev === id) return;
+  if (!prev) {
+    announce('Your plan details are shown below.');
+  } else {
+    const label = { minimum: 'Minimum', safer: 'Moderate', strong: 'Stronger' }[id] || id;
+    announce(`Estimates updated for the ${label} plan.`);
+  }
 }
 
 function setHasNis(id) {
   state.data.alreadyHasNis = id;
   render();
-}
-
-function goToRegistrationGuide() {
-  if (!state.data.alreadyHasNis) return;
-  nav('registration-guide');
-}
-
-function submitForm(ev) {
-  ev.preventDefault();
-  const e = {};
-  if (!state.data.firstName.trim()) e.firstName = 'Tell us your first name';
-  if (!state.data.contact.trim()) e.contact = 'Add a phone number or email';
-  else if (state.data.contact.includes('@')) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.data.contact.trim()))
-      e.contact = 'Check that email looks right (for example, you@example.com)';
-  } else {
-    if (state.data.contact.replace(/\D/g, '').length < 7)
-      e.contact = 'Add a phone number we can reach you on';
-  }
-  if (!state.data.contactMethod) e.contactMethod = 'Choose how we should reach you';
-
-  state.errors = e;
-  if (Object.keys(e).length) {
-    render();
-    return;
-  }
-  window.__refNumber = 'GWP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
-  nav('confirmation');
-}
-
-function restart() {
-  state.data = {
-    workerType: null,
-    goodMonth: 2500,
-    slowMonth: 800,
-    slowMonthsPerYear: 3,
-    hasDependants: null,
-    dependantsCount: 0,
-    contributionTier: null,
-    monthlyContribution: 150,
-    alreadyHasNis: null,
-    firstName: '',
-    contact: '',
-    contactMethod: null,
-  };
-  state.errors = {};
-  state.expandedScenario = null;
-  window.__refNumber = null;
-  nav('landing');
 }
 
 // Initial render — first render scrolls to top for screen-reader users landing on the page

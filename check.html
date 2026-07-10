@@ -129,12 +129,6 @@
   .btn-primary:active { background: #0a4549; transform: translateY(1px); }
   .btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
   .btn-primary:disabled { background: #99a8cc; cursor: not-allowed; box-shadow: none; }
-  /* Green variant (#51): design-system green (bb-green-00) for the landing's
-     primary "Estimate my contributions" CTA. Hover/active follow the teal
-     base's lighten/darken pattern; the focus ring stays app-wide teal. */
-  .btn-primary--green { background: #00654a; }
-  .btn-primary--green:hover { background: #1a7a5e; }
-  .btn-primary--green:active { background: #004634; }
   /* "Not ready yet" state: aria-disabled keeps the button focusable so keyboard and
      screen-reader users can reach it and hear why it does nothing yet.
      Grey-00 bg + mid-grey text = 5.4:1, so it passes AA even though it looks muted. */
@@ -515,7 +509,7 @@ function primaryBtn(label, action, opts = {}) {
     : `onclick="${action}"`;
   return `
     <button type="button" ${attrs}
-      class="btn-primary${opts.green ? ' btn-primary--green' : ''} w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
     </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
 }
@@ -584,7 +578,7 @@ function screenLanding() {
         </p>
 
         <div class="space-y-3 mb-2">
-          ${primaryBtn('Estimate my contributions', "nav('worker-type')", { green: true })}
+          ${primaryBtn('Estimate my contributions', "nav('worker-type')")}
           ${secondaryBtn('See what benefits you may qualify for', "nav('benefits-quick')")}
           <button type="button" onclick="nav('register-path')"
             class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">

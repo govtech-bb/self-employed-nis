@@ -1,11 +1,9 @@
 # Landing CTA swap (issue #51)
 
-**Why green as a variant class:** `.btn-primary--green` overrides only the
-background states and rides on `.btn-primary` for everything else (layout,
-focus ring, aria-disabled machinery), so the a11y behaviour from the WCAG pass
-is inherited, not duplicated. Hover `#1a7a5e` / active `#004634` follow the
-teal base's lighten/darken pattern; both keep white text above 4.5:1. The
-focus ring deliberately stays app-wide teal for consistency.
+**Colour (revised in review):** the button was initially shipped in
+design-system green per the issue, then reverted to the standard teal
+`.btn-primary` on owner review - consistency with every other primary button
+won over differentiation. No variant class remains.
 
 **Why step 1, not the plan screen:** the estimate is only personal if it is
 built from the user's own answers; the old deep-link landed on step 5 with

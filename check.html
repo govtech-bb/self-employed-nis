@@ -552,21 +552,6 @@ function primaryLink(label, href) {
     </a>`;
 }
 
-// GDS-style error summary (issue #45). Shared by the register and income
-// screens: render() focuses it after a failed submit ({ focusErrors: true })
-// and prefixes the title with "Error:" while state.errors has entries.
-function errorSummary() {
-  const e = state.errors;
-  if (!Object.keys(e).length) return '';
-  return `
-    <div class="rounded-lg border-2 border-bb-red-00 bg-bb-red-10 p-4 mb-6" role="alert" tabindex="-1" id="error-summary">
-      <p class="font-semibold text-bb-red-00 mb-2">There is a problem</p>
-      <ul class="space-y-1 list-disc pl-5">
-        ${Object.entries(e).map(([id, msg]) => `<li><a href="#${id}" class="text-bb-red-00 underline">${msg}</a></li>`).join('')}
-      </ul>
-    </div>`;
-}
-
 // What a number field should show: the exact text the user last typed (so a
 // re-render never swaps "-500" for something else), else the stored value.
 function numVal(id, num) {
@@ -760,7 +745,6 @@ function screenIncomeReality() {
         Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
 
-      ${errorSummary()}
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
         <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
@@ -786,12 +770,13 @@ function screenIncomeReality() {
               value="${numVal('goodMonth-typed', d.goodMonth)}"
               oninput="updateIncomeField('goodMonth', this, 'typed')"
               onchange="normaliseIncomeField('goodMonth', this)"
+              onblur="validateIncomeField('goodMonth')"
               onpaste="numberPaste(event)"
               aria-label="Good month earnings in Barbadian dollars"
-              ${e['goodMonth-typed'] ? 'aria-invalid="true" aria-describedby="goodMonth-typed-error"' : ''}
+              aria-describedby="goodMonth-typed-error"${e['goodMonth-typed'] ? ' aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
-          ${e['goodMonth-typed'] ? `<p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['goodMonth-typed']}</p>` : ''}
+          <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
           <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
             <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
               <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
@@ -825,12 +810,13 @@ function screenIncomeReality() {
               value="${numVal('slowMonth-typed', d.slowMonth)}"
               oninput="updateIncomeField('slowMonth', this, 'typed')"
               onchange="normaliseIncomeField('slowMonth', this)"
+              onblur="validateIncomeField('slowMonth')"
               onpaste="numberPaste(event)"
               aria-label="Slow month earnings in Barbadian dollars"
-              ${e['slowMonth-typed'] ? 'aria-invalid="true" aria-describedby="slowMonth-typed-error"' : ''}
+              aria-describedby="slowMonth-typed-error"${e['slowMonth-typed'] ? ' aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
-          ${e['slowMonth-typed'] ? `<p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['slowMonth-typed']}</p>` : ''}
+          <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
           <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
             <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
               <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
@@ -852,14 +838,15 @@ function screenIncomeReality() {
               placeholder="e.g. 8"
               oninput="updateGoodMonths(this)"
               onchange="normaliseGoodMonths(this)"
+              onblur="validateIncomeField('goodMonthsPerYear')"
               onpaste="numberPaste(event)"
               aria-label="Number of good months per year"
-              aria-describedby="goodMonthsPerYear-hint${e.goodMonthsPerYear ? ' goodMonthsPerYear-error' : ''}"
+              aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
               ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
         </div>
-        ${e.goodMonthsPerYear ? `<p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[0.95rem]">${e.goodMonthsPerYear}</p>` : ''}
+        <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[0.95rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
 
       ${primaryBtn('Continue', 'nextFromIncome()')}
@@ -2068,35 +2055,58 @@ function numberPaste(ev) {
   el.dispatchEvent(new Event('input'));
 }
 
-function nextFromIncome() {
-  // Normalise the benign before judging, in case the user goes straight from
-  // the field to the button without blurring first.
-  ['goodMonth', 'slowMonth'].forEach(f => {
-    const el = document.getElementById(f + '-typed');
-    if (el) normaliseIncomeField(f, el);
-  });
-  const gmEl = document.getElementById('goodMonthsPerYear');
-  if (gmEl) normaliseGoodMonths(gmEl);
-
-  const e = {};
-  [['goodMonth', 'good month'], ['slowMonth', 'slow month']].forEach(([f, label]) => {
-    const el = document.getElementById(f + '-typed');
-    const num = state.data[f];
-    if (el && el.validity.badInput) e[f + '-typed'] = 'Enter your ' + label + ' amount using numbers only.';
-    else if (num == null) e[f + '-typed'] = 'Enter your ' + label + ' amount.';
-    else if (num < 0) e[f + '-typed'] = 'Enter an amount of BDS$0 or more.';
-  });
-
-  // Good months per year is optional (see issue #38: the maths does not use
-  // it yet). Empty passes; anything typed must be a whole number from 1 to 12.
-  const gm = state.data.goodMonthsPerYear;
-  if ((gmEl && gmEl.validity.badInput) || (gm != null && (!Number.isInteger(gm) || gm < 1 || gm > 12))) {
-    e.goodMonthsPerYear = 'Enter a whole number of months from 1 to 12.';
+// One rule per field; returns the error message or null. Assumes the field
+// has been normalised. Every question on this screen is required.
+function incomeFieldError(field) {
+  if (field === 'goodMonthsPerYear') {
+    const el = document.getElementById('goodMonthsPerYear');
+    const gm = state.data.goodMonthsPerYear;
+    if (el && el.validity.badInput) return 'Enter a whole number of months from 1 to 12.';
+    if (gm == null) return 'Enter how many good months you have in a year.';
+    if (!Number.isInteger(gm) || gm < 1 || gm > 12) return 'Enter a whole number of months from 1 to 12.';
+    return null;
   }
+  const label = field === 'goodMonth' ? 'good month' : 'slow month';
+  const el = document.getElementById(field + '-typed');
+  const num = state.data[field];
+  if (el && el.validity.badInput) return 'Enter your ' + label + ' amount using numbers only.';
+  if (num == null) return 'Enter your ' + label + ' amount.';
+  if (num < 0) return 'Enter an amount of BDS$0 or more.';
+  return null;
+}
 
-  state.errors = e;
-  if (Object.keys(e).length) {
-    render({ focusErrors: true });
+// Blur-time validation: show or clear the field's inline error in place —
+// no re-render, so focus and carets are never disturbed.
+const INCOME_DEFAULT_BORDER = { goodMonth: 'border-bb-black-00', slowMonth: 'border-bb-black-00', goodMonthsPerYear: 'border-bb-grey-00' };
+function validateIncomeField(field) {
+  const inputId = field === 'goodMonthsPerYear' ? field : field + '-typed';
+  const input = document.getElementById(inputId);
+  if (!input) return null;
+  if (field === 'goodMonthsPerYear') normaliseGoodMonths(input); else normaliseIncomeField(field, input);
+  const msg = incomeFieldError(field);
+  const errEl = document.getElementById(inputId + '-error');
+  if (errEl) { errEl.hidden = !msg; errEl.textContent = msg || ''; }
+  if (msg) { state.errors[inputId] = msg; input.setAttribute('aria-invalid', 'true'); }
+  else { delete state.errors[inputId]; input.removeAttribute('aria-invalid'); }
+  const wrap = input.closest('.border-2');
+  if (wrap) {
+    wrap.classList.toggle('border-bb-red-00', !!msg);
+    wrap.classList.toggle(INCOME_DEFAULT_BORDER[field], !msg);
+  }
+  document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || '');
+  return msg;
+}
+
+function nextFromIncome() {
+  // Same per-field rules as blur; first invalid field gets focus. Errors are
+  // shown at the fields (surfaced as the user leaves each one), so there is
+  // no submit-time summary on this screen.
+  const fields = ['goodMonth', 'slowMonth', 'goodMonthsPerYear'];
+  let first = null;
+  fields.forEach(f => { if (validateIncomeField(f) && !first) first = f; });
+  if (first) {
+    const el = document.getElementById(first === 'goodMonthsPerYear' ? first : first + '-typed');
+    if (el) el.focus();
     return;
   }
   nav('your-situation');

@@ -112,3 +112,18 @@ hidden-to-shown transition (setLiveRegion), hidden again when the value drops
 to the ceiling or below; rendered from state so it survives re-renders. The
 estimate maths already capped insurable earnings at the ceiling, so this is
 purely an honesty fix at the input layer.
+
+## Revision: blur-time validation, all questions required (owner decision)
+
+Validation timing moved from submit to blur: each income field validates as
+the user leaves it, updating its inline error, aria-invalid, border and the
+Error: title prefix in place (no re-render, so focus and carets are never
+disturbed). Continue re-runs the same per-field rules and focuses the first
+invalid field; the income screen's submit-time error summary is gone (errors
+now live at the fields), and the then-unused errorSummary() helper was
+removed. goodMonthsPerYear flipped from optional to required ("Enter how many
+good months you have in a year.") - overriding the earlier keep-it-optional
+choice; note this makes resolving #38 (the maths ignores the answer) more
+pressing, since users are now forced to answer a question that changes
+nothing. Radio screens keep their aria-disabled gate + hint pattern, which
+already enforces required answers.

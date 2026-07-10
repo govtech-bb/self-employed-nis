@@ -792,7 +792,10 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['goodMonth-typed'] ? `<p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['goodMonth-typed']}</p>` : ''}
-          <p id="goodMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          <div id="goodMonth-ceiling" class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-2 flex items-start gap-3"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+            <p id="goodMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          </div>
         </div>
       </div>
 
@@ -826,7 +829,10 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['slowMonth-typed'] ? `<p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['slowMonth-typed']}</p>` : ''}
-          <p id="slowMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          <div id="slowMonth-ceiling" class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-2 flex items-start gap-3"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+            <p id="slowMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          </div>
         </div>
       </div>
 
@@ -2013,15 +2019,16 @@ function normaliseIncomeField(field, el) {
 // Show the insurable-ceiling note when the entry exceeds it; announce only on
 // the hidden -> shown transition so arrowing around the value is not chatty.
 function updateCeilingNote(field) {
-  const note = document.getElementById(field + '-ceiling');
-  if (!note) return;
+  const box = document.getElementById(field + '-ceiling');
+  const text = document.getElementById(field + '-ceiling-text');
+  if (!box || !text) return;
   const over = (state.data[field] || 0) > NIS.MAX_MONTHLY_INSURABLE;
-  if (over && note.hidden) {
-    note.hidden = false;
-    setLiveRegion(note, CEILING_NOTE);
-  } else if (!over && !note.hidden) {
-    note.hidden = true;
-    note.textContent = '';
+  if (over && box.hidden) {
+    box.hidden = false;
+    setLiveRegion(text, CEILING_NOTE);
+  } else if (!over && !box.hidden) {
+    box.hidden = true;
+    text.textContent = '';
   }
 }
 

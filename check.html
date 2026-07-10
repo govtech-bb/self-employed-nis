@@ -735,6 +735,7 @@ function screenIncomeReality() {
   return `
     <div class="screen stage">
       ${backBtn('worker-type')}
+      ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
@@ -2055,6 +2056,32 @@ function numberPaste(ev) {
   el.dispatchEvent(new Event('input'));
 }
 
+// GOV.BB pattern-library error summary (Figma node 1854-2289): 4px red-00
+// border, white background, 32/24 padding, bold black heading, each error an
+// underlined red link to its field. Rendered on Continue; kept in sync in
+// place as blur-time fixes land so it never lists a fixed error.
+const INCOME_FIELD_ORDER = ['goodMonth-typed', 'slowMonth-typed', 'goodMonthsPerYear'];
+function errorSummary() {
+  const keys = INCOME_FIELD_ORDER.filter(k => state.errors[k]);
+  if (!keys.length) return '';
+  return `
+    <div id="error-summary" tabindex="-1" role="alert" class="border-4 border-bb-red-00 bg-white px-8 py-6 mb-6 outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
+      <p class="font-bold text-bb-black-00 mb-2">There is a problem</p>
+      <div class="flex flex-col gap-1">
+        ${keys.map(k => `<a href="#${k}" class="underline text-bb-red-00 w-fit" onclick="document.getElementById('${k}').focus(); return false;">${state.errors[k]}</a>`).join('')}
+      </div>
+    </div>`;
+}
+// Rebuild or remove the rendered summary to mirror state.errors (blur fixes).
+function syncErrorSummary() {
+  const el = document.getElementById('error-summary');
+  if (!el) return;
+  const keys = INCOME_FIELD_ORDER.filter(k => state.errors[k]);
+  if (!keys.length) { el.remove(); return; }
+  const list = el.querySelector('div');
+  if (list) list.innerHTML = keys.map(k => `<a href="#${k}" class="underline text-bb-red-00 w-fit" onclick="document.getElementById('${k}').focus(); return false;">${state.errors[k]}</a>`).join('');
+}
+
 // One rule per field; returns the error message or null. Assumes the field
 // has been normalised. Every question on this screen is required.
 function incomeFieldError(field) {
@@ -2094,6 +2121,7 @@ function validateIncomeField(field) {
     wrap.classList.toggle(INCOME_DEFAULT_BORDER[field], !msg);
   }
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || '');
+  syncErrorSummary();
   return msg;
 }
 
@@ -2102,11 +2130,10 @@ function nextFromIncome() {
   // shown at the fields (surfaced as the user leaves each one), so there is
   // no submit-time summary on this screen.
   const fields = ['goodMonth', 'slowMonth', 'goodMonthsPerYear'];
-  let first = null;
-  fields.forEach(f => { if (validateIncomeField(f) && !first) first = f; });
-  if (first) {
-    const el = document.getElementById(first === 'goodMonthsPerYear' ? first : first + '-typed');
-    if (el) el.focus();
+  let any = false;
+  fields.forEach(f => { if (validateIncomeField(f)) any = true; });
+  if (any) {
+    render({ focusErrors: true });
     return;
   }
   nav('your-situation');

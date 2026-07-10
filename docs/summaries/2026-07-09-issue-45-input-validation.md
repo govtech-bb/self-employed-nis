@@ -98,3 +98,17 @@ axe (WCAG 2.x A/AA) shows zero violations on every screen and on the income
 error state — matching the base, once the harness waits for Tailwind's CDN
 JIT to settle (unsettled runs produce phantom color-contrast hits on both
 base and branch alike).
+
+## Revision: no upper cap, ceiling disclaimer instead (owner decision)
+
+The BDS$20,000 upper bound was an arbitrary sanity cap inherited from the
+first prototype, not a NIS figure. Removed entirely: money fields now accept
+any amount (max attribute dropped, over-max error deleted; negative-only
+error copy). Instead, entries above the real domain ceiling
+(NIS.MAX_MONTHLY_INSURABLE, BDS$5,360/month insurable earnings) reveal a
+per-field role=status note: "The most NIS can insure is BDS$5,360 a month.
+Amounts above this do not change your estimate." Announced once on the
+hidden-to-shown transition (setLiveRegion), hidden again when the value drops
+to the ceiling or below; rendered from state so it survives re-renders. The
+estimate maths already capped insurable earnings at the ceiling, so this is
+purely an honesty fix at the input layer.

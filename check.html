@@ -449,6 +449,12 @@ const NIS = {
   PENSIONABLE_AGE: 67,
 };
 
+// Shown under a money field when the entry exceeds the insurable ceiling.
+// Not an error: any amount is accepted, but only earnings up to the ceiling
+// count toward contributions and benefits.
+const CEILING_NOTE = 'The most NIS can insure is ' + fmtMoney(NIS.MAX_MONTHLY_INSURABLE)
+  + ' a month. Amounts above this do not change your estimate.';
+
 // Annual contribution -> monthly insurable earnings (capped at the ceiling).
 function monthlyInsurableFromContribution(annualContribution) {
   const raw = (annualContribution / NIS.SE_RATE) / 12;
@@ -776,7 +782,7 @@ function screenIncomeReality() {
           <label for="goodMonth-typed" class="sr-only">Or type your good month earnings</label>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['goodMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" step="50"
               value="${numVal('goodMonth-typed', d.goodMonth)}"
               oninput="updateIncomeField('goodMonth', this, 'typed')"
               onchange="normaliseIncomeField('goodMonth', this)"
@@ -786,6 +792,7 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['goodMonth-typed'] ? `<p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['goodMonth-typed']}</p>` : ''}
+          <p id="goodMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
         </div>
       </div>
 
@@ -809,7 +816,7 @@ function screenIncomeReality() {
           <label for="slowMonth-typed" class="sr-only">Or type your slow month earnings</label>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['slowMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" step="50"
               value="${numVal('slowMonth-typed', d.slowMonth)}"
               oninput="updateIncomeField('slowMonth', this, 'typed')"
               onchange="normaliseIncomeField('slowMonth', this)"
@@ -819,6 +826,7 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['slowMonth-typed'] ? `<p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['slowMonth-typed']}</p>` : ''}
+          <p id="slowMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
         </div>
       </div>
 
@@ -1994,10 +2002,27 @@ function updateIncomeField(field, el, source) {
 // Out-of-range values are left alone so Continue can name the problem.
 function normaliseIncomeField(field, el) {
   const num = state.data[field];
-  if (num == null || !isFinite(num)) return;
-  const whole = Math.round(num);
-  el.value = whole;
-  updateIncomeField(field, el, 'typed');
+  if (num != null && isFinite(num)) {
+    const whole = Math.round(num);
+    el.value = whole;
+    updateIncomeField(field, el, 'typed');
+  }
+  updateCeilingNote(field);
+}
+
+// Show the insurable-ceiling note when the entry exceeds it; announce only on
+// the hidden -> shown transition so arrowing around the value is not chatty.
+function updateCeilingNote(field) {
+  const note = document.getElementById(field + '-ceiling');
+  if (!note) return;
+  const over = (state.data[field] || 0) > NIS.MAX_MONTHLY_INSURABLE;
+  if (over && note.hidden) {
+    note.hidden = false;
+    setLiveRegion(note, CEILING_NOTE);
+  } else if (!over && !note.hidden) {
+    note.hidden = true;
+    note.textContent = '';
+  }
 }
 
 function updateGoodMonths(el) {
@@ -2047,7 +2072,7 @@ function nextFromIncome() {
     const num = state.data[f];
     if (el && el.validity.badInput) e[f + '-typed'] = 'Enter your ' + label + ' amount using numbers only.';
     else if (num == null) e[f + '-typed'] = 'Enter your ' + label + ' amount.';
-    else if (num < 0 || num > 20000) e[f + '-typed'] = 'Enter an amount between BDS$0 and BDS$20,000.';
+    else if (num < 0) e[f + '-typed'] = 'Enter an amount of BDS$0 or more.';
   });
 
   // Good months per year is optional (see issue #38: the maths does not use

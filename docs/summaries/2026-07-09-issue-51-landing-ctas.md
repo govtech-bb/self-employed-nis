@@ -21,3 +21,11 @@ original problem, one screen over. Noted on the PR as a follow-up candidate.
 click lands on "What kind of work do you do?" with "Step 1 of 6"; benefits
 click lands on "Six ways NISSS protects you."; Back returns to landing from
 both; no nav('plan') in screenLanding; axe zero violations; zero page errors.
+
+**Extension (owner request, same review):** the benefits page's own CTA pair
+("Start the full guide" primary + "Estimate my contributions" secondary, the
+latter deep-linking to the plan screen) was collapsed to a single teal primary
+"Estimate my contributions" that starts the journey at step 1. With this, no
+shortcut anywhere deep-links to the plan screen; the only nav('plan') calls
+left are the journey's own step 4-to-5 Continue and the hidden tracker screen.
+Both of #30's confirmed wrong-back repros are now gone.

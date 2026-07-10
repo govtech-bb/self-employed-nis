@@ -334,6 +334,15 @@ const state = {
 
 const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
 
+/* Screen-reader cue appended to every external (target="_blank") link. */
+const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
+
+// Hidden, not removed (#48): the tracker is a future-feature preview with no
+// live data, so its only entry point is switched off. Flip to true to restore
+// the "Already contributing?" section on the landing page; screenTracker and
+// its SCREENS/TITLES entries stay intact either way.
+const SHOW_TRACKER_ENTRY = false;
+
 /* ─────────────────────────────────────────────────────────
    Icons (lightweight inline SVGs)
    ───────────────────────────────────────────────────────── */
@@ -449,6 +458,12 @@ const NIS = {
   PENSIONABLE_AGE: 67,
 };
 
+// Shown under a money field when the entry exceeds the insurable ceiling.
+// Not an error: any amount is accepted, but only earnings up to the ceiling
+// count toward contributions and benefits.
+const CEILING_NOTE = 'The most NIS can insure is ' + fmtMoney(NIS.MAX_MONTHLY_INSURABLE)
+  + ' a month. Amounts above this do not change your estimate.';
+
 // Annual contribution -> monthly insurable earnings (capped at the ceiling).
 function monthlyInsurableFromContribution(annualContribution) {
   const raw = (annualContribution / NIS.SE_RATE) / 12;
@@ -542,7 +557,7 @@ function primaryLink(label, href) {
   return `
     <a href="${href}" target="_blank" rel="noopener noreferrer"
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
-      ${label}<span class="sr-only"> (opens the NIS website in a new tab)</span> ${ICONS.arrowRight}
+      ${label}${NEW_TAB_CUE} ${ICONS.arrowRight}
     </a>`;
 }
 
@@ -598,8 +613,8 @@ function screenLanding() {
         </p>
 
         <div class="space-y-3 mb-2">
-          ${primaryBtn('See what benefits you may qualify for', "nav('worker-type')")}
-          ${secondaryBtn('Estimate my contributions', "nav('plan')")}
+          ${primaryBtn('Estimate my contributions', "nav('worker-type')")}
+          ${secondaryBtn('See what benefits you may qualify for', "nav('benefits-quick')")}
           <button type="button" onclick="nav('register-path')"
             class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
             I'm ready to register for NISSS
@@ -640,6 +655,7 @@ function screenLanding() {
         </button>
       </div>
 
+      ${!SHOW_TRACKER_ENTRY ? '' : `
       <div class="mt-10 pt-6 border-t border-bb-grey-00">
         <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">Already contributing?</h2>
         <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
@@ -656,7 +672,7 @@ function screenLanding() {
           </span>
           <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
         </button>
-      </div>
+      </div>`}
 
       <p class="text-[0.95rem] text-bb-mid-grey-00 flex items-center gap-2 mt-8 pt-6 border-t border-bb-grey-00">
         ${ICONS.lock}
@@ -776,7 +792,7 @@ function screenIncomeReality() {
           <label for="goodMonth-typed" class="sr-only">Or type your good month earnings</label>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['goodMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" step="50"
               value="${numVal('goodMonth-typed', d.goodMonth)}"
               oninput="updateIncomeField('goodMonth', this, 'typed')"
               onchange="normaliseIncomeField('goodMonth', this)"
@@ -786,6 +802,7 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['goodMonth-typed'] ? `<p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['goodMonth-typed']}</p>` : ''}
+          <p id="goodMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
         </div>
       </div>
 
@@ -809,7 +826,7 @@ function screenIncomeReality() {
           <label for="slowMonth-typed" class="sr-only">Or type your slow month earnings</label>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['slowMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
+            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" step="50"
               value="${numVal('slowMonth-typed', d.slowMonth)}"
               oninput="updateIncomeField('slowMonth', this, 'typed')"
               onchange="normaliseIncomeField('slowMonth', this)"
@@ -819,6 +836,7 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['slowMonth-typed'] ? `<p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['slowMonth-typed']}</p>` : ''}
+          <p id="slowMonth-ceiling" class="mt-1 text-bb-mid-grey-00 text-[0.95rem]" role="status"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
         </div>
       </div>
 
@@ -1307,8 +1325,7 @@ function screenBenefitsQuick() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Start the full guide', "nav('worker-type')")}
-      <div class="mt-3">${secondaryBtn('Estimate my contributions', "nav('plan')")}</div>
+      ${primaryBtn('Estimate my contributions', "nav('worker-type')")}
     </div>`;
 }
 
@@ -1460,7 +1477,7 @@ function screenPaymentOptions() {
         ${[
           { icon: 'globe',    title: 'NISSS online portal',  sub: 'Pay from your phone, anytime. Get a receipt right away.',     tag: 'Quickest', color: 'teal' },
           { icon: 'store',    title: 'SurePay',            sub: 'Pay cash or card at any SurePay location across the island.', tag: 'Cash OK',  color: 'green' },
-          { icon: 'bolt',     title: 'EZpay+',           sub: 'Pay 24/7 on the government\'s payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.', tag: 'Sign-in needed', color: 'yellow' },
+          { icon: 'bolt',     title: 'EZpay+',           sub: `Pay 24/7 on the government's payment platform at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">ezpay.gov.bb${NEW_TAB_CUE}</a>. Sign in with your account. Accepts credit card, debit card, and direct debit.`, tag: 'Sign-in needed', color: 'yellow' },
           { icon: 'card',     title: 'Bank transfer',      sub: 'Standing order or one-off transfer from your bank account.',  tag: 'Set & forget', color: 'blue' },
           { icon: 'building', title: 'In person at NISSS',   sub: 'Pay at the NISSS office. Get help if you have questions.',     tag: 'Face to face', color: 'purple' },
         ].map(p => {
@@ -1522,7 +1539,7 @@ function screenContact() {
   const ways = [
     { icon: 'phone',    title: 'Call NISSS',      sub: 'Call <a href="tel:2464317400" class="link-bb font-medium">246-431-7400</a> and an officer will help you over the phone.', tag: 'Quickest' },
     { icon: 'building', title: 'Visit an office', sub: 'Walk in to the Frank Walcott Building, Bridgetown, or any branch. Bring a valid Barbados ID.', tag: 'In person' },
-    { icon: 'globe',    title: 'NISSS website',   sub: 'Find forms and guidance at <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">nis.gov.bb</a>.', tag: 'Self-serve' },
+    { icon: 'globe',    title: 'NISSS website',   sub: `Find forms and guidance at <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb font-medium">nis.gov.bb${NEW_TAB_CUE}</a>.`, tag: 'Self-serve' },
   ];
 
   return `
@@ -1994,10 +2011,27 @@ function updateIncomeField(field, el, source) {
 // Out-of-range values are left alone so Continue can name the problem.
 function normaliseIncomeField(field, el) {
   const num = state.data[field];
-  if (num == null || !isFinite(num)) return;
-  const whole = Math.round(num);
-  el.value = whole;
-  updateIncomeField(field, el, 'typed');
+  if (num != null && isFinite(num)) {
+    const whole = Math.round(num);
+    el.value = whole;
+    updateIncomeField(field, el, 'typed');
+  }
+  updateCeilingNote(field);
+}
+
+// Show the insurable-ceiling note when the entry exceeds it; announce only on
+// the hidden -> shown transition so arrowing around the value is not chatty.
+function updateCeilingNote(field) {
+  const note = document.getElementById(field + '-ceiling');
+  if (!note) return;
+  const over = (state.data[field] || 0) > NIS.MAX_MONTHLY_INSURABLE;
+  if (over && note.hidden) {
+    note.hidden = false;
+    setLiveRegion(note, CEILING_NOTE);
+  } else if (!over && !note.hidden) {
+    note.hidden = true;
+    note.textContent = '';
+  }
 }
 
 function updateGoodMonths(el) {
@@ -2047,7 +2081,7 @@ function nextFromIncome() {
     const num = state.data[f];
     if (el && el.validity.badInput) e[f + '-typed'] = 'Enter your ' + label + ' amount using numbers only.';
     else if (num == null) e[f + '-typed'] = 'Enter your ' + label + ' amount.';
-    else if (num < 0 || num > 20000) e[f + '-typed'] = 'Enter an amount between BDS$0 and BDS$20,000.';
+    else if (num < 0) e[f + '-typed'] = 'Enter an amount of BDS$0 or more.';
   });
 
   // Good months per year is optional (see issue #38: the maths does not use

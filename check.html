@@ -792,9 +792,11 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['goodMonth-typed'] ? `<p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['goodMonth-typed']}</p>` : ''}
-          <div id="goodMonth-ceiling" class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-2 flex items-start gap-3"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-            <p id="goodMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
+              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+              <p id="goodMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -829,9 +831,11 @@ function screenIncomeReality() {
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
           ${e['slowMonth-typed'] ? `<p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]">${e['slowMonth-typed']}</p>` : ''}
-          <div id="slowMonth-ceiling" class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-2 flex items-start gap-3"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-            <p id="slowMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+          <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
+              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+              <p id="slowMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            </div>
           </div>
         </div>
       </div>

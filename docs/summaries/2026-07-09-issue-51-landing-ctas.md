@@ -1,0 +1,31 @@
+# Landing CTA swap (issue #51)
+
+**Colour (revised in review):** the button was initially shipped in
+design-system green per the issue, then reverted to the standard teal
+`.btn-primary` on owner review - consistency with every other primary button
+won over differentiation. No variant class remains.
+
+**Why step 1, not the plan screen:** the estimate is only personal if it is
+built from the user's own answers; the old deep-link landed on step 5 with
+default figures (and created a wrong-back path, recorded in #30 - one of its
+two confirmed repros disappears with this change).
+
+**Kept:** the lower "Learn more about each one" link to the same benefits page
+(owner decision - it reads naturally in the benefits-list context).
+
+**Flagged, out of scope:** benefits-quick has its own "Estimate my
+contributions" secondary that still deep-links to the plan screen - same
+original problem, one screen over. Noted on the PR as a follow-up candidate.
+
+**Verified headlessly:** green renders rgb(0,101,74); primary first; estimate
+click lands on "What kind of work do you do?" with "Step 1 of 6"; benefits
+click lands on "Six ways NISSS protects you."; Back returns to landing from
+both; no nav('plan') in screenLanding; axe zero violations; zero page errors.
+
+**Extension (owner request, same review):** the benefits page's own CTA pair
+("Start the full guide" primary + "Estimate my contributions" secondary, the
+latter deep-linking to the plan screen) was collapsed to a single teal primary
+"Estimate my contributions" that starts the journey at step 1. With this, no
+shortcut anywhere deep-links to the plan screen; the only nav('plan') calls
+left are the journey's own step 4-to-5 Continue and the hidden tracker screen.
+Both of #30's confirmed wrong-back repros are now gone.

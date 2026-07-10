@@ -2014,6 +2014,7 @@ function updateIncomeField(field, el, source) {
     const typed = document.getElementById(typedId);
     if (typed) typed.value = num;
   }
+  updateCeilingNote(field);
 }
 
 // On change (leaving the field): make benign oddities look like what they

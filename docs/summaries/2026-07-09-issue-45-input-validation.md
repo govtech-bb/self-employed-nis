@@ -127,3 +127,15 @@ choice; note this makes resolving #38 (the maths ignores the answer) more
 pressing, since users are now forced to answer a question that changes
 nothing. Radio screens keep their aria-disabled gate + hint pattern, which
 already enforces required answers.
+
+## Wired goodMonthsPerYear into the maths (#38)
+
+The required seasonality question now drives both formula sites: the risk
+screen's year-lost figure and the plan screen's annual income / tier
+suggestion use good*gm + slow*(12-gm). The frozen slowMonthsPerYear: 3 state
+field is deleted outright (owner: no legacy fallback); goodMonthsValue()
+falls back to a neutral 6 (half the year, no seasonality assumed) purely for
+programmatic deep-navigation, since the journey requires and validates the
+answer before either formula can run. Verified with hand-checked figures:
+gm=3 vs gm=11 at 3000/500 gives monthly averages 1,125 vs 2,792 and year-lost
+13,500 vs 33,500; gm=12 edge correctly zeroes the slow-month contribution.

@@ -315,7 +315,6 @@ const state = {
     workerType: null,
     goodMonth: 2500,
     slowMonth: 800,
-    slowMonthsPerYear: 3,
     hasDependants: null,
     dependantsCount: 0,
     contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
@@ -461,6 +460,15 @@ function monthlyInsurableFromContribution(annualContribution) {
   return Math.min(NIS.MAX_MONTHLY_INSURABLE, raw);
 }
 // Monthly insurable earnings -> weekly insurable earnings.
+// The user's seasonality answer, used by the risk and plan maths. The journey
+// requires and validates it before either formula can run; the fallback of 6
+// (half the year, assuming no seasonality) covers programmatic deep-navigation
+// only and deliberately replaces the old hardcoded 9-good/3-slow split (#38).
+function goodMonthsValue() {
+  const gm = state.data.goodMonthsPerYear;
+  return Number.isInteger(gm) && gm >= 1 && gm <= 12 ? gm : 6;
+}
+
 const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
 
 function progressBar(currentId) {
@@ -968,7 +976,8 @@ function screenRiskAwareness() {
   const d = state.data;
   const monthsLost = (d.goodMonth + d.slowMonth) / 2;
   const twoWeeksLost = Math.round(monthsLost / 2);
-  const yearLost = Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)));
+  const gmYear = goodMonthsValue();
+  const yearLost = Math.round((d.goodMonth * gmYear) + (d.slowMonth * (12 - gmYear)));
 
   return `
     <div class="screen stage">
@@ -1060,8 +1069,8 @@ function screenPlan() {
   const d = state.data;
 
   // Annual income — uses defaults if user jumped here directly
-  const goodMonths = 12 - d.slowMonthsPerYear;
-  const annualIncome = (d.goodMonth * goodMonths) + (d.slowMonth * d.slowMonthsPerYear);
+  const goodMonths = goodMonthsValue();
+  const annualIncome = (d.goodMonth * goodMonths) + (d.slowMonth * (12 - goodMonths));
   const monthlyAvg = annualIncome / 12;
 
   // Tier amounts

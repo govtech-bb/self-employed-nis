@@ -315,7 +315,6 @@ const state = {
     workerType: null,
     goodMonth: 2500,
     slowMonth: 800,
-    slowMonthsPerYear: 3,
     hasDependants: null,
     dependantsCount: 0,
     contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
@@ -323,6 +322,12 @@ const state = {
     alreadyHasNis: null,
   },
   errors: {},
+  // Issue #45: what the user actually typed into each number field (keyed by
+  // input id). Templates echo this back so an error re-render never launders
+  // "-500" into a clamped value, and badInput is tracked because a number
+  // input's .value reads as empty for unparseable text.
+  raw: {},
+  badInput: {},
   expandedScenario: null,
 };
 
@@ -452,12 +457,27 @@ const NIS = {
   PENSIONABLE_AGE: 67,
 };
 
+// Shown under a money field when the entry exceeds the insurable ceiling.
+// Not an error: any amount is accepted, but only earnings up to the ceiling
+// count toward contributions and benefits.
+const CEILING_NOTE = 'The most NIS can insure is ' + fmtMoney(NIS.MAX_MONTHLY_INSURABLE)
+  + ' a month. Amounts above this do not change your estimate.';
+
 // Annual contribution -> monthly insurable earnings (capped at the ceiling).
 function monthlyInsurableFromContribution(annualContribution) {
   const raw = (annualContribution / NIS.SE_RATE) / 12;
   return Math.min(NIS.MAX_MONTHLY_INSURABLE, raw);
 }
 // Monthly insurable earnings -> weekly insurable earnings.
+// The user's seasonality answer, used by the risk and plan maths. The journey
+// requires and validates it before either formula can run; the fallback of 6
+// (half the year, assuming no seasonality) covers programmatic deep-navigation
+// only and deliberately replaces the old hardcoded 9-good/3-slow split (#38).
+function goodMonthsValue() {
+  const gm = state.data.goodMonthsPerYear;
+  return Number.isInteger(gm) && gm >= 1 && gm <= 12 ? gm : 6;
+}
+
 const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
 
 function progressBar(currentId) {
@@ -547,6 +567,14 @@ function primaryLink(label, href) {
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label}${NEW_TAB_CUE} ${ICONS.arrowRight}
     </a>`;
+}
+
+// What a number field should show: the exact text the user last typed (so a
+// re-render never swaps "-500" for something else), else the stored value.
+function numVal(id, num) {
+  const r = state.raw[id];
+  if (r !== undefined) return String(r).replace(/"/g, '&quot;');
+  return num == null ? '' : num;
 }
 
 function secondaryBtn(label, action) {
@@ -718,12 +746,14 @@ function screenWorkerType() {
    ───────────────────────────────────────────────────────── */
 function screenIncomeReality() {
   const d = state.data;
-  const pctGood = Math.min(100, (d.goodMonth / 6000) * 100);
-  const pctSlow = Math.min(100, (d.slowMonth / 6000) * 100);
+  const e = state.errors;
+  const pctGood = Math.max(0, Math.min(100, ((d.goodMonth || 0) / 6000) * 100));
+  const pctSlow = Math.max(0, Math.min(100, ((d.slowMonth || 0) / 6000) * 100));
 
   return `
     <div class="screen stage">
       ${backBtn('worker-type')}
+      ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
@@ -734,17 +764,18 @@ function screenIncomeReality() {
         Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
 
+
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
         <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
           What does a good month look like?
         </label>
         <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
-          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.goodMonth)}</span>
+          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.goodMonth == null ? '' : fmtMoney(d.goodMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
         </div>
-        <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.min(6000, d.goodMonth)}"
-          oninput="updateIncomeField('goodMonth', this.value, 'slider')"
+        <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.goodMonth || 0))}"
+          oninput="updateIncomeField('goodMonth', this, 'slider')"
           aria-label="Good month earnings slider"
           style="background-size: ${pctGood}% 100%" />
         <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
@@ -752,13 +783,24 @@ function screenIncomeReality() {
         </div>
         <div class="mt-4">
           <label for="goodMonth-typed" class="sr-only">Or type your good month earnings</label>
-          <div class="relative inline-flex w-full rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+          <div class="relative inline-flex w-full rounded-sm border-2 ${e['goodMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
-              value="${d.goodMonth}"
-              oninput="updateIncomeField('goodMonth', this.value, 'typed')"
+            <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" step="50"
+              value="${numVal('goodMonth-typed', d.goodMonth)}"
+              oninput="updateIncomeField('goodMonth', this, 'typed')"
+              onchange="normaliseIncomeField('goodMonth', this)"
+              onblur="validateIncomeField('goodMonth')"
+              onpaste="numberPaste(event)"
               aria-label="Good month earnings in Barbadian dollars"
+              aria-describedby="goodMonth-typed-error"${e['goodMonth-typed'] ? ' aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+          <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
+          <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
+              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+              <p id="goodMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -769,11 +811,11 @@ function screenIncomeReality() {
         </label>
         <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
-          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${fmtMoney(d.slowMonth)}</span>
+          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.slowMonth == null ? '' : fmtMoney(d.slowMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
         </div>
-        <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.min(6000, d.slowMonth)}"
-          oninput="updateIncomeField('slowMonth', this.value, 'slider')"
+        <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.slowMonth || 0))}"
+          oninput="updateIncomeField('slowMonth', this, 'slider')"
           aria-label="Slow month earnings slider"
           style="background-size: ${pctSlow}% 100%" />
         <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
@@ -781,13 +823,24 @@ function screenIncomeReality() {
         </div>
         <div class="mt-4">
           <label for="slowMonth-typed" class="sr-only">Or type your slow month earnings</label>
-          <div class="relative inline-flex w-full rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
+          <div class="relative inline-flex w-full rounded-sm border-2 ${e['slowMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
-            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" max="20000" step="50"
-              value="${d.slowMonth}"
-              oninput="updateIncomeField('slowMonth', this.value, 'typed')"
+            <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" step="50"
+              value="${numVal('slowMonth-typed', d.slowMonth)}"
+              oninput="updateIncomeField('slowMonth', this, 'typed')"
+              onchange="normaliseIncomeField('slowMonth', this)"
+              onblur="validateIncomeField('slowMonth')"
+              onpaste="numberPaste(event)"
               aria-label="Slow month earnings in Barbadian dollars"
+              aria-describedby="slowMonth-typed-error"${e['slowMonth-typed'] ? ' aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+          </div>
+          <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
+          <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
+            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
+              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
+              <p id="slowMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -797,19 +850,25 @@ function screenIncomeReality() {
           How many good months do you usually have in a year?
         </label>
         <div class="flex items-center gap-3 mt-3">
-          <span class="text-[0.95rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
-          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+          <span id="goodMonthsPerYear-hint" class="text-[0.95rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
+          <div class="relative inline-flex rounded-sm border-2 ${e.goodMonthsPerYear ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
             <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
-              value="${d.goodMonthsPerYear || ''}"
+              value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
               placeholder="e.g. 8"
-              oninput="state.data.goodMonthsPerYear = Math.max(1, Math.min(12, parseInt(this.value,10) || 0))"
+              oninput="updateGoodMonths(this)"
+              onchange="normaliseGoodMonths(this)"
+              onblur="validateIncomeField('goodMonthsPerYear')"
+              onpaste="numberPaste(event)"
               aria-label="Number of good months per year"
+              aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
+              ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
         </div>
+        <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[0.95rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
 
-      ${primaryBtn('Continue', "nav('your-situation')")}
+      ${primaryBtn('Continue', 'nextFromIncome()')}
     </div>`;
 }
 
@@ -856,19 +915,27 @@ function screenYourSituation() {
         ], o => `setDependants('${o.id}')`)}
       </div>
 
-      ${d.hasDependants === 'yes' ? `
+      ${d.hasDependants === 'yes' ? (() => {
+        const countMsg = dependantsCountError();
+        return `
         <div class="mb-6">
           <label for="dependantsCount" class="block font-semibold text-bb-blue-00 mb-1">How many people depend on your income?</label>
-          <p class="text-[0.95rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
-          <div class="relative inline-flex rounded-sm border-2 border-bb-grey-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+          <p id="dependantsCount-hint" class="text-[0.95rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
+          <div id="dependantsCount-wrap" class="relative inline-flex rounded-sm border-2 ${countMsg ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
             <input id="dependantsCount" type="number" inputmode="numeric" min="1" max="20" step="1"
-              value="${d.dependantsCount || ''}"
+              value="${numVal('dependantsCount', d.dependantsCount || '')}"
               placeholder="e.g. 2"
-              oninput="updateDependantsCount(this.value)"
+              oninput="updateDependantsCount(this)"
+              onchange="normaliseDependantsCount(this)"
+              onpaste="numberPaste(event)"
               aria-label="Number of people who depend on your income"
+              aria-describedby="dependantsCount-hint dependantsCount-error"
+              aria-invalid="${countMsg ? 'true' : 'false'}"
               class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
           </div>
-        </div>` : ''}
+          <p id="dependantsCount-error" class="mt-2 text-bb-red-00 text-[0.95rem]">${countMsg || ''}</p>
+        </div>`;
+      })() : ''}
 
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
@@ -900,9 +967,14 @@ function situationContinue() {
   const d = state.data;
   const missingRadios = !d.hasDependants || !d.hasSavings || !d.payingNIS;
   const missingCount = d.hasDependants === 'yes' && !d.dependantsCount;
+  // An invalid count (fractional, out of range, not a number) keeps the gate
+  // closed exactly like an empty one; the hint names the real blocker.
+  const invalidCount = d.hasDependants === 'yes' && !!dependantsCountError();
   const hint = missingRadios
     ? 'Answer all the questions above to continue.'
-    : 'Enter how many people depend on your income to continue.';
+    : invalidCount
+      ? 'Enter a whole number of people from 1 to 20 to continue.'
+      : 'Enter how many people depend on your income to continue.';
   return primaryBtn('Continue', "nav('risk-awareness')", { disabled: missingRadios || missingCount, hint });
 }
 
@@ -914,7 +986,8 @@ function screenRiskAwareness() {
   const d = state.data;
   const monthsLost = (d.goodMonth + d.slowMonth) / 2;
   const twoWeeksLost = Math.round(monthsLost / 2);
-  const yearLost = Math.round(((d.goodMonth * (12 - d.slowMonthsPerYear)) + (d.slowMonth * d.slowMonthsPerYear)));
+  const gmYear = goodMonthsValue();
+  const yearLost = Math.round((d.goodMonth * gmYear) + (d.slowMonth * (12 - gmYear)));
 
   return `
     <div class="screen stage">
@@ -1006,8 +1079,8 @@ function screenPlan() {
   const d = state.data;
 
   // Annual income — uses defaults if user jumped here directly
-  const goodMonths = 12 - d.slowMonthsPerYear;
-  const annualIncome = (d.goodMonth * goodMonths) + (d.slowMonth * d.slowMonthsPerYear);
+  const goodMonths = goodMonthsValue();
+  const annualIncome = (d.goodMonth * goodMonths) + (d.slowMonth * (12 - goodMonths));
   const monthlyAvg = annualIncome / 12;
 
   // Tier amounts
@@ -1900,31 +1973,197 @@ function nextFromWorkerType() {
   nav('income-reality');
 }
 
-function updateIncomeField(field, v, source) {
-  const num = Math.max(0, Math.min(20000, parseInt(v, 10) || 0));
+/* ─────────────────────────────────────────────────────────
+   Income input validation (issue #45)
+
+   The old handler clamped state silently while the field kept whatever was
+   typed, so the estimate could use a number the user never saw. Now state
+   mirrors exactly what is parseable from the field (null when it is empty or
+   unreadable), the benign is normalised visibly (exponent notation,
+   fractional dollars, formatted paste) and everything else blocks Continue
+   with a register-screen-style error.
+   ───────────────────────────────────────────────────────── */
+function updateIncomeField(field, el, source) {
+  const typedId = field + '-typed';
+  const bad = source === 'typed' && el.validity && el.validity.badInput;
+  const rawStr = String(el.value);
+  const num = bad || rawStr.trim() === '' ? null : Number(rawStr);
   state.data[field] = num;
+  state.badInput[typedId] = !!bad;
+  state.raw[typedId] = source === 'typed' ? rawStr : String(num);
 
-  // Update the big read-only display value
+  // Update the big read-only display value. Empty or unreadable input shows
+  // nothing rather than a substituted number.
   const display = document.getElementById(field + '-display');
-  if (display) display.textContent = fmtMoney(num);
+  if (display) display.textContent = num == null ? '' : fmtMoney(num);
 
-  // Update slider (unless the slider itself was the source — leaves the thumb where the user dragged it)
+  // Update slider (unless the slider itself was the source — leaves the thumb
+  // where the user dragged it). Out-of-range values pin the thumb at an end;
+  // they still error on Continue.
   const slider = document.getElementById(field);
-  if (slider) {
-    if (source !== 'slider') slider.value = Math.min(6000, num);
-    slider.style.backgroundSize = Math.min(100, (num / 6000) * 100) + '% 100%';
+  if (slider && num != null) {
+    if (source !== 'slider') slider.value = Math.max(0, Math.min(6000, num));
+    slider.style.backgroundSize = Math.max(0, Math.min(100, (num / 6000) * 100)) + '% 100%';
   }
 
   // Update typed input (unless the input itself was the source — avoids cursor jumping while typing)
   if (source !== 'typed') {
-    const typed = document.getElementById(field + '-typed');
+    const typed = document.getElementById(typedId);
     if (typed) typed.value = num;
   }
+  updateCeilingNote(field);
+}
+
+// On change (leaving the field): make benign oddities look like what they
+// mean. "1e3" becomes 1000 and "8.5" becomes 9, visibly, in field and state.
+// Out-of-range values are left alone so Continue can name the problem.
+function normaliseIncomeField(field, el) {
+  const num = state.data[field];
+  if (num != null && isFinite(num)) {
+    const whole = Math.round(num);
+    el.value = whole;
+    updateIncomeField(field, el, 'typed');
+  }
+  updateCeilingNote(field);
+}
+
+// Show the insurable-ceiling note when the entry exceeds it; announce only on
+// the hidden -> shown transition so arrowing around the value is not chatty.
+function updateCeilingNote(field) {
+  const box = document.getElementById(field + '-ceiling');
+  const text = document.getElementById(field + '-ceiling-text');
+  if (!box || !text) return;
+  const over = (state.data[field] || 0) > NIS.MAX_MONTHLY_INSURABLE;
+  if (over && box.hidden) {
+    box.hidden = false;
+    setLiveRegion(text, CEILING_NOTE);
+  } else if (!over && !box.hidden) {
+    box.hidden = true;
+    text.textContent = '';
+  }
+}
+
+function updateGoodMonths(el) {
+  const bad = el.validity && el.validity.badInput;
+  const rawStr = String(el.value);
+  state.badInput.goodMonthsPerYear = !!bad;
+  state.raw.goodMonthsPerYear = rawStr;
+  state.data.goodMonthsPerYear = bad || rawStr.trim() === '' ? null : Number(rawStr);
+}
+
+// Only exponent notation is normalised here ("1e1" means 10). Fractional
+// months are an error, not a rounding, so they are left for Continue.
+function normaliseGoodMonths(el) {
+  const num = state.data.goodMonthsPerYear;
+  if (num == null || !Number.isInteger(num)) return;
+  el.value = num;
+  updateGoodMonths(el);
+}
+
+// Pasted numbers often carry formatting ("2,500", "$2,500", "BDS$2 500").
+// A number input silently refuses such text, so strip benign formatting first
+// and let clearly numeric pastes land as plain digits. Anything else falls
+// through to the browser and is caught by validation.
+function numberPaste(ev) {
+  const text = (ev.clipboardData || window.clipboardData).getData('text');
+  const cleaned = text.replace(/bds\$?/gi, '').replace(/[$,\s]/g, '');
+  if (cleaned === '' || isNaN(Number(cleaned))) return;
+  ev.preventDefault();
+  const el = ev.target;
+  el.value = cleaned;
+  el.dispatchEvent(new Event('input'));
+}
+
+// GOV.BB pattern-library error summary (Figma node 1854-2289): 4px red-00
+// border, white background, 32/24 padding, bold black heading, each error an
+// underlined red link to its field. Rendered on Continue; kept in sync in
+// place as blur-time fixes land so it never lists a fixed error.
+const INCOME_FIELD_ORDER = ['goodMonth-typed', 'slowMonth-typed', 'goodMonthsPerYear'];
+function errorSummary() {
+  const keys = INCOME_FIELD_ORDER.filter(k => state.errors[k]);
+  if (!keys.length) return '';
+  return `
+    <div id="error-summary" tabindex="-1" role="alert" class="border-4 border-bb-red-00 bg-white px-8 py-6 mb-6 outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
+      <p class="font-bold text-bb-black-00 mb-2">There is a problem</p>
+      <div class="flex flex-col gap-1">
+        ${keys.map(k => `<a href="#${k}" class="underline text-bb-red-00 w-fit" onclick="document.getElementById('${k}').focus(); return false;">${state.errors[k]}</a>`).join('')}
+      </div>
+    </div>`;
+}
+// Rebuild or remove the rendered summary to mirror state.errors (blur fixes).
+function syncErrorSummary() {
+  const el = document.getElementById('error-summary');
+  if (!el) return;
+  const keys = INCOME_FIELD_ORDER.filter(k => state.errors[k]);
+  if (!keys.length) { el.remove(); return; }
+  const list = el.querySelector('div');
+  if (list) list.innerHTML = keys.map(k => `<a href="#${k}" class="underline text-bb-red-00 w-fit" onclick="document.getElementById('${k}').focus(); return false;">${state.errors[k]}</a>`).join('');
+}
+
+// One rule per field; returns the error message or null. Assumes the field
+// has been normalised. Every question on this screen is required.
+function incomeFieldError(field) {
+  if (field === 'goodMonthsPerYear') {
+    const el = document.getElementById('goodMonthsPerYear');
+    const gm = state.data.goodMonthsPerYear;
+    if (el && el.validity.badInput) return 'Enter a whole number of months from 1 to 12.';
+    if (gm == null) return 'Enter how many good months you have in a year.';
+    if (!Number.isInteger(gm) || gm < 1 || gm > 12) return 'Enter a whole number of months from 1 to 12.';
+    return null;
+  }
+  const label = field === 'goodMonth' ? 'good month' : 'slow month';
+  const el = document.getElementById(field + '-typed');
+  const num = state.data[field];
+  if (el && el.validity.badInput) return 'Enter your ' + label + ' amount using numbers only.';
+  if (num == null) return 'Enter your ' + label + ' amount.';
+  if (num < 0) return 'Enter an amount of BDS$0 or more.';
+  return null;
+}
+
+// Blur-time validation: show or clear the field's inline error in place —
+// no re-render, so focus and carets are never disturbed.
+const INCOME_DEFAULT_BORDER = { goodMonth: 'border-bb-black-00', slowMonth: 'border-bb-black-00', goodMonthsPerYear: 'border-bb-grey-00' };
+function validateIncomeField(field) {
+  const inputId = field === 'goodMonthsPerYear' ? field : field + '-typed';
+  const input = document.getElementById(inputId);
+  if (!input) return null;
+  if (field === 'goodMonthsPerYear') normaliseGoodMonths(input); else normaliseIncomeField(field, input);
+  const msg = incomeFieldError(field);
+  const errEl = document.getElementById(inputId + '-error');
+  if (errEl) { errEl.hidden = !msg; errEl.textContent = msg || ''; }
+  if (msg) { state.errors[inputId] = msg; input.setAttribute('aria-invalid', 'true'); }
+  else { delete state.errors[inputId]; input.removeAttribute('aria-invalid'); }
+  const wrap = input.closest('.border-2');
+  if (wrap) {
+    wrap.classList.toggle('border-bb-red-00', !!msg);
+    wrap.classList.toggle(INCOME_DEFAULT_BORDER[field], !msg);
+  }
+  document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || '');
+  syncErrorSummary();
+  return msg;
+}
+
+function nextFromIncome() {
+  // Same per-field rules as blur; first invalid field gets focus. Errors are
+  // shown at the fields (surfaced as the user leaves each one), so there is
+  // no submit-time summary on this screen.
+  const fields = ['goodMonth', 'slowMonth', 'goodMonthsPerYear'];
+  let any = false;
+  fields.forEach(f => { if (validateIncomeField(f)) any = true; });
+  if (any) {
+    render({ focusErrors: true });
+    return;
+  }
+  nav('your-situation');
 }
 
 function setDependants(id) {
   const was = state.data.hasDependants;
   state.data.hasDependants = id;
+  // Switching the radio resets the count to a stored value, so any leftover
+  // invalid text must not be echoed back over it.
+  delete state.raw.dependantsCount;
+  state.badInput.dependantsCount = false;
   if (id === 'yes' && !state.data.dependantsCount) {
     // Restore what the user last typed; arrow-scanning through "No" and
     // back must not wipe it. Default to 1 for a first-time "Yes".
@@ -1940,13 +2179,53 @@ function setDependants(id) {
   }
 }
 
-function updateDependantsCount(v) {
-  const num = Math.max(0, Math.min(20, parseInt(v, 10) || 0));
-  state.data.dependantsCount = num;
+// Inline error for the dependants count (issue #45). The your-situation
+// Continue is gated (aria-disabled, PR #41) rather than validated on submit,
+// so problems the gate cannot express are reported next to the field as the
+// user types. Empty stays the gate's job: no message, hint explains.
+function dependantsCountError() {
+  if (state.badInput.dependantsCount) return 'Enter a number using digits only.';
+  const raw = state.raw.dependantsCount;
+  if (raw === undefined || String(raw).trim() === '') return null;
+  const num = Number(raw);
+  if (!Number.isInteger(num)) return 'Enter a whole number, like 2.';
+  if (num < 1 || num > 20) return 'Enter a number from 1 to 20.';
+  return null;
+}
+
+function updateDependantsCount(el) {
+  const bad = el.validity && el.validity.badInput;
+  const rawStr = String(el.value);
+  state.badInput.dependantsCount = !!bad;
+  state.raw.dependantsCount = rawStr;
+  const num = bad || rawStr.trim() === '' ? null : Number(rawStr);
+  // Only a usable value reaches state; anything else stays 0 (falsy), which
+  // keeps the Continue gate closed so the estimate can never see it.
+  const valid = num != null && Number.isInteger(num) && num >= 1 && num <= 20;
+  state.data.dependantsCount = valid ? num : 0;
+
+  // Field-level feedback in place — a full render() would fight the caret.
+  const msg = dependantsCountError();
+  const errEl = document.getElementById('dependantsCount-error');
+  if (errEl) errEl.textContent = msg || '';
+  el.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  const wrap = document.getElementById('dependantsCount-wrap');
+  if (wrap) {
+    wrap.classList.toggle('border-bb-red-00', !!msg);
+    wrap.classList.toggle('border-bb-grey-00', !msg);
+  }
   // Keep the Continue button honest: clearing the count must disable it
   // again. Refresh the button in place, with no full re-render while typing.
   const holder = document.getElementById('situation-continue');
   if (holder) holder.innerHTML = situationContinue();
+}
+
+// On change: write exponent notation back as plain digits ("1e1" means 10).
+// Invalid values are left visible with their inline error.
+function normaliseDependantsCount(el) {
+  if (!state.data.dependantsCount) return;
+  el.value = state.data.dependantsCount;
+  updateDependantsCount(el);
 }
 
 function toggleScenario(id, ev) {

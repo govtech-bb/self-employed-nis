@@ -331,7 +331,18 @@ const state = {
   expandedScenario: null,
 };
 
-const JOURNEY = ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
+// Lean-estimator comparison variant: the MDAs are choosing between the full
+// six-step wizard and a lean journey that asks only the questions the estimate
+// actually uses (good/slow month, good months per year, contribution tier and
+// the NISSS-number routing question). When true, the worker-type and
+// your-situation screens stay registered in SCREENS/TITLES but become
+// unreachable, and the journey is four steps. Flip to false to restore the
+// full journey; every behavioural difference hangs off this flag.
+const LEAN_ESTIMATOR = true;
+
+const JOURNEY = LEAN_ESTIMATOR
+  ? ['income-reality', 'risk-awareness', 'plan', 'next-steps']
+  : ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
 
 /* Screen-reader cue appended to every external (target="_blank") link. */
 const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
@@ -606,7 +617,7 @@ function screenLanding() {
         </p>
 
         <div class="space-y-3 mb-2">
-          ${primaryBtn('Estimate my contributions', "nav('worker-type')")}
+          ${primaryBtn('Estimate my contributions', LEAN_ESTIMATOR ? "nav('income-reality')" : "nav('worker-type')")}
           ${secondaryBtn('See what benefits you may qualify for', "nav('benefits-quick')")}
           <button type="button" onclick="nav('register-path')"
             class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
@@ -752,7 +763,7 @@ function screenIncomeReality() {
 
   return `
     <div class="screen stage">
-      ${backBtn('worker-type')}
+      ${backBtn(LEAN_ESTIMATOR ? 'landing' : 'worker-type')}
       ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
@@ -991,7 +1002,7 @@ function screenRiskAwareness() {
 
   return `
     <div class="screen stage">
-      ${backBtn('your-situation')}
+      ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
@@ -1332,7 +1343,7 @@ function screenBenefitsQuick() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Estimate my contributions', "nav('worker-type')")}
+      ${primaryBtn('Estimate my contributions', LEAN_ESTIMATOR ? "nav('income-reality')" : "nav('worker-type')")}
     </div>`;
 }
 
@@ -1410,9 +1421,13 @@ function screenNextSteps() {
    SCREEN 9 — Register path (already have NISSS?)
    ───────────────────────────────────────────────────────── */
 function screenRegisterPath() {
+  // "Came through the journey" proxy for the Back target: the full journey
+  // guarantees a worker type before next-steps; the lean journey never asks
+  // it, so the tier pick (gated on the plan screen) marks arrival instead.
+  const cameFromJourney = LEAN_ESTIMATOR ? state.data.contributionTier : state.data.workerType;
   return `
     <div class="screen stage">
-      ${backBtn(state.screen === 'register-path' && JOURNEY.indexOf('next-steps') > -1 && state.data.workerType ? 'next-steps' : 'landing')}
+      ${backBtn(state.screen === 'register-path' && JOURNEY.indexOf('next-steps') > -1 && cameFromJourney ? 'next-steps' : 'landing')}
       ${serviceCaption()}
 
       <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
@@ -2154,7 +2169,7 @@ function nextFromIncome() {
     render({ focusErrors: true });
     return;
   }
-  nav('your-situation');
+  nav(LEAN_ESTIMATOR ? 'risk-awareness' : 'your-situation');
 }
 
 function setDependants(id) {

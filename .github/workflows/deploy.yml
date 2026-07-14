@@ -26,7 +26,7 @@ jobs:
       - name: Stage site files
         run: |
           mkdir -p dist
-          cp index.html how-to.html check.html landing-page-how-to.html comments.js dist/
+          cp index.html how-to.html check.html landing-page-how-to.html register.html comments.js dist/
 
       - name: Publish to gh-pages (root)
         uses: peaceiris/actions-gh-pages@v4

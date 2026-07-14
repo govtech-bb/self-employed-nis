@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Working for yourself? You can get benefits. – alpha.gov.bb</title>
+  <title>Working for yourself? You can be covered. – alpha.gov.bb</title>
 
   <!--
     DESIGN SYSTEM — PREVIEW STYLES (self-contained, plain CSS)
@@ -128,6 +128,7 @@
       .lg\:h-8\.75{height:2.1875rem}.lg\:w-88\.75{width:22.1875rem}
     }
     @media(min-width:80rem){.container{max-width:1200px}}
+    /* Register chooser — native <details> styled as a button; hide the default marker */
     /* Interactive self-check */
     .sc-fieldset{border:0;padding:0;margin:1rem 0}
     .sc-fieldset legend{margin-bottom:.5rem}
@@ -138,8 +139,15 @@
     .sc-item:focus-within{outline:3px solid var(--yellow-100);outline-offset:1px}
     .sc-item input{width:22px;height:22px;accent-color:var(--teal-00);flex:0 0 auto;margin:0}
     .sc-item:has(input:checked){border-color:var(--teal-00);background:var(--teal-10)}
-    /* Extra breathing room above each section heading so blocks don't sit too close */
-    article.space-y-5 > h2{margin-top:3rem}
+    .benefit-cards{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
+    .bcard{display:flex;gap:1rem;align-items:flex-start;border-radius:10px;padding:1rem 1.1rem;border:1px solid transparent}
+    .bcard-ic{flex:0 0 auto;width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+    .bcard-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .bcard h3{font-size:1.2rem;font-weight:700;margin-bottom:.15rem}
+    .bcard p{font-size:1.05rem}
+    .bcard-teal{background:var(--teal-10);border-color:var(--teal-40)}.bcard-teal .bcard-ic{color:var(--teal-00)}
+    .bcard-blue{background:var(--blue-10);border-color:var(--blue-40)}.bcard-blue .bcard-ic{color:var(--blue-100)}
+    .bcard-yellow{background:var(--yellow-10);border-color:var(--yellow-40)}.bcard-yellow .bcard-ic{color:var(--yellow-00)}
     /* Mobile: smaller headings + more breathing room (de-cluttered) */
     @media(max-width:640px){
       body{font-size:1.0625rem}
@@ -223,59 +231,60 @@
           </ol>
         </nav>
 
-        <h1 class="font-bold text-[3.5rem] leading-[1.15]">Working for yourself? You can get benefits.</h1>
+        <h1 class="font-bold text-[3.5rem] leading-[1.15]">Working for yourself? You can be covered.</h1>
 
         <p class="text-[1rem]" style="color:#4a4a4a">Last updated May 2026</p>
         <hr style="border:0;border-top:1px solid var(--grey-00);margin:1rem 0 1.5rem">
 
-        <p class="text-[1.5rem] leading-[1.4]">When you work for yourself, National Insurance provides benefits to help support you when you are unable to work.</p>
-
-        <!-- Reassurance — answers the most common worries up front. Uses the design-system
-             inset-callout pattern (tinted background + left accent border, the same device the
-             Service template's highlighted block and the "Important" note below use) instead of
-             bespoke cards, so it stays prominent without reaching outside the system. -->
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Good to know</h2>
-        <div class="border-l-4 border-teal-00 bg-teal-10 px-s py-s">
-          <ul class="list-disc pl-7.5 space-y-2">
-            <li><strong>It's protection, not a deduction.</strong> Your contributions build benefits you can claim: sickness, injury, pension. The money works for <strong>you</strong>, not against you.</li>
-            <li><strong>You don't need a registered business.</strong> Your NIS number is yours for life and follows you, not your job.</li>
-            <li><strong>Slow month? Pay less or skip.</strong> It's voluntary, and there's no penalty for a month you can't pay.</li>
-            <li><strong>Your benefits build as you pay.</strong> You don't have to pay a whole year up front before you start.</li>
-          </ul>
-        </div>
+        <p class="text-[1.5rem] leading-[1.4]">When you work for yourself, National Insurance pays you money when you can't work: when you're sick, when you have a baby, and when you stop working in old age. You contribute based on what you earn, and you pay what you can afford.</p>
 
         <h2 class="font-bold text-[2.5rem] leading-[1.25]">Who this is for</h2>
         <p>This is for you if you earn money from work and no employer pays National Insurance for you, whether it is your only job or something you do on the side. For example, if you:</p>
         <ul class="list-disc pl-7.5 space-y-2">
-          <li><strong>drive or deliver for an app</strong>: rideshare, food or parcel delivery</li>
-          <li><strong>work in a trade or service</strong>: mechanics, hairdressers, handymen, carers</li>
-          <li><strong>sell food, goods or crafts</strong>: market vendors, caterers, online sellers</li>
-          <li><strong>freelance or do online work</strong>: design, writing, coding, content creators</li>
-          <li><strong>work in a profession on your own account</strong>: consultants, accountants, lawyers, doctors, engineers</li>
-          <li><strong>rent your place to visitors</strong>: Airbnb and other short-stay hosts</li>
-          <li><strong>do cash-in-hand or casual work</strong>: dock work, events, fishing, music, dancing</li>
-          <li><strong>do domestic or household work</strong>: cleaning, babysitting, helping in homes</li>
+          <li>drive or deliver for an app: rideshare, food or parcel delivery</li>
+          <li>work in a trade or service: mechanics, hairdressers, handymen, carers</li>
+          <li>work in beauty or personal care: braiders, barbers, stylists, nail and lash techs, massage therapists</li>
+          <li>sell food, goods or crafts: market vendors, caterers, online sellers</li>
+          <li>freelance or do online work: design, writing, coding, content creators</li>
+          <li>work in the creative sector: musicians, artists, performers, photographers</li>
+          <li>work in a profession on your own account: consultants, accountants, lawyers, doctors, engineers</li>
+          <li>rent your place to visitors: Airbnb and other short-let hosts</li>
+          <li>do cash-in-hand or casual work: dock work, events, fishing, music, dancing</li>
+          <li>do domestic or household work: cleaning, childminding, helping in homes</li>
         </ul>
-        <p>You don't need to fit one of these exactly.</p>
+        <p>You don't need to fit one of these exactly. Anyone earning income on their own account can be covered. You don't need a registered business, and you don't need a work permit.</p>
 
-        <div class="border-l-4 border-teal-00 bg-teal-10 px-s py-s">
-          <p><strong>Already have a job?</strong> If an employer pays National Insurance for you, you can still pay for your self-employed work as well.</p>
-        </div>
+        <p>If you already have a job where your employer pays National Insurance for you, you can still pay for your self-employed work on top.</p>
 
         <h2 class="font-bold text-[2.5rem] leading-[1.25]">What you get</h2>
-        <p>National Insurance protects you in 7 ways:</p>
+        <p>National Insurance is protection, not a tax. When you contribute, it pays you in seven ways:</p>
         <ul class="list-disc pl-7.5 space-y-2">
-          <li><strong>Sickness Benefit</strong>: money to live on if you can't work because you're sick.</li>
-          <li><strong>Maternity Benefit</strong>: income while you take time off to have your baby.</li>
-          <li><strong>Paternity Benefit</strong>: a short paid break for new fathers.</li>
-          <li><strong>Invalidity Pension</strong>: ongoing support if a long illness or injury stops you from working.</li>
-          <li><strong>Survivors' Benefit</strong>: help for your husband, wife or children if something happens to you.</li>
-          <li><strong>Funeral Grant</strong>: a payment to help your family with funeral costs.</li>
-          <li><strong>Old-Age Contributory Pension</strong>: a monthly income for the rest of your life when you stop working.</li>
+          <li><strong>Sickness benefit</strong>: money to live on while you recover and can't work. It pays part of your usual earnings, for up to a year.</li>
+          <li><strong>Maternity benefit</strong>: income while you take time off to have your baby.</li>
+          <li><strong>Paternity benefit</strong>: a short paid break for new fathers.</li>
+          <li><strong>Invalidity benefit</strong>: ongoing support if an illness or injury is expected to keep you from working long-term. It carries on from sickness benefit once a doctor decides the condition is lasting.</li>
+          <li><strong>Survivors' benefit</strong>: money for your husband, wife, common-law partner or children if you die. Your contributions keep working for your family.</li>
+          <li><strong>Funeral grant</strong>: a payment to help your family with funeral costs.</li>
+          <li><strong>Old age pension</strong>: a monthly income for life once you reach pension age (currently 67).</li>
         </ul>
+        <p>It does not cover unemployment.</p>
+
+        <h2 class="font-bold text-[2.5rem] leading-[1.25]">What it costs and how it works</h2>
+        <p>You don't pay a fixed bill. You contribute based on your earnings. For self-employed people, this means what you pay yourself after business expenses, not your total income.</p>
+        <p>NIS sets a minimum and a maximum each year, and you choose how much to pay within that range, based on what you can afford. You can pay the minimum if that works for you, but the more you contribute, the higher your benefits may be, because benefits are generally based on your contributions and earnings over time.</p>
+        <p>Your income can go up and down, so your contributions can too. You can pay more in good months and less in slower ones. Pay weekly, monthly, or in lump sums. Paying a little and often is usually easiest to manage.</p>
         <div class="border-l-4 border-blue-100 bg-blue-10 px-s py-s">
-          <p><strong>Important:</strong> It does not provide unemployment benefits.</p>
+          <p>Most benefits start after you've contributed for a qualifying period, so the sooner you start, the sooner you're protected.</p>
         </div>
+
+        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Good to know</h2>
+        <ul class="list-disc pl-7.5 space-y-2">
+          <li><strong>"I have to register a business first."</strong> No. You register yourself, using your own name and National Insurance number, not a business.</li>
+          <li><strong>"It's just another tax."</strong> It's protection that pays you back when you can't work. NIS does not share your details with the tax authority except where the law requires it.</li>
+          <li><strong>"My income is too uneven to pay every month."</strong> You don't have to. Pay when the work is there, skip or catch up slow months, and pay weekly, monthly or in lumps.</li>
+          <li><strong>"I'm too old, or I've been out too long."</strong> Your National Insurance number is yours for life, and if you worked in a country with a shared agreement, those years can count too.</li>
+          <li><strong>"My savings are my insurance."</strong> National Insurance works alongside your savings. It replaces some income when you can't work, so your savings last longer.</li>
+        </ul>
 
         <h2 class="font-bold text-[2.5rem] leading-[1.25]">Check what you would get</h2>
         <p>See, in dollars, what you would lose if you couldn't work for a few weeks — and what National Insurance would pay you. It takes about 3 minutes, and nothing is saved.</p>
@@ -283,21 +292,11 @@
           <a href="check.html" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">Check your benefits</a>
         </p>
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">How to get benefits</h2>
-        <p>When you're ready, you can get your National Insurance number, register, pay, and check your record, all with NIS.</p>
+        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Ready to register?</h2>
+        <p>Find out how to register with NIS, pay your contributions and get your benefits.</p>
         <p>
-          <a href="how-to.html" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">See how to get benefits</a>
+          <a href="register.html" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">How to get your benefits</a>
         </p>
-
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Need to speak to someone?</h2>
-        <p>You can call NIS for free advice, or visit the NIS office.</p>
-        <p><strong>National Insurance Office</strong><br>Frank Walcott Building<br>Culloden Road, St. Michael, Barbados</p>
-        <p>Phone: (246) 431-7400<br>or (246) 467-4NIS (4647)</p>
-        <p>Website: <a class="inline-flex outline-none underline-offset-2 underline hover:no-underline active:bg-yellow-100 active:no-underline focus-visible:bg-yellow-100 focus-visible:no-underline active:text-black-00 focus-visible:text-black-00 text-teal-00 hover:text-black-00 hover:bg-teal-10" href="https://www.nis.gov.bb" target="_blank" rel="noopener">www.nis.gov.bb<span class="sr-only"> (opens in a new tab)</span></a></p>
-
-        <div class="border-t-2 border-grey-00 pt-4 mt-8 text-[1rem] leading-[1.5]">
-          <p><strong>Source:</strong> National Insurance and Social Security Service (NIS), May 2026. Self-employed benefits are set out in Act 2023-25, which defines a self-employed person as someone "gainfully occupied in employment in Barbados pursuant to a contract for services".</p>
-        </div>
 
         <!-- Feedback box — same pattern as the live homepage -->
         <div class="flex flex-col items-start gap-xs border-4 border-yellow-100 bg-yellow-40 px-s py-xm">

@@ -27,7 +27,7 @@ jobs:
         if: github.event.action != 'closed'
         run: |
           mkdir -p dist
-          cp index.html how-to.html check.html landing-page-how-to.html comments.js dist/
+          cp index.html check.html register.html comments.js dist/
 
       - name: Deploy / update / remove preview
         uses: rossjrw/pr-preview-action@v1

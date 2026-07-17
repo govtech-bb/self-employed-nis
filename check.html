@@ -255,6 +255,16 @@
   .govbb-number-input__step--down::before { transform: rotate(180deg); }
   .govbb-number-input__divider { flex-shrink: 0; width: 100%; height: 2px; background: var(--color-black-00); }
 
+  /* Plan summary breakdown — key/value rows (alpha summary-list feel): label
+     left, figure right, hairline rules, so each number is labelled and aligned. */
+  .plan-figures { display: flex; flex-direction: column; }
+  .plan-figures__row {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    padding: .625rem 0; border-top: 1px solid rgba(0,0,0,.14);
+    font-size: 1.125rem; line-height: 1.5; color: var(--color-black-00);
+  }
+  .plan-figures__row dd { margin: 0; text-align: right; }
+
   /* Honour reduced-motion: no screen fade/slide, no animated transitions.
      This block stays at the END of the stylesheet so nothing declared later
      can reintroduce motion. The !important catch-all covers everything:
@@ -1292,6 +1302,8 @@ function screenPlan() {
   // Selected tier — drives the colour-coded chip on the plan card.
   const selTier = tiers.find(t => t.id === tier);
   const selC = selTier ? COLOR_MAP[selTier.color] : null;
+  // Strong (−00) accent border for the plan summary's left rule, per tier.
+  const selAccent = selTier ? { yellow: 'border-bb-yellow-00', green: 'border-bb-green-00', teal: 'border-bb-teal-00' }[selTier.color] : '';
 
   return `
     <div class="screen stage">
@@ -1343,24 +1355,31 @@ function screenPlan() {
 
       ${tier ? `
         <!-- Plan hero (the future-self moment — colour change on tier select) -->
-        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-4 shadow-card-hover">
-          <div class="flex items-start justify-between gap-3 mb-1">
-            <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40 font-semibold">Your plan</p>
+        <div id="plan-hero" class="rounded-r-2xl border-l-4 ${selAccent} ${selC.bg} p-6 mb-4">
+          <div class="flex items-baseline justify-between gap-3 mb-3">
+            <p class="text-[1rem] uppercase tracking-wide font-semibold text-bb-mid-grey-00">Your plan</p>
             <span class="chip bg-white ${selC.text} border ${selC.border}">${selTier.label}</span>
           </div>
-          <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
-          <p class="text-[1rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
 
-          <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
-            <div>
-              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
-              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12)}</p>
+          <p class="leading-none mb-6">
+            <span class="text-[2.75rem] font-bold tabular-nums text-bb-black-00">${fmtMoney(chosen)}</span>
+            <span class="text-[1.25rem] text-bb-mid-grey-00"> a month</span>
+          </p>
+
+          <dl class="plan-figures">
+            <div class="plan-figures__row">
+              <dt>A week</dt>
+              <dd>about <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong></dd>
             </div>
-            <div>
-              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
-              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12 * 10)}</p>
+            <div class="plan-figures__row">
+              <dt>Over a year</dt>
+              <dd><strong class="tabular-nums">${fmtMoney(chosen * 12)}</strong></dd>
             </div>
-          </div>
+            <div class="plan-figures__row">
+              <dt>Over 10 years</dt>
+              <dd><strong class="tabular-nums">${fmtMoney(chosen * 12 * 10)}</strong></dd>
+            </div>
+          </dl>
         </div>
 
         <!-- How paying works (yellow summary card, kept standalone) -->

@@ -748,6 +748,7 @@ function screenLanding() {
 function screenWorkerType() {
   return `
     <div class="screen stage">
+      ${backBtn('landing')}
       ${progressBar('worker-type')}
       ${serviceCaption()}
 
@@ -820,6 +821,7 @@ function screenIncomeReality() {
 
   return `
     <div class="screen stage">
+      ${backBtn(LEAN_ESTIMATOR ? 'landing' : 'worker-type')}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
@@ -963,6 +965,7 @@ function screenYourSituation() {
 
   return `
     <div class="screen stage">
+      ${backBtn('income-reality')}
       ${progressBar('your-situation')}
       ${serviceCaption()}
 
@@ -1116,6 +1119,7 @@ function screenRiskAwareness() {
 
   return `
     <div class="screen stage">
+      ${backBtn('plan')}
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
@@ -1229,6 +1233,7 @@ function screenPlan() {
 
   return `
     <div class="screen stage">
+      ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
       ${progressBar('plan')}
       ${serviceCaption()}
 
@@ -1427,12 +1432,14 @@ function screenNextSteps() {
         </button>
       </div>
 
-      <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 flex items-start gap-3">
+      <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
         <p class="text-[0.95rem] text-bb-blue-00">
           You can step away at any time. Joining is voluntary, and you choose how much to contribute.
         </p>
       </div>
+
+      ${primaryBtn("Return home", "nav('landing')", { back: 'risk-awareness' })}
     </div>`;
 }
 

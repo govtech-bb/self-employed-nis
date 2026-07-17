@@ -143,6 +143,13 @@
   .disabled-hint { color: var(--color-red-00); font-size: 0.95rem; }
   .disabled-hint:not(:empty) { margin-top: 0.75rem; }
 
+  /* Inline step error — sits after the title/description; filled on click of a
+     not-ready Continue (role=alert). Empty by default so it takes no space. */
+  .step-error { color: var(--color-red-00); font-weight: 600; }
+  .step-error:not(:empty) {
+    margin: 0 0 1.25rem; padding-left: 1rem; border-left: 4px solid var(--color-red-00);
+  }
+
   .btn-secondary {
     background: #fff; color: #0e5f64; border: 2px solid #0e5f64;
     transition: background-color .15s, color .15s;
@@ -539,16 +546,15 @@ function serviceCaption(text = 'NISSS for self-employed and gig workers') {
 // 18px on mobile so long labels don't wrap awkwardly on narrow screens,
 // inset hover/active shadows). Width: full-column.
 //
-// opts.disabled uses aria-disabled (NOT the disabled attribute) so the button
-// stays focusable. Pressing it announces + shows opts.hint (role=status)
-// explaining what is still needed, instead of silently doing nothing.
+// The button is NEVER disabled or greyed (GOV.UK pattern). When opts.disabled
+// marks the step as not-ready, clicking shows opts.hint as an inline error in
+// the screen's #step-error region (which sits after the title/description)
+// instead of navigating. Screens with a gated Continue must render ${stepError()}.
 function primaryBtn(label, action, opts = {}) {
-  const isDisabled = !!opts.disabled;
-  const hint = opts.hint || 'Answer the question above to continue.';
-  const attrs = isDisabled
-    ? `onclick="showDisabledHint(this)" aria-disabled="true" data-hint="${hint.replace(/"/g, '&quot;')}"`
-    : `onclick="${action}"`;
-  const hintEl = isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : '';
+  const isGated = !!opts.disabled;
+  const hint = (opts.hint || 'Answer the question above to continue.').replace(/"/g, '&quot;');
+  const onclick = isGated ? 'showStepError(this)' : action;
+  const dataHint = isGated ? ` data-hint="${hint}"` : '';
 
   // Form-step layout: a GOV.BB "Previous" (Secondary) + "Continue" (Primary)
   // pair at the bottom of the step, matching the alpha.gov.bb form pattern.
@@ -557,18 +563,24 @@ function primaryBtn(label, action, opts = {}) {
     return `
     <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
       ${previousBtn(opts.back)}
-      <button type="button" ${attrs}
+      <button type="button" onclick="${onclick}"${dataHint}
         class="btn-primary inline-flex items-center justify-center px-xm py-s rounded-sm text-[1.25rem] font-normal leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
         ${label}
       </button>
-    </div>${hintEl}`;
+    </div>`;
   }
 
   return `
-    <button type="button" ${attrs}
+    <button type="button" onclick="${onclick}"${dataHint}
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
-    </button>${hintEl}`;
+    </button>`;
+}
+
+// Empty error region placed right after a step's title + description. A gated
+// Continue writes its message here on click (see showStepError).
+function stepError() {
+  return `<p id="step-error" class="step-error" role="alert"></p>`;
 }
 
 // GOV.BB Secondary button used as the form "Previous" control.
@@ -594,6 +606,16 @@ function showDisabledHint(btn) {
   const el = btn.nextElementSibling;
   if (!el || !el.classList.contains('disabled-hint')) return;
   setLiveRegion(el, btn.dataset.hint || '');
+}
+
+// A not-ready Continue was clicked: show its message in the step's #step-error
+// region (after the title/description) and bring it into view. The button is
+// never disabled, so this is how the user learns what's still needed.
+function showStepError(btn) {
+  const region = document.getElementById('step-error');
+  if (!region) return;
+  setLiveRegion(region, btn.dataset.hint || '');
+  region.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // Announce content revealed or updated by a selection (plan details, the
@@ -735,6 +757,7 @@ function screenWorkerType() {
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
         Pick the one that's closest. It just helps us tailor the examples.
       </p>
+      ${stepError()}
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6" role="radiogroup" aria-label="Type of work">
         ${WORKER_TYPES.map(w => {
@@ -797,7 +820,6 @@ function screenIncomeReality() {
 
   return `
     <div class="screen stage">
-      ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
@@ -807,6 +829,7 @@ function screenIncomeReality() {
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
         Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
+      ${errorSummary()}
 
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
@@ -949,6 +972,7 @@ function screenYourSituation() {
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
         This helps us show you what would happen if you couldn't earn for a while.
       </p>
+      ${stepError()}
 
       <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
       <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
@@ -1073,7 +1097,7 @@ function screenRiskAwareness() {
   // and icon come from BENEFITS (the step-3 styling the user liked); the
   // Without / With NISSS split is the step-2 style.
   const items = [
-    { benefit: 'sickness', title: "You get sick and can't work",
+    { benefit: 'sickness', title: "What happens if you get sick?",
       without: `Two weeks off sick is about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food and bills still due.`,
       withNis: `Sickness Benefit pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` },
     { benefit: 'invalidity', title: 'A long illness or injury stops you working',
@@ -1133,17 +1157,17 @@ function screenRiskAwareness() {
         }).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
+      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { back: 'plan' })}
+      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3 mb-6">
+        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
+      </p>
+
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[1rem] text-bb-blue-00">
           <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.
         </p>
       </div>
-
-      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { back: 'plan' })}
-      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
-        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
-      </p>
     </div>`;
 }
 
@@ -1214,6 +1238,7 @@ function screenPlan() {
       <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
         Pick a level that fits your budget. Next, you'll see exactly what it protects.
       </p>
+      ${stepError()}
 
       <!-- Earnings summary -->
       <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-4 mb-5">

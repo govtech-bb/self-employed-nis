@@ -1219,15 +1219,15 @@ function screenPlan() {
   const tiers = [
     {
       id: 'minimum', label: 'Minimum', monthly: minMonthly, tag: 'Basic', color: 'yellow',
-      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim, but you still qualify for every benefit.",
+      sub: 'Smaller payouts when you claim — but you still qualify for every benefit.',
     },
     {
       id: 'safer', label: 'Moderate', monthly: saferMonthly, tag: 'Recommended', color: 'green',
-      sub: 'A bigger share of your earnings, so you build more contributions and stronger benefits.',
+      sub: 'A bigger share of your earnings, for stronger benefits.',
     },
     {
       id: 'strong', label: 'Stronger', monthly: strongMonthly, tag: 'Maximum', color: 'teal',
-      sub: "The most you put in here. It's closer to what employees contribute and builds the strongest benefits.",
+      sub: "Closest to an employee's contributions — the strongest benefits.",
     },
   ];
 
@@ -1283,45 +1283,30 @@ function screenPlan() {
       </div>
 
       ${tier ? `
-        <!-- Plan hero (the future-self moment — colour change on tier select) -->
-        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-6 shadow-card-hover">
-          <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40 font-semibold mb-1">Your plan</p>
-          <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
-          <p class="text-[1rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
-
-          <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
-            <div>
-              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
-              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12)}</p>
-            </div>
-            <div>
-              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
-              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12 * 10)}</p>
-            </div>
+        <!-- Slim plan summary: the payoff + protection, not a repeat of the price -->
+        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-4 shadow-card-hover">
+          <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40 font-semibold mb-3">Your plan</p>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[1rem] text-white/90">Your protection level</span>
+            <span class="text-[1rem] font-semibold text-white">${protectionLabel}</span>
           </div>
-
-          <div class="mt-5">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-[1rem] text-white/90">Your protection level</span>
-              <span class="text-[1rem] font-semibold text-white">${protectionLabel}</span>
-            </div>
-            <div class="protect-bar bg-white/20">
-              <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
-            </div>
-            <p class="text-[0.95rem] text-white/70 mt-2">
-              The more you put in, the bigger your benefits. Next, we'll show what each one is worth to you.
-            </p>
+          <div class="protect-bar bg-white/20">
+            <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
           </div>
+          <p class="text-[1.25rem] leading-[1.4] mt-4">
+            In 10 years, that's about <strong class="tabular-nums">${fmtMoney(chosen * 12 * 10)}</strong> put toward your benefits.
+          </p>
+        </div>
 
-          <div class="mt-5 rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 space-y-3">
-            <div class="flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-              <p class="text-[1rem] text-bb-blue-00"><strong>Slow month?</strong> Pay less or skip. No penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.</p>
-            </div>
-            <div class="flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.clock}</span>
-              <p class="text-[1rem] text-bb-blue-00"><strong>When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.</p>
-            </div>
+        <!-- How paying works (moved out of the plan card) -->
+        <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 space-y-3">
+          <div class="flex items-start gap-3">
+            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+            <p class="text-[1rem] text-bb-blue-00"><strong>Slow month?</strong> Pay less or skip, no penalty. <strong>Good month?</strong> Top up. What counts is the yearly total.</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.clock}</span>
+            <p class="text-[1rem] text-bb-blue-00"><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
           </div>
         </div>
       ` : ''}

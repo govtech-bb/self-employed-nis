@@ -480,7 +480,7 @@ const NIS = {
   FUNERAL_GRANT: 2220,
   CHILD_GRANT: 1280,
   // durations / ages
-  SICKNESS_MAX_WEEKS: 52,
+  SICKNESS_MAX_WEEKS: 26,         // up to 26 more with 150 contribution weeks + 75 in the prior 3 years (nis.gov.bb/sickness-benefit)
   PATERNITY_WEEKS: 3,
   PENSIONABLE_AGE: 67,
 };
@@ -1099,7 +1099,7 @@ function screenRiskAwareness() {
   const items = [
     { benefit: 'sickness', title: "What happens if you get sick?",
       without: `Two weeks off sick is about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food and bills still due.`,
-      withNis: `Sickness Benefit pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks.` },
+      withNis: `Sickness Benefit pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks. If you're still unwell after that, NISSS may pay for up to 26 more weeks.` },
     { benefit: 'invalidity', title: 'A long illness or injury stops you working',
       without: 'No safety net. Savings go fast, and family has to step in.',
       withNis: `Invalidity Pension gives ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` },

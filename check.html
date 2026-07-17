@@ -1299,12 +1299,6 @@ function screenPlan() {
     },
   ];
 
-  // Selected tier — drives the colour-coded chip on the plan card.
-  const selTier = tiers.find(t => t.id === tier);
-  const selC = selTier ? COLOR_MAP[selTier.color] : null;
-  // Strong (−00) accent border for the plan summary's left rule, per tier.
-  const selAccent = selTier ? { yellow: 'border-bb-yellow-00', green: 'border-bb-green-00', teal: 'border-bb-teal-00' }[selTier.color] : '';
-
   return `
     <div class="screen stage">
       ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
@@ -1348,36 +1342,16 @@ function screenPlan() {
                 </div>
                 <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">${ICONS.check}</span>
               </div>
+              <div class="mt-3 pt-3 border-t ${c.border} flex flex-wrap gap-x-6 gap-y-1 text-[1rem] text-bb-mid-grey-00">
+                <span>Over a year <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12)}</strong></span>
+                <span>Over 10 years <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12 * 10)}</strong></span>
+              </div>
             </button>
           `;
         }).join('')}
       </div>
 
       ${tier ? `
-        <!-- Plan hero (the future-self moment — colour change on tier select) -->
-        <div id="plan-hero" class="rounded-r-2xl border-l-4 ${selAccent} ${selC.bg} p-6 mb-4">
-          <div class="flex items-baseline justify-between gap-3 mb-3">
-            <p class="text-[1rem] uppercase tracking-wide font-semibold text-bb-mid-grey-00">Your plan</p>
-            <span class="chip bg-white ${selC.text} border ${selC.border}">${selTier.label}</span>
-          </div>
-
-          <p class="leading-none mb-6">
-            <span class="text-[2.75rem] font-bold tabular-nums text-bb-black-00">${fmtMoney(chosen)}</span>
-            <span class="text-[1.25rem] text-bb-mid-grey-00"> a month</span>
-          </p>
-
-          <dl class="plan-figures">
-            <div class="plan-figures__row">
-              <dt>Over a year</dt>
-              <dd><strong class="tabular-nums">${fmtMoney(chosen * 12)}</strong></dd>
-            </div>
-            <div class="plan-figures__row">
-              <dt>Over 10 years</dt>
-              <dd><strong class="tabular-nums">${fmtMoney(chosen * 12 * 10)}</strong></dd>
-            </div>
-          </dl>
-        </div>
-
         <!-- How paying works (yellow summary card, kept standalone) -->
         <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 space-y-3">
           <div class="flex items-start gap-3">

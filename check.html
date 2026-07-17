@@ -384,6 +384,9 @@ const state = {
   raw: {},
   badInput: {},
   expandedScenario: null,
+  // One-shot message for a gated Continue click (shown as the "There is a
+  // problem" summary on the current step, then consumed on the next render).
+  stepError: null,
 };
 
 // Lean-estimator comparison variant: the MDAs are choosing between the full
@@ -619,10 +622,18 @@ function primaryBtn(label, action, opts = {}) {
     </button>`;
 }
 
-// Empty error region placed right after a step's title + description. A gated
-// Continue writes its message here on click (see showStepError).
+// Error summary for a gated step — the same "There is a problem" box the
+// income step uses (errorSummary), shown after the title/description when a
+// not-ready Continue is clicked. Driven by the one-shot state.stepError.
 function stepError() {
-  return `<p id="step-error" class="step-error" role="alert"></p>`;
+  if (!state.stepError) return '';
+  return `
+    <div id="error-summary" tabindex="-1" role="alert" class="border-4 border-bb-red-00 bg-white px-8 py-6 mb-6 outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
+      <p class="font-bold text-bb-black-00 mb-2">There is a problem</p>
+      <div class="flex flex-col gap-1">
+        <span class="text-bb-red-00">${state.stepError}</span>
+      </div>
+    </div>`;
 }
 
 // GOV.BB Secondary button used as the form "Previous" control.
@@ -650,14 +661,14 @@ function showDisabledHint(btn) {
   setLiveRegion(el, btn.dataset.hint || '');
 }
 
-// A not-ready Continue was clicked: show its message in the step's #step-error
-// region (after the title/description) and bring it into view. The button is
-// never disabled, so this is how the user learns what's still needed.
+// A not-ready Continue was clicked: show the "There is a problem" summary at
+// the top of the step (matching the income step) and move focus to it. The
+// button is never disabled, so this is how the user learns what's needed.
 function showStepError(btn) {
-  const region = document.getElementById('step-error');
-  if (!region) return;
-  setLiveRegion(region, btn.dataset.hint || '');
-  region.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  state.stepError = btn.dataset.hint || 'Answer the question above to continue.';
+  render();
+  const s = document.getElementById('error-summary');
+  if (s) s.focus();
 }
 
 // Announce content revealed or updated by a selection (plan details, the
@@ -1498,6 +1509,7 @@ function screenRegisterPath() {
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         If you worked for an employer before, you probably do. It's the same number for life.
       </p>
+      ${stepError()}
 
       <div class="space-y-3 mb-6" role="radiogroup" aria-label="Do you already have an NISSS number?">
         ${[
@@ -2000,6 +2012,9 @@ function render(opts = {}) {
   root.classList.toggle('no-anim', !opts.scroll);
 
   root.innerHTML = (SCREENS[state.screen] || screenLanding)();
+  // Consume the one-shot step error: it's now in the rendered HTML, so the
+  // next render (a selection, a nav) clears it automatically.
+  state.stepError = null;
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
   setupRadioGroups(root);
 

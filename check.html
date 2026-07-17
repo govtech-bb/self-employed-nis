@@ -509,6 +509,10 @@ function goodMonthsValue() {
 const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
 
 function progressBar(currentId) {
+  // Hidden for now — the step counter + bar felt noisy at the top of each step.
+  // Return '' to keep every screen's `${progressBar(...)}` call a no-op; delete
+  // this line to bring it back.
+  return '';
   const idx = JOURNEY.indexOf(currentId);
   if (idx === -1) return '';
   const total = JOURNEY.length;
@@ -2281,6 +2285,12 @@ function selectTier(id) {
   const prev = state.data.contributionTier;
   state.data.contributionTier = id;
   render();
+  // Bring the revealed/updated plan into view so the payoff isn't missed below the fold.
+  const hero = document.getElementById('plan-hero');
+  if (hero) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    hero.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }
   // The first pick reveals the plan hero and benefit cards below the group,
   // so tell screen-reader users. Every later CHANGE silently rewrites all
   // the benefit figures, so say that too. Re-picking the same tier changes

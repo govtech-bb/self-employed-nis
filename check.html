@@ -1100,7 +1100,7 @@ function screenRiskAwareness() {
     { benefit: 'sickness', title: "What happens if you get sick?",
       without: `Two weeks off sick is about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food and bills still due.`,
       withNis: `Sickness Benefit pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks. If you're still unwell after that, NISSS may pay for up to 26 more weeks.` },
-    { benefit: 'invalidity', title: 'A long illness or injury stops you working',
+    { benefit: 'invalidity', title: 'What happens if a long illness or injury stops you working?',
       without: 'No safety net. Savings go fast, and family has to step in.',
       withNis: `Invalidity Pension gives ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` },
     { benefit: 'maternity', title: "You're starting a family",
@@ -1109,7 +1109,7 @@ function screenRiskAwareness() {
     { benefit: 'pension', title: "You're 67 and ready to slow down",
       without: `Without a pension, that's about <strong>${fmtMoney(yearLost)}/year</strong> you'd need to find from somewhere else.`,
       withNis: `An Old-Age Pension for life from age ${NIS.PENSIONABLE_AGE}, starting around ${perWeek(pensionWk)} and growing the longer you contribute.` },
-    { benefit: 'survivors', title: 'Something happens to you',
+    { benefit: 'survivors', title: 'What if something happens to you?',
       without: 'Your partner, children or parents lose the income you brought in.',
       withNis: `Survivors share about ${perWeek(pensionWk)}, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child and a ${fmtMoney(NIS.FUNERAL_GRANT)} funeral grant.` },
   ];

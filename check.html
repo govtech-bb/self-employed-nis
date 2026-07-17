@@ -2283,12 +2283,10 @@ function selectTier(id) {
   const prev = state.data.contributionTier;
   state.data.contributionTier = id;
   render();
-  // Bring the revealed/updated plan into view so the payoff isn't missed below the fold.
+  // Bring the revealed/updated plan into view so the payoff isn't missed below
+  // the fold. Instant (no smooth-scroll animation — it felt jarring).
   const hero = document.getElementById('plan-hero');
-  if (hero) {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    hero.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-  }
+  if (hero) hero.scrollIntoView({ behavior: 'auto', block: 'start' });
   // The first pick reveals the plan hero and benefit cards below the group,
   // so tell screen-reader users. Every later CHANGE silently rewrites all
   // the benefit figures, so say that too. Re-picking the same tier changes

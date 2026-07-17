@@ -150,6 +150,16 @@
   .btn-secondary:hover { background: #eaf9f9; }
   .btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
 
+  /* GOV.BB Secondary button — used as the form "Previous" control (grey fill,
+     black text) paired with the primary "Continue" at the bottom of a step. */
+  .btn-previous {
+    background: #e0e4e9; color: #000;
+    transition: background-color .15s, box-shadow .15s;
+  }
+  .btn-previous:hover { box-shadow: inset 0 0 0 4px rgba(0,0,0,0.05); }
+  .btn-previous:active { background: #b9c0c6; }
+  .btn-previous:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
+
   /* Links */
   .link-bb {
     color: #0e5f64; text-decoration: underline; text-underline-offset: 2px;
@@ -538,11 +548,36 @@ function primaryBtn(label, action, opts = {}) {
   const attrs = isDisabled
     ? `onclick="showDisabledHint(this)" aria-disabled="true" data-hint="${hint.replace(/"/g, '&quot;')}"`
     : `onclick="${action}"`;
+  const hintEl = isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : '';
+
+  // Form-step layout: a GOV.BB "Previous" (Secondary) + "Continue" (Primary)
+  // pair at the bottom of the step, matching the alpha.gov.bb form pattern.
+  // The Continue here is the exact GOV.BB Primary: 20px regular, no arrow.
+  if (opts.back) {
+    return `
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+      ${previousBtn(opts.back)}
+      <button type="button" ${attrs}
+        class="btn-primary inline-flex items-center justify-center px-xm py-s rounded-sm text-[1.25rem] font-normal leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+        ${label}
+      </button>
+    </div>${hintEl}`;
+  }
+
   return `
     <button type="button" ${attrs}
       class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
-    </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
+    </button>${hintEl}`;
+}
+
+// GOV.BB Secondary button used as the form "Previous" control.
+function previousBtn(target) {
+  return `
+    <button type="button" onclick="nav('${target}')"
+      class="btn-previous inline-flex items-center justify-center px-xm py-s rounded-sm text-[1.25rem] font-normal leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      Previous
+    </button>`;
 }
 
 // Write a message into a live region. Clear first, then set on the next
@@ -691,7 +726,6 @@ function screenLanding() {
 function screenWorkerType() {
   return `
     <div class="screen stage">
-      ${backBtn('landing')}
       ${progressBar('worker-type')}
       ${serviceCaption()}
 
@@ -748,7 +782,7 @@ function screenWorkerType() {
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob, hint: 'Choose your kind of work and answer the main job question to continue.' })}
+      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob, hint: 'Choose your kind of work and answer the main job question to continue.', back: 'landing' })}
     </div>`;
 }
 
@@ -763,7 +797,6 @@ function screenIncomeReality() {
 
   return `
     <div class="screen stage">
-      ${backBtn(LEAN_ESTIMATOR ? 'landing' : 'worker-type')}
       ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
@@ -879,7 +912,7 @@ function screenIncomeReality() {
         <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[0.95rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
 
-      ${primaryBtn('Continue', 'nextFromIncome()')}
+      ${primaryBtn('Continue', 'nextFromIncome()', { back: LEAN_ESTIMATOR ? 'landing' : 'worker-type' })}
     </div>`;
 }
 
@@ -907,7 +940,6 @@ function screenYourSituation() {
 
   return `
     <div class="screen stage">
-      ${backBtn('income-reality')}
       ${progressBar('your-situation')}
       ${serviceCaption()}
 
@@ -986,7 +1018,7 @@ function situationContinue() {
     : invalidCount
       ? 'Enter a whole number of people from 1 to 20 to continue.'
       : 'Enter how many people depend on your income to continue.';
-  return primaryBtn('Continue', "nav('plan')", { disabled: missingRadios || missingCount, hint });
+  return primaryBtn('Continue', "nav('plan')", { disabled: missingRadios || missingCount, hint, back: 'income-reality' });
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -1060,7 +1092,6 @@ function screenRiskAwareness() {
 
   return `
     <div class="screen stage">
-      ${backBtn('plan')}
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
@@ -1109,7 +1140,7 @@ function screenRiskAwareness() {
         </p>
       </div>
 
-      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')")}
+      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { back: 'plan' })}
       <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
         Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
       </p>
@@ -1174,7 +1205,6 @@ function screenPlan() {
 
   return `
     <div class="screen stage">
-      ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
       ${progressBar('plan')}
       ${serviceCaption()}
 
@@ -1273,7 +1303,7 @@ function screenPlan() {
         </div>
       `}
 
-      ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.' })}
+      ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.', back: LEAN_ESTIMATOR ? 'income-reality' : 'your-situation' })}
     </div>`;
 }
 

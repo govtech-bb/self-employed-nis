@@ -1284,7 +1284,7 @@ function screenPlan() {
 
       ${tier ? `
         <!-- Plan hero (the future-self moment — colour change on tier select) -->
-        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
+        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-6 shadow-card-hover">
           <p class="text-[0.85rem] uppercase tracking-wide text-bb-teal-40 font-semibold mb-1">Your plan</p>
           <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
           <p class="text-[0.95rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
@@ -1312,20 +1312,17 @@ function screenPlan() {
               The more you put in, the bigger your benefits. Next, we'll show what each one is worth to you.
             </p>
           </div>
-        </div>
 
-        <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
-          <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-          <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>Slow month?</strong> Pay less or skip. No penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.
-          </p>
-        </div>
-
-        <div class="rounded-2xl bg-bb-blue-10 border border-bb-blue-40 p-4 mb-6 flex items-start gap-3">
-          <span class="text-bb-blue-100 shrink-0 mt-0.5">${ICONS.clock}</span>
-          <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.
-          </p>
+          <div class="mt-5 pt-4 border-t border-white/20 space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-bb-teal-40 shrink-0 mt-0.5">${ICONS.spark}</span>
+              <p class="text-[0.9rem] text-white/90"><strong class="text-white">Slow month?</strong> Pay less or skip. No penalty. <strong class="text-white">Good month?</strong> Top up. What counts is the total over the year.</p>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-bb-teal-40 shrink-0 mt-0.5">${ICONS.clock}</span>
+              <p class="text-[0.9rem] text-white/90"><strong class="text-white">When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.</p>
+            </div>
+          </div>
         </div>
       ` : ''}
 

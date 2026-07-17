@@ -448,7 +448,7 @@ const BENEFITS = [
 const COLOR_MAP = {
   teal:   { bg: 'bg-bb-teal-10',   text: 'text-bb-teal-00',   border: 'border-bb-teal-40' },
   pink:   { bg: 'bg-bb-red-10',    text: 'text-bb-pink-00',   border: 'border-bb-red-40' },
-  blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-blue-00',   border: 'border-bb-blue-40' },
+  blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-black-00',   border: 'border-bb-blue-40' },
   purple: { bg: 'bg-[#f3eaf6]',    text: 'text-bb-purple-00', border: 'border-[#d9c1e1]' },
   yellow: { bg: 'bg-bb-yellow-10', text: 'text-bb-yellow-dark', border: 'border-bb-yellow-40' },
   green:  { bg: 'bg-bb-green-10',  text: 'text-bb-green-00',  border: 'border-bb-green-40' },
@@ -520,7 +520,7 @@ function progressBar(currentId) {
   return `
     <div class="mb-6">
       <div class="flex items-center justify-between mb-2 text-[0.95rem] text-bb-mid-grey-00">
-        <span class="font-medium text-bb-blue-00">Step ${idx + 1} of ${total}</span>
+        <span class="font-medium text-bb-black-00">Step ${idx + 1} of ${total}</span>
         <span>${Math.round(((idx + 1) / total) * 100)}% through the guide</span>
       </div>
       <div class="flex gap-1.5" role="progressbar" aria-label="Progress through the guide" aria-valuenow="${idx + 1}" aria-valuemin="1" aria-valuemax="${total}" aria-valuetext="Step ${idx + 1} of ${total}">
@@ -669,12 +669,12 @@ function screenLanding() {
           ${ICONS.shield}<span>From NISSS Barbados</span>
         </div>
 
-        <h1 class="font-bold text-[2.75rem] sm:text-[3.5rem] leading-[1.1] tracking-tight text-bb-blue-00 mb-4">
+        <h1 class="font-bold text-[2.75rem] sm:text-[3.5rem] leading-[1.1] tracking-tight text-bb-black-00 mb-4">
           Protect your income.<br/>
           <span class="text-bb-teal-00">Protect your future.</span>
         </h1>
 
-        <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
           You work for yourself: driving, delivering, freelancing, building, selling, creating. NISSS is how you look after yourself when life happens.
         </p>
 
@@ -689,16 +689,16 @@ function screenLanding() {
       </div>
 
       <div class="mt-10">
-        <h2 class="font-bold text-[1.5rem] text-bb-blue-00 mb-3">What is NISSS, simply?</h2>
-        <p class="text-[1.25rem] text-bb-mid-grey-00 mb-4">
-          NISSS stands for the <strong class="text-bb-blue-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn. It's there when you need it: when you're sick, when you have a baby, when you retire.
+        <h2 class="font-bold text-[1.5rem] text-bb-black-00 mb-3">What is NISSS, simply?</h2>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
+          NISSS stands for the <strong class="text-bb-black-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn. It's there when you need it: when you're sick, when you have a baby, when you retire.
         </p>
-        <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
-          Self-employed Bajans can join too. You choose how much you put in, based on what you actually earn. It's <strong class="text-bb-blue-00">voluntary</strong> and there's no penalty for slow months.
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
+          Self-employed Bajans can join too. You choose how much you put in, based on what you actually earn. It's <strong class="text-bb-black-00">voluntary</strong> and there's no penalty for slow months.
         </p>
 
         <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-5 mb-6">
-          <p class="font-semibold text-bb-blue-00 mb-3">What NISSS can help with</p>
+          <p class="font-semibold text-bb-black-00 mb-3">What NISSS can help with</p>
           <ul class="space-y-2.5">
             ${[
               ['sickness', 'Money to live on if you get sick'],
@@ -709,7 +709,7 @@ function screenLanding() {
             ].map(([icon, text]) => `
               <li class="flex items-start gap-3">
                 <span class="text-bb-teal-00 mt-0.5">${ICONS[icon]}</span>
-                <span class="text-[1.25rem] text-bb-blue-00">${text}</span>
+                <span class="text-[1.25rem] text-bb-black-00">${text}</span>
               </li>
             `).join('')}
           </ul>
@@ -723,8 +723,8 @@ function screenLanding() {
 
       ${!SHOW_TRACKER_ENTRY ? '' : `
       <div class="mt-10 pt-6 border-t border-bb-grey-00">
-        <h2 class="font-bold text-[1.5rem] text-bb-blue-00 mb-2">Already contributing?</h2>
-        <p class="text-[1.25rem] text-bb-mid-grey-00 mb-4">
+        <h2 class="font-bold text-[1.5rem] text-bb-black-00 mb-2">Already contributing?</h2>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
           See where you stand. Track your payments, check what benefits you qualify for, and pay what's due.
         </p>
         <button type="button" onclick="nav('tracker')"
@@ -733,7 +733,7 @@ function screenLanding() {
             ${ICONS.chart}
           </span>
           <span class="flex-1 min-w-0">
-            <span class="block font-semibold text-[1.25rem] text-bb-blue-00">Track my NISSS contributions</span>
+            <span class="block font-semibold text-[1.25rem] text-bb-black-00">Track my NISSS contributions</span>
             <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">View your dashboard and recent payments</span>
           </span>
           <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
@@ -757,10 +757,10 @@ function screenWorkerType() {
       ${progressBar('worker-type')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What kind of work do you do?
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Pick the one that's closest. It just helps us tailor the examples.
       </p>
       ${stepError()}
@@ -772,11 +772,11 @@ function screenWorkerType() {
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectWorker('${w.id}')"
               class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-start gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
-              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-black-00">
                 ${ICONS[w.icon]}
               </span>
               <span class="flex-1 min-w-0">
-                <span class="block font-semibold text-[1.25rem] text-bb-blue-00">${w.title}</span>
+                <span class="block font-semibold text-[1.25rem] text-bb-black-00">${w.title}</span>
                 <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5 leading-snug">${w.example}</span>
               </span>
               <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
@@ -786,10 +786,10 @@ function screenWorkerType() {
         }).join('')}
       </div>
 
-      <h2 class="font-bold text-[1.5rem] sm:text-[1.75rem] leading-[1.25] text-bb-blue-00 mb-1">
+      <h2 class="font-bold text-[1.5rem] sm:text-[1.75rem] leading-[1.25] text-bb-black-00 mb-1">
         Do you already pay National Insurance through a main job?
       </h2>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-4">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
         If yes, you can still pay for your self-employed income on top.
       </p>
 
@@ -830,22 +830,22 @@ function screenIncomeReality() {
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Let's talk about your earnings.
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
       ${errorSummary()}
 
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
+        <label for="goodMonth" class="block font-semibold text-bb-black-00 mb-1">
           What does a good month look like?
         </label>
         <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
-          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.goodMonth == null ? '' : fmtMoney(d.goodMonth)}</span>
+          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${d.goodMonth == null ? '' : fmtMoney(d.goodMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
         </div>
         <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.goodMonth || 0))}"
@@ -867,25 +867,25 @@ function screenIncomeReality() {
               onpaste="numberPaste(event)"
               aria-label="Good month earnings in Barbadian dollars"
               aria-describedby="goodMonth-typed-error"${e['goodMonth-typed'] ? ' aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.25rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
           <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
           <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
             <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
               <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="goodMonth-ceiling-text" class="text-[1rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+              <p id="goodMonth-ceiling-text" class="text-[1rem] text-bb-black-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="slowMonth" class="block font-semibold text-bb-blue-00 mb-1">
+        <label for="slowMonth" class="block font-semibold text-bb-black-00 mb-1">
           And a slow month?
         </label>
         <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. Drag the slider or type below.</p>
         <div class="flex items-baseline gap-2 mb-3">
-          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.slowMonth == null ? '' : fmtMoney(d.slowMonth)}</span>
+          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${d.slowMonth == null ? '' : fmtMoney(d.slowMonth)}</span>
           <span class="text-bb-mid-grey-00">/ month</span>
         </div>
         <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.slowMonth || 0))}"
@@ -907,20 +907,20 @@ function screenIncomeReality() {
               onpaste="numberPaste(event)"
               aria-label="Slow month earnings in Barbadian dollars"
               aria-describedby="slowMonth-typed-error"${e['slowMonth-typed'] ? ' aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.25rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
           <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
           <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
             <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
               <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="slowMonth-ceiling-text" class="text-[1rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+              <p id="slowMonth-ceiling-text" class="text-[1rem] text-bb-black-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
-        <label for="goodMonthsPerYear" class="block font-semibold text-bb-blue-00 mb-1">
+        <label for="goodMonthsPerYear" class="block font-semibold text-bb-black-00 mb-1">
           How many good months do you usually have in a year?
         </label>
         <div class="flex items-center gap-3 mt-3">
@@ -936,7 +936,7 @@ function screenIncomeReality() {
               aria-label="Number of good months per year"
               aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
               ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.25rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
         </div>
         <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[1rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
@@ -974,15 +974,15 @@ function screenYourSituation() {
       ${progressBar('your-situation')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Tell us a bit more about your situation.
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         This helps us show you what would happen if you couldn't earn for a while.
       </p>
       ${stepError()}
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Does anyone depend on your income?</h2>
       <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
         ${radioGroup('hasDependants', [
           { id: 'yes', label: 'Yes, others rely on what I earn' },
@@ -994,7 +994,7 @@ function screenYourSituation() {
         const countMsg = dependantsCountError();
         return `
         <div class="mb-6">
-          <label for="dependantsCount" class="block font-semibold text-bb-blue-00 mb-1">How many people depend on your income?</label>
+          <label for="dependantsCount" class="block font-semibold text-bb-black-00 mb-1">How many people depend on your income?</label>
           <p id="dependantsCount-hint" class="text-[1rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
           <div id="dependantsCount-wrap" class="relative inline-flex rounded-sm border-2 ${countMsg ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
             <input id="dependantsCount" type="number" inputmode="numeric" min="1" max="20" step="1"
@@ -1006,13 +1006,13 @@ function screenYourSituation() {
               aria-label="Number of people who depend on your income"
               aria-describedby="dependantsCount-hint dependantsCount-error"
               aria-invalid="${countMsg ? 'true' : 'false'}"
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.25rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
           <p id="dependantsCount-error" class="mt-2 text-bb-red-00 text-[1rem]">${countMsg || ''}</p>
         </div>`;
       })() : ''}
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
         ${radioGroup('hasSavings', [
           { id: 'yes',      label: 'Yes' },
@@ -1021,7 +1021,7 @@ function screenYourSituation() {
         ])}
       </div>
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Current NIS status">
         ${radioGroup('payingNIS', [
           { id: 'yes',            label: 'Yes, I pay it' },
@@ -1095,8 +1095,8 @@ function screenRiskAwareness() {
         ${backBtn('plan')}
         ${progressBar('risk-awareness')}
         ${serviceCaption()}
-        <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">Pick a plan first</h1>
-        <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">Choose a contribution level and we'll show you exactly what it protects.</p>
+        <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">Pick a plan first</h1>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">Choose a contribution level and we'll show you exactly what it protects.</p>
         ${primaryBtn("Choose a plan", "nav('plan')")}
       </div>`;
   }
@@ -1134,10 +1134,10 @@ function screenRiskAwareness() {
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What your plan protects you from
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         For <strong class="tabular-nums">${fmtMoney(chosen)}</strong>/month, here's each moment <strong class="text-bb-red-00">without NISSS</strong> and <strong class="text-bb-green-00">with it</strong>. Figures are estimates based on what you earn.
       </p>
 
@@ -1152,7 +1152,7 @@ function screenRiskAwareness() {
               <summary class="p-4 flex items-start gap-3 hover:bg-bb-blue-10/30">
                 <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full ${c.bg} ${c.text}">${ICONS[def ? def.icon : 'shield']}</span>
                 <span class="flex-1 min-w-0">
-                  <span class="block font-semibold text-[1.25rem] text-bb-blue-00">${it.title}</span>
+                  <span class="block font-semibold text-[1.25rem] text-bb-black-00">${it.title}</span>
                   <span class="block text-[1rem] text-bb-mid-grey-00 mt-1">Tap to see what happens</span>
                 </span>
                 <span class="shrink-0 text-bb-mid-grey-00 mt-2">${ICONS.chevDown}</span>
@@ -1160,11 +1160,11 @@ function screenRiskAwareness() {
               <div class="px-4 pb-5 pt-4 space-y-3 border-t border-bb-grey-00">
                 <div class="rounded-lg bg-bb-red-10 border border-bb-red-40/60 p-3">
                   <p class="text-[0.95rem] uppercase tracking-wide text-bb-red-00 font-semibold mb-1">Without NISSS</p>
-                  <p class="text-[1.125rem] text-bb-blue-00">${it.without}</p>
+                  <p class="text-[1.125rem] text-bb-black-00">${it.without}</p>
                 </div>
                 <div class="rounded-lg bg-bb-green-10 border border-bb-green-40 p-3">
                   <p class="text-[0.95rem] uppercase tracking-wide text-bb-green-00 font-semibold mb-1">With NISSS</p>
-                  <p class="text-[1.125rem] text-bb-blue-00">${it.withNis}</p>
+                  <p class="text-[1.125rem] text-bb-black-00">${it.withNis}</p>
                 </div>
               </div>
             </details>
@@ -1174,7 +1174,7 @@ function screenRiskAwareness() {
 
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[1rem] text-bb-blue-00">
+        <p class="text-[1rem] text-bb-black-00">
           <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.
         </p>
       </div>
@@ -1248,10 +1248,10 @@ function screenPlan() {
       ${progressBar('plan')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What should you put in?
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Pick a level that fits your budget. Next, you'll see exactly what it protects.
       </p>
       ${stepError()}
@@ -1259,7 +1259,7 @@ function screenPlan() {
       <!-- Earnings summary -->
       <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-4 mb-5">
         <p class="text-[1rem] text-bb-mid-grey-00 mb-1">Based on what you told us</p>
-        <p class="text-[1.25rem] text-bb-blue-00">
+        <p class="text-[1.25rem] text-bb-black-00">
           Average earnings: <strong class="tabular-nums">${fmtMoney(monthlyAvg)}</strong>
           <span class="text-bb-mid-grey-00">/ month</span>
         </p>
@@ -1277,7 +1277,7 @@ function screenPlan() {
               <div class="flex items-start justify-between gap-3">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <p class="font-semibold text-[1.25rem] text-bb-blue-00">${t.label}</p>
+                    <p class="font-semibold text-[1.25rem] text-bb-black-00">${t.label}</p>
                     <span class="chip bg-white ${c.text} border ${c.border}">${t.tag}</span>
                   </div>
                   <div class="mt-1 flex items-baseline gap-2">
@@ -1329,11 +1329,11 @@ function screenPlan() {
         <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 space-y-3">
           <div class="flex items-start gap-3">
             <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-            <p class="text-[1rem] text-bb-blue-00"><strong>Slow month?</strong> Pay less or skip, no penalty. <strong>Good month?</strong> Top up. What counts is the yearly total.</p>
+            <p class="text-[1rem] text-bb-black-00"><strong>Slow month?</strong> Pay less or skip, no penalty. <strong>Good month?</strong> Top up. What counts is the yearly total.</p>
           </div>
           <div class="flex items-start gap-3">
             <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.clock}</span>
-            <p class="text-[1rem] text-bb-blue-00"><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
+            <p class="text-[1rem] text-bb-black-00"><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
           </div>
         </div>
       ` : ''}
@@ -1350,10 +1350,10 @@ function screenBenefitsQuick() {
     <div class="screen stage">
       ${backBtn('landing')}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Six ways NISSS protects you.
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Quick read: about a minute.
       </p>
 
@@ -1367,8 +1367,8 @@ function screenBenefitsQuick() {
                   ${ICONS[b.icon]}
                 </span>
                 <div class="flex-1 min-w-0">
-                  <p class="font-semibold text-[1.25rem] text-bb-blue-00 mb-1">${b.title}</p>
-                  <p class="text-[1.125rem] text-bb-blue-00/80 leading-snug">${b.real}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">${b.title}</p>
+                  <p class="text-[1.125rem] text-bb-black-00/80 leading-snug">${b.real}</p>
                 </div>
               </div>
             </div>
@@ -1390,10 +1390,10 @@ function screenNextSteps() {
       ${progressBar('next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Ready to take the next step?
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Choose what works best for you right now.
       </p>
 
@@ -1405,8 +1405,8 @@ function screenNextSteps() {
               ${ICONS.shield}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-blue-00 mb-1">Register with NISSS</p>
-              <p class="text-[1rem] text-bb-blue-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Register with NISSS</p>
+              <p class="text-[1rem] text-bb-black-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1415,12 +1415,12 @@ function screenNextSteps() {
         <button type="button" onclick="nav('payment-options')"
           class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
           <div class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-black-00">
               ${ICONS.card}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-blue-00 mb-1">See how to pay</p>
-              <p class="text-[1rem] text-bb-blue-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">See how to pay</p>
+              <p class="text-[1rem] text-bb-black-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1433,8 +1433,8 @@ function screenNextSteps() {
               ${ICONS.phone}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-blue-00 mb-1">Contact NISSS</p>
-              <p class="text-[1rem] text-bb-blue-00/80">Have a question? Call or visit an office and an officer will help.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Contact NISSS</p>
+              <p class="text-[1rem] text-bb-black-00/80">Have a question? Call or visit an office and an officer will help.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1442,8 +1442,8 @@ function screenNextSteps() {
       </div>
 
       <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-        <p class="text-[1rem] text-bb-blue-00">
+        <span class="text-bb-black-00 shrink-0 mt-0.5">${ICONS.lock}</span>
+        <p class="text-[1rem] text-bb-black-00">
           You can step away at any time. Joining is voluntary, and you choose how much to contribute.
         </p>
       </div>
@@ -1465,10 +1465,10 @@ function screenRegisterPath() {
       ${backBtn(state.screen === 'register-path' && JOURNEY.indexOf('next-steps') > -1 && cameFromJourney ? 'next-steps' : 'landing')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Do you already have an NISSS number?
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         If you worked for an employer before, you probably do. It's the same number for life.
       </p>
 
@@ -1487,7 +1487,7 @@ function screenRegisterPath() {
                 ${ICONS.check}
               </span>
               <span class="flex-1">
-                <span class="block font-semibold text-[1.25rem] text-bb-blue-00">${o.label}</span>
+                <span class="block font-semibold text-[1.25rem] text-bb-black-00">${o.label}</span>
                 <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">${o.sub}</span>
               </span>
             </button>
@@ -1523,10 +1523,10 @@ function screenPaymentOptions() {
       ${backBtn('next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         How to pay your NISSS contributions
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Pay weekly, monthly, or in a lump sum, whatever fits your cash flow.
       </p>
 
@@ -1545,17 +1545,17 @@ function screenPaymentOptions() {
               <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white ${c.text}">${ICONS[p.icon]}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
-                  <p class="font-semibold text-[1.25rem] text-bb-blue-00">${p.title}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00">${p.title}</p>
                   <span class="chip bg-white border border-bb-grey-00 ${c.text}">${p.tag}</span>
                 </div>
-                <p class="text-[1rem] text-bb-blue-00/80">${p.sub}</p>
+                <p class="text-[1rem] text-bb-black-00/80">${p.sub}</p>
               </div>
             </div>
           </div>`;
         }).join('')}
       </div>
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">How often should you pay?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">How often should you pay?</h2>
       <div class="grid grid-cols-3 gap-2 mb-6">
         ${[
           { title: 'Weekly',  sub: 'Smaller amounts more often.' },
@@ -1563,7 +1563,7 @@ function screenPaymentOptions() {
           { title: 'Yearly',  sub: 'One lump sum.' },
         ].map(o => `
           <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-            <p class="font-semibold text-[1rem] text-bb-blue-00">${o.title}</p>
+            <p class="font-semibold text-[1rem] text-bb-black-00">${o.title}</p>
             <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1">${o.sub}</p>
           </div>
         `).join('')}
@@ -1572,9 +1572,9 @@ function screenPaymentOptions() {
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
         <div>
-          <p class="font-semibold text-bb-blue-00 mb-1">If you stop contributing</p>
-          <p class="text-[1rem] text-bb-blue-00/80 mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
-          <p class="text-[1rem] text-bb-blue-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
+          <p class="font-semibold text-bb-black-00 mb-1">If you stop contributing</p>
+          <p class="text-[1rem] text-bb-black-00/80 mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
+          <p class="text-[1rem] text-bb-black-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
         </div>
       </div>
 
@@ -1604,21 +1604,21 @@ function screenContact() {
       ${backBtn(unsure ? 'register-path' : 'next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Contact NISSS
       </h1>
-      <p class="text-[1.25rem] text-bb-mid-grey-00 mb-6">${lead}</p>
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">${lead}</p>
 
       ${unsure ? `
         <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-          <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-          <p class="text-[1.125rem] text-bb-blue-00">
+          <span class="text-bb-black-00 shrink-0 mt-0.5">${ICONS.lock}</span>
+          <p class="text-[1.125rem] text-bb-black-00">
             Ask them to look up your number before you register. If you already have one, you keep it for life, so there is no need to sign up again.
           </p>
         </div>
       ` : ''}
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Ways to reach them</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Ways to reach them</h2>
       <div class="space-y-3 mb-6">
         ${ways.map(o => `
           <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
@@ -1626,7 +1626,7 @@ function screenContact() {
               <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-teal-10 text-bb-teal-00">${ICONS[o.icon]}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
-                  <p class="font-semibold text-[1.25rem] text-bb-blue-00">${o.title}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00">${o.title}</p>
                   <span class="chip bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40">${o.tag}</span>
                 </div>
                 <p class="text-[1rem] text-bb-mid-grey-00">${o.sub}</p>
@@ -1638,14 +1638,14 @@ function screenContact() {
 
       <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[1.125rem] text-bb-blue-00">
+        <p class="text-[1.125rem] text-bb-black-00">
           <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
         </p>
       </div>
 
       <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.shield}</span>
-        <p class="text-[1.125rem] text-bb-blue-00">
+        <p class="text-[1.125rem] text-bb-black-00">
           <strong>It's never too late.</strong> Even if you start close to retirement and don't build enough contributions for a full pension, you may still qualify for a <strong>one-time grant</strong>. Starting now always counts for something.
         </p>
       </div>
@@ -1699,7 +1699,7 @@ function screenTracker() {
       <!-- Future-feature preview banner -->
       <div class="rounded-2xl bg-bb-purple-00/5 border border-bb-purple-100/40 p-4 mb-5 flex items-start gap-3">
         <span class="text-bb-purple-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[1rem] text-bb-blue-00">
+        <p class="text-[1rem] text-bb-black-00">
           <strong>A glimpse of what's coming.</strong> Today most people can't see how much they've put in or what they qualify for. This is an example of a future feature. The details below are made up to show the idea.
         </p>
       </div>
@@ -1741,7 +1741,7 @@ function screenTracker() {
           <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-yellow-00">${ICONS.bell}</span>
           <div class="flex-1 min-w-0">
             <p class="text-[0.95rem] uppercase tracking-wide text-bb-yellow-dark font-semibold">Due in 18 days</p>
-            <p class="font-bold text-[1.25rem] text-bb-blue-00 leading-tight">November contribution</p>
+            <p class="font-bold text-[1.25rem] text-bb-black-00 leading-tight">November contribution</p>
             <p class="text-[1rem] text-bb-mid-grey-00 mt-0.5">${fmtMoney(150)} · Due 15 December 2026</p>
           </div>
         </div>
@@ -1752,24 +1752,24 @@ function screenTracker() {
       </div>
 
       <!-- This year stats -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Your contributions</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Your contributions</h2>
       <div class="grid grid-cols-3 gap-2 mb-5">
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.5rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(yearTotal)}</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${fmtMoney(yearTotal)}</p>
           <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">This year</p>
         </div>
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.5rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(allTime)}</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${fmtMoney(allTime)}</p>
           <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">All time</p>
         </div>
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.5rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${monthsActive}</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${monthsActive}</p>
           <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">Months active</p>
         </div>
       </div>
 
       <!-- Recent activity -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Recent activity</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Recent activity</h2>
       <div class="rounded-2xl border border-bb-grey-00 bg-white divide-y divide-bb-grey-00 mb-3">
         ${history.map(h => {
           const statusStyle = {
@@ -1783,11 +1783,11 @@ function screenTracker() {
                 ${ICONS[statusStyle.icon]}
               </span>
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-[1rem] text-bb-blue-00">${h.month}</p>
+                <p class="font-semibold text-[1rem] text-bb-black-00">${h.month}</p>
                 <p class="text-[1rem] text-bb-mid-grey-00 mt-0.5">${h.date}</p>
               </div>
               <div class="text-right shrink-0">
-                <p class="font-bold text-[1.25rem] text-bb-blue-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : 'None'}</p>
+                <p class="font-bold text-[1.25rem] text-bb-black-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : 'None'}</p>
                 <p class="text-[0.95rem] ${statusStyle.fg} font-medium">${statusStyle.label}</p>
               </div>
             </div>
@@ -1802,17 +1802,17 @@ function screenTracker() {
 
       <!-- Back-pay nudge -->
       <div class="rounded-2xl bg-bb-blue-10/60 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <span class="text-bb-black-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <div>
-          <p class="font-semibold text-bb-blue-00 mb-1">You skipped August 2026</p>
-          <p class="text-[1rem] text-bb-blue-00/80 mb-2">No worries. Slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
+          <p class="font-semibold text-bb-black-00 mb-1">You skipped August 2026</p>
+          <p class="text-[1rem] text-bb-black-00/80 mb-2">No worries. Slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
           <button type="button" onclick="alert('In a real service, this would let you back-pay BDS$150 for August 2026.')"
             class="link-bb text-[1rem] font-medium">Back-pay BDS$150 →</button>
         </div>
       </div>
 
       <!-- Eligibility progress -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What you qualify for</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">What you qualify for</h2>
       <p class="text-[1rem] text-bb-mid-grey-00 mb-4">
         Each benefit needs a minimum number of contributions. Here's where you stand.
       </p>
@@ -1823,7 +1823,7 @@ function screenTracker() {
           return `
             <div class="rounded-xl border border-bb-grey-00 bg-white p-4">
               <div class="flex items-center justify-between gap-3 mb-2">
-                <p class="font-semibold text-[1rem] text-bb-blue-00">${b.title}</p>
+                <p class="font-semibold text-[1rem] text-bb-black-00">${b.title}</p>
                 <span class="chip ${isEligible ? 'bg-bb-green-10 text-bb-green-00 border border-bb-green-40' : 'bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40'}">
                   ${isEligible ? ICONS.circleCheck : ICONS.calendar}
                   <span>${isEligible ? 'Eligible' : 'In progress'}</span>
@@ -1843,7 +1843,7 @@ function screenTracker() {
       </div>
 
       <!-- Secondary actions -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Manage your account</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Manage your account</h2>
       <div class="space-y-2 mb-6">
         ${[
           { icon: 'card',     title: 'Change my contribution amount',  sub: 'Adjust your monthly target',        action: "nav('plan')" },
@@ -1852,9 +1852,9 @@ function screenTracker() {
         ].map(a => `
           <button type="button" onclick="${a.action}"
             class="text-left rounded-xl border border-bb-grey-00 bg-white p-4 w-full flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
-            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-blue-00">${ICONS[a.icon]}</span>
+            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-black-00">${ICONS[a.icon]}</span>
             <span class="flex-1 min-w-0">
-              <span class="block font-semibold text-[1rem] text-bb-blue-00">${a.title}</span>
+              <span class="block font-semibold text-[1rem] text-bb-black-00">${a.title}</span>
               <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">${a.sub}</span>
             </span>
             <span class="text-bb-teal-00">${ICONS.arrowRight}</span>

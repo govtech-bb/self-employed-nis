@@ -214,6 +214,47 @@
     transition: width .5s cubic-bezier(.22,1,.36,1);
   }
 
+  /* GOV.BB number input (govtech-bb/govbb-design-system) — bordered cell with a
+     stepper column (up/down triangles). Token values mapped to this project. */
+  .govbb-number-input-wrapper {
+    display: grid; grid-template-columns: 1fr 2.9375rem; align-items: center;
+    width: 11rem; background: #fff;
+    border: 2px solid var(--color-black-00); border-radius: .25rem;
+    transition: box-shadow .2s, border-color .2s;
+  }
+  .govbb-number-input-wrapper:hover { box-shadow: var(--shadow-form-hover); }
+  .govbb-number-input-wrapper:focus-within { box-shadow: 0 0 0 4px #30c0c8; }
+  .govbb-number-input-wrapper:has([aria-invalid="true"]) { border-color: var(--color-red-00); }
+  .govbb-number-input {
+    grid-area: 1 / 1 / auto / -1; width: 100%; min-width: 0;
+    padding: .75rem; padding-right: 2.9375rem;
+    font: inherit; font-size: 1.125rem; line-height: 1.5; color: var(--color-black-00);
+    background: none; border: 0; border-radius: inherit; outline: 0;
+    -moz-appearance: textfield; appearance: textfield;
+  }
+  .govbb-number-input::-webkit-outer-spin-button,
+  .govbb-number-input::-webkit-inner-spin-button { margin: 0; -webkit-appearance: none; appearance: none; }
+  .govbb-number-input__steppers {
+    display: flex; flex-direction: column; grid-area: 1 / 2; align-self: stretch;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-grey-00) 50%, #fff);
+    border-left: 2px solid var(--color-black-00);
+    border-start-end-radius: 2px; border-end-end-radius: 2px;
+  }
+  .govbb-number-input__step {
+    display: flex; flex: 1; align-items: center; justify-content: center;
+    padding: 0; color: var(--color-black-00); background: none; border: 0; outline: 0;
+    cursor: pointer; transition: background-color .15s;
+  }
+  .govbb-number-input__step::before {
+    content: ''; width: 0; height: 0;
+    border-inline: .375rem solid transparent; border-bottom: .5rem solid;
+  }
+  .govbb-number-input__step:hover { background: color-mix(in srgb, var(--color-grey-00) 70%, transparent); }
+  .govbb-number-input__step:active { background: var(--color-grey-00); }
+  .govbb-number-input__step--down::before { transform: rotate(180deg); }
+  .govbb-number-input__divider { flex-shrink: 0; width: 100%; height: 2px; background: var(--color-black-00); }
+
   /* Honour reduced-motion: no screen fade/slide, no animated transitions.
      This block stays at the END of the stylesheet so nothing declared later
      can reintroduce motion. The !important catch-all covers everything:
@@ -916,22 +957,25 @@ function screenIncomeReality() {
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
-        <label for="goodMonthsPerYear" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
+        <label id="goodMonthsPerYear-label" for="goodMonthsPerYear" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           How many good months do you usually have in a year?
         </label>
         <p id="goodMonthsPerYear-hint" class="text-[1rem] text-bb-mid-grey-00 mb-3">Enter a number from 1 to 12.</p>
-        <div class="relative inline-flex rounded-sm border-2 ${e.goodMonthsPerYear ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
-          <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
+        <div class="govbb-number-input-wrapper" role="group" aria-labelledby="goodMonthsPerYear-label">
+          <input id="goodMonthsPerYear" class="govbb-number-input tabular-nums" type="number" inputmode="numeric" min="1" max="12" step="1"
             value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
             placeholder="e.g. 8"
             oninput="updateGoodMonths(this)"
             onchange="normaliseGoodMonths(this)"
             onblur="validateIncomeField('goodMonthsPerYear')"
             onpaste="numberPaste(event)"
-            aria-label="Number of good months per year"
             aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
-            ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
-            class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
+            ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''} />
+          <div class="govbb-number-input__steppers">
+            <button class="govbb-number-input__step" type="button" tabindex="-1" aria-label="Increment" aria-controls="goodMonthsPerYear" onclick="stepGoodMonths(1)"></button>
+            <span class="govbb-number-input__divider" aria-hidden="true"></span>
+            <button class="govbb-number-input__step govbb-number-input__step--down" type="button" tabindex="-1" aria-label="Decrement" aria-controls="goodMonthsPerYear" onclick="stepGoodMonths(-1)"></button>
+          </div>
         </div>
         <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[1rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
@@ -2082,6 +2126,17 @@ function updateGoodMonths(el) {
   state.badInput.goodMonthsPerYear = !!bad;
   state.raw.goodMonthsPerYear = rawStr;
   state.data.goodMonthsPerYear = bad || rawStr.trim() === '' ? null : Number(rawStr);
+}
+
+// GOV.BB number-input steppers: nudge the value within 1–12 and sync state.
+function stepGoodMonths(dir) {
+  const el = document.getElementById('goodMonthsPerYear');
+  if (!el) return;
+  const cur = parseInt(el.value, 10);
+  const next = Math.max(1, Math.min(12, (Number.isNaN(cur) ? 1 - dir : cur) + dir));
+  el.value = String(next);
+  updateGoodMonths(el);
+  if (state.errors.goodMonthsPerYear) validateIncomeField('goodMonthsPerYear');
 }
 
 // Only exponent notation is normalised here ("1e1" means 10). Fractional

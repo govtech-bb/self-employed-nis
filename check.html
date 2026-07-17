@@ -1157,17 +1157,17 @@ function screenRiskAwareness() {
         }).join('')}
       </div>
 
-      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { back: 'plan' })}
-      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3 mb-6">
-        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
-      </p>
-
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 flex items-start gap-3">
+      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <p class="text-[1rem] text-bb-blue-00">
           <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.
         </p>
       </div>
+
+      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { back: 'plan' })}
+      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
+        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
+      </p>
     </div>`;
 }
 

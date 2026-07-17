@@ -77,8 +77,9 @@
     -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   }
   .container { max-width: 1200px; margin-inline: auto; padding-inline: 16px; }
-  .stage { max-width: 600px; margin-inline: auto; }
-  .stage-wide { max-width: 760px; margin-inline: auto; }
+  /* Content column matches the alpha.gov.bb form width (max-w-3xl = 48rem). */
+  .stage { max-width: 768px; margin-inline: auto; }
+  .stage-wide { max-width: 880px; margin-inline: auto; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
   /* Programmatic focus targets (skip link -> <main>, screen-change -> <h1>).

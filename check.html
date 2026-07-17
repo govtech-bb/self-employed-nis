@@ -919,21 +919,19 @@ function screenIncomeReality() {
         <label for="goodMonthsPerYear" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           How many good months do you usually have in a year?
         </label>
-        <div class="flex items-center gap-3 mt-3">
-          <span id="goodMonthsPerYear-hint" class="text-[1rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
-          <div class="relative inline-flex rounded-sm border-2 ${e.goodMonthsPerYear ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
-            <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
-              value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
-              placeholder="e.g. 8"
-              oninput="updateGoodMonths(this)"
-              onchange="normaliseGoodMonths(this)"
-              onblur="validateIncomeField('goodMonthsPerYear')"
-              onpaste="numberPaste(event)"
-              aria-label="Number of good months per year"
-              aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
-              ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
-          </div>
+        <p id="goodMonthsPerYear-hint" class="text-[1rem] text-bb-mid-grey-00 mb-3">Enter a number from 1 to 12.</p>
+        <div class="relative inline-flex rounded-sm border-2 ${e.goodMonthsPerYear ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
+          <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
+            value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
+            placeholder="e.g. 8"
+            oninput="updateGoodMonths(this)"
+            onchange="normaliseGoodMonths(this)"
+            onblur="validateIncomeField('goodMonthsPerYear')"
+            onpaste="numberPaste(event)"
+            aria-label="Number of good months per year"
+            aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
+            ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
+            class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
         </div>
         <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[1rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
@@ -2283,10 +2281,6 @@ function selectTier(id) {
   const prev = state.data.contributionTier;
   state.data.contributionTier = id;
   render();
-  // Bring the revealed/updated plan into view so the payoff isn't missed below
-  // the fold. Instant (no smooth-scroll animation — it felt jarring).
-  const hero = document.getElementById('plan-hero');
-  if (hero) hero.scrollIntoView({ behavior: 'auto', block: 'start' });
   // The first pick reveals the plan hero and benefit cards below the group,
   // so tell screen-reader users. Every later CHANGE silently rewrites all
   // the benefit figures, so say that too. Re-picking the same tier changes

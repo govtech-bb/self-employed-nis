@@ -1322,11 +1322,7 @@ function screenPlan() {
             <strong>When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.
           </p>
         </div>
-      ` : `
-        <div class="rounded-2xl bg-bb-grey-00/40 border border-bb-grey-00 p-5 mb-6 text-center">
-          <p class="text-[0.95rem] text-bb-mid-grey-00">↑ Pick a level to build your plan.</p>
-        </div>
-      `}
+      ` : ''}
 
       ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.', back: LEAN_ESTIMATOR ? 'income-reality' : 'your-situation' })}
     </div>`;

@@ -1254,14 +1254,11 @@ function screenPlan() {
       </p>
       ${stepError()}
 
-      <!-- Earnings summary -->
-      <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-4 mb-5">
-        <p class="text-[1rem] text-bb-mid-grey-00 mb-1">Based on what you told us</p>
-        <p class="text-[1.25rem] text-bb-black-00">
-          Average earnings: <strong class="tabular-nums">${fmtMoney(monthlyAvg)}</strong>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </p>
-      </div>
+      <!-- Earnings summary (plain text, not a card) -->
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-5">
+        Based on what you told us, your average earnings are about
+        <strong class="tabular-nums text-bb-black-00">${fmtMoney(monthlyAvg)}</strong> / month.
+      </p>
 
       <!-- Tier cards -->
       <div class="space-y-3 mb-6" role="radiogroup" aria-label="Contribution tier">

@@ -105,12 +105,8 @@
   }
   input[type=range]:focus-visible { box-shadow: 0 0 0 4px #30c0c8; }
 
-  /* Screen transitions */
-  .screen { animation: fade 0.32s ease-out; }
-  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  /* Entrance animation runs on real navigation only. In-place re-renders
-     (selecting a card or radio rebuilds the screen) add .no-anim to #app
-     so the fade does not replay on every press. */
+  /* Screen transitions: none — page navigation renders instantly (the fade
+     between screens felt jarring). .no-anim is kept as a harmless no-op. */
   .no-anim .screen { animation: none; }
 
   /* Selectable cards */

@@ -1332,7 +1332,7 @@ function screenPlan() {
             teal:   { border: 'border-bb-teal-00',   fill: 'bg-bb-teal-00',   hex: '#0e5f64' },
           }[t.color];
           const cardCls = selected ? `${sc.border} shadow-[inset_0_0_0_2px_${sc.hex}]` : c.border;
-          const checkCls = selected ? `${sc.fill} text-white` : 'bg-white border-2 border-bb-mid-grey-00 text-transparent';
+          const checkCls = selected ? sc.fill : 'bg-white border-2 border-bb-mid-grey-00';
           return `
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectTier('${t.id}')"
@@ -1349,7 +1349,7 @@ function screenPlan() {
                   </p>
                   <p class="text-[1rem] text-bb-mid-grey-00 mt-2">${t.sub}</p>
                 </div>
-                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}">${ICONS.check}</span>
+                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}"></span>
               </div>
               <div class="mt-3 pt-3 border-t ${c.border} text-[1rem] text-bb-mid-grey-00 space-y-0.5">
                 <p>1 year of contributions: <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12)}</strong></p>

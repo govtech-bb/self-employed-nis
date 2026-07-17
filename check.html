@@ -1332,7 +1332,7 @@ function screenPlan() {
             teal:   { border: 'border-bb-teal-00',   fill: 'bg-bb-teal-00',   hex: '#0e5f64' },
           }[t.color];
           const cardCls = selected ? `${sc.border} shadow-[inset_0_0_0_2px_${sc.hex}]` : c.border;
-          const checkCls = selected ? `${sc.fill} text-white` : 'border-2 border-bb-grey-00 text-transparent';
+          const checkCls = selected ? `${sc.fill} text-white` : 'bg-white border-2 border-bb-mid-grey-00 text-transparent';
           return `
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectTier('${t.id}')"
@@ -1351,23 +1351,21 @@ function screenPlan() {
                 </div>
                 <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}">${ICONS.check}</span>
               </div>
-              <div class="mt-3 pt-3 border-t ${c.border} flex flex-wrap gap-x-6 gap-y-1 text-[1rem] text-bb-mid-grey-00">
-                <span>A year <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12)}</strong></span>
-                <span>10 years <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12 * 10)}</strong></span>
+              <div class="mt-3 pt-3 border-t ${c.border} text-[1rem] text-bb-mid-grey-00 space-y-0.5">
+                <p>1 year of contributions: <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12)}</strong></p>
+                <p>10 years of contributions: <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12 * 10)}</strong></p>
               </div>
             </button>
           `;
         }).join('')}
       </div>
 
-      ${tier ? `
-        <!-- How paying works — alpha inset text (left rule, no box) so it reads
-             as a note, not a selectable option like the cards above. -->
-        <div class="border-l-4 border-bb-blue-100 pl-4 mb-6 space-y-2 text-[1rem] text-bb-black-00">
-          <p><strong>Slow month?</strong> Pay less or skip, no penalty. <strong>Good month?</strong> Top up. What counts is the yearly total.</p>
-          <p><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
-        </div>
-      ` : ''}
+      <!-- How paying works — left-rule inset matching the landing's service
+           caption (border-bb-blue-40, no box). Always shown, not just on select. -->
+      <div class="border-bb-blue-40 border-l-4 py-xs pl-s mb-6 space-y-2 text-[1rem] text-bb-black-00">
+        <p><strong>Slow month?</strong> Pay less or skip, no penalty. <strong>Good month?</strong> Top up. What counts is the yearly total.</p>
+        <p><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
+      </div>
 
       ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.', back: LEAN_ESTIMATOR ? 'income-reality' : 'your-situation' })}
     </div>`;

@@ -929,9 +929,8 @@ function screenIncomeReality() {
           </div>
           <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
           <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="goodMonth-ceiling-text" class="text-[1rem] text-bb-black-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-3 mt-4 text-[1rem] text-bb-black-00">
+              <p id="goodMonth-ceiling-text" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
@@ -969,9 +968,8 @@ function screenIncomeReality() {
           </div>
           <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
           <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="slowMonth-ceiling-text" class="text-[1rem] text-bb-black-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-3 mt-4 text-[1rem] text-bb-black-00">
+              <p id="slowMonth-ceiling-text" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
@@ -1593,13 +1591,10 @@ function screenPaymentOptions() {
         `).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-        <div>
-          <p class="font-semibold text-bb-black-00 mb-1">If you stop contributing</p>
-          <p class="text-[1rem] text-bb-black-00/80 mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
-          <p class="text-[1rem] text-bb-black-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
-        </div>
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+        <p class="font-semibold mb-1">If you stop contributing</p>
+        <p class="mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
+        <p>You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
       </div>
 
       ${primaryBtn('Register now', "nav('register-path')")}
@@ -1634,9 +1629,8 @@ function screenContact() {
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">${lead}</p>
 
       ${unsure ? `
-        <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-          <span class="text-bb-black-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-          <p class="text-[1.125rem] text-bb-black-00">
+        <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+          <p>
             Ask them to look up your number before you register. If you already have one, you keep it for life, so there is no need to sign up again.
           </p>
         </div>
@@ -1660,9 +1654,8 @@ function screenContact() {
         `).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[1.125rem] text-bb-black-00">
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-4 text-[1rem] text-bb-black-00">
+        <p>
           <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
         </p>
       </div>

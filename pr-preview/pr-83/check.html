@@ -1195,7 +1195,7 @@ function screenRiskAwareness() {
         What your plan protects you from
       </h1>
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
-        For <strong class="tabular-nums">${fmtMoney(chosen)}</strong>/month, here's each moment <strong class="text-bb-red-00">without NISSS</strong> and <strong class="text-bb-green-00">with it</strong>. Figures are estimates based on what you earn.
+        For <strong class="tabular-nums">${fmtMoney(chosen)}</strong>/month, here's each moment <strong class="text-bb-red-00">without NISSS</strong> and <strong class="text-bb-green-00">with it</strong>. Figures are estimates based on the amount you chose to put in.
       </p>
       <p class="text-[1rem] text-bb-mid-grey-00 mb-3">Tap any benefit to see what happens.</p>
 
@@ -1294,6 +1294,10 @@ function screenPlan() {
     },
   ];
 
+  // Selected tier — drives the "Your plan" summary card chip.
+  const selTier = tiers.find(t => t.id === tier);
+  const selC = selTier ? COLOR_MAP[selTier.color] : null;
+
   return `
     <div class="screen stage">
       ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
@@ -1304,13 +1308,13 @@ function screenPlan() {
         What should you put in?
       </h1>
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-1">
-        Pick a level that fits your budget. Next, you'll see exactly what it protects.
+        Pick a level you can afford. The more you put in, the bigger your benefits. You'll see what each one protects next.
       </p>
       ${stepError()}
 
       <!-- Earnings summary (plain text, not a card) -->
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-5">
-        Based on your average earnings of about
+        We've suggested these levels from your average earnings of about
         <strong class="tabular-nums text-bb-black-00">${fmtMoney(monthlyAvg)}</strong> a month.
       </p>
 
@@ -1346,14 +1350,33 @@ function screenPlan() {
                 </div>
                 <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}"></span>
               </div>
-              <div class="mt-3 pt-3 border-t ${c.border} text-[1rem] text-bb-mid-grey-00 space-y-0.5">
-                <p>1 year of contributions: <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12)}</strong></p>
-                <p>10 years of contributions: <strong class="text-bb-black-00 tabular-nums">${fmtMoney(t.monthly * 12 * 10)}</strong></p>
-              </div>
             </button>
           `;
         }).join('')}
       </div>
+
+      ${tier ? `
+        <!-- Your plan summary — teal→blue gradient card. -->
+        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-6 shadow-card-hover">
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40 font-semibold">Your plan</p>
+            <span class="inline-flex items-center rounded-full ${selC.bg} ${selC.text} px-4 py-1.5 text-[1.05rem] font-bold shadow-sm">${selTier.label}</span>
+          </div>
+          <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
+          <p class="text-[1rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
+
+          <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
+            <div>
+              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
+              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12)}</p>
+            </div>
+            <div>
+              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
+              <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12 * 10)}</p>
+            </div>
+          </div>
+        </div>
+      ` : ''}
 
       <!-- How paying works — left-rule inset matching the landing's service
            caption (border-bb-blue-40, no box). Always shown, not just on select. -->

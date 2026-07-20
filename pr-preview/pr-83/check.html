@@ -1327,7 +1327,7 @@ function screenPlan() {
             teal:   { border: 'border-bb-teal-00',   fill: 'bg-bb-teal-00',   hex: '#0e5f64' },
           }[t.color];
           const cardCls = selected ? `${sc.border} shadow-[inset_0_0_0_2px_${sc.hex}]` : c.border;
-          const checkCls = selected ? sc.fill : 'bg-white border-2 border-bb-mid-grey-00';
+          const checkCls = selected ? `${sc.fill} border-2 border-white shadow-[0_0_0_1px_${sc.hex}]` : 'bg-white border-2 border-bb-mid-grey-00';
           return `
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectTier('${t.id}')"

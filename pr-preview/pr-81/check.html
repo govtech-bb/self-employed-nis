@@ -378,8 +378,8 @@ const state = {
   screen: 'landing',
   data: {
     workerType: null,
-    goodMonth: 2500,
-    slowMonth: 800,
+    goodMonth: null,
+    slowMonth: null,
     hasDependants: null,
     dependantsCount: 0,
     contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
@@ -879,8 +879,6 @@ function screenWorkerType() {
 function screenIncomeReality() {
   const d = state.data;
   const e = state.errors;
-  const pctGood = Math.max(0, Math.min(100, ((d.goodMonth || 0) / 6000) * 100));
-  const pctSlow = Math.max(0, Math.min(100, ((d.slowMonth || 0) / 6000) * 100));
 
   return `
     <div class="screen stage">
@@ -898,23 +896,11 @@ function screenIncomeReality() {
 
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="goodMonth" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
+        <label for="goodMonth-typed" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           What does a good month look like?
         </label>
-        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine. Drag the slider or type below.</p>
-        <div class="flex items-baseline gap-2 mb-3">
-          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${d.goodMonth == null ? '' : fmtMoney(d.goodMonth)}</span>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </div>
-        <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.goodMonth || 0))}"
-          oninput="updateIncomeField('goodMonth', this, 'slider')"
-          aria-label="Good month earnings slider"
-          style="background-size: ${pctGood}% 100%" />
-        <div class="flex justify-between mt-2 text-[0.95rem] text-bb-mid-grey-00 tabular-nums">
-          <span>BDS$0</span><span>BDS$6,000+</span>
-        </div>
-        <div class="mt-4">
-          <label for="goodMonth-typed" class="block font-medium text-[1rem] text-bb-black-00 mb-1">Or type the exact amount</label>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine.</p>
+        <div>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['goodMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
             <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" step="50"
@@ -937,23 +923,11 @@ function screenIncomeReality() {
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="slowMonth" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
+        <label for="slowMonth-typed" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           And a slow month?
         </label>
-        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. Drag the slider or type below.</p>
-        <div class="flex items-baseline gap-2 mb-3">
-          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${d.slowMonth == null ? '' : fmtMoney(d.slowMonth)}</span>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </div>
-        <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.slowMonth || 0))}"
-          oninput="updateIncomeField('slowMonth', this, 'slider')"
-          aria-label="Slow month earnings slider"
-          style="background-size: ${pctSlow}% 100%" />
-        <div class="flex justify-between mt-2 text-[0.95rem] text-bb-mid-grey-00 tabular-nums">
-          <span>BDS$0</span><span>BDS$6,000+</span>
-        </div>
-        <div class="mt-4">
-          <label for="slowMonth-typed" class="block font-medium text-[1rem] text-bb-black-00 mb-1">Or type the exact amount</label>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. A rough number is fine.</p>
+        <div>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['slowMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
             <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" step="50"

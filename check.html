@@ -77,8 +77,9 @@
     -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   }
   .container { max-width: 1200px; margin-inline: auto; padding-inline: 16px; }
-  .stage { max-width: 600px; margin-inline: auto; }
-  .stage-wide { max-width: 760px; margin-inline: auto; }
+  /* Content column matches the alpha.gov.bb form width (max-w-3xl = 48rem). */
+  .stage { max-width: 768px; margin-inline: auto; }
+  .stage-wide { max-width: 880px; margin-inline: auto; }
   .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 
   /* Programmatic focus targets (skip link -> <main>, screen-change -> <h1>).
@@ -104,12 +105,8 @@
   }
   input[type=range]:focus-visible { box-shadow: 0 0 0 4px #30c0c8; }
 
-  /* Screen transitions */
-  .screen { animation: fade 0.32s ease-out; }
-  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  /* Entrance animation runs on real navigation only. In-place re-renders
-     (selecting a card or radio rebuilds the screen) add .no-anim to #app
-     so the fade does not replay on every press. */
+  /* Screen transitions: none — page navigation renders instantly (the fade
+     between screens felt jarring). .no-anim is kept as a harmless no-op. */
   .no-anim .screen { animation: none; }
 
   /* Selectable cards */
@@ -143,12 +140,29 @@
   .disabled-hint { color: var(--color-red-00); font-size: 0.95rem; }
   .disabled-hint:not(:empty) { margin-top: 0.75rem; }
 
+  /* Inline step error — sits after the title/description; filled on click of a
+     not-ready Continue (role=alert). Empty by default so it takes no space. */
+  .step-error { color: var(--color-red-00); font-weight: 600; }
+  .step-error:not(:empty) {
+    margin: 0 0 1.25rem; padding-left: 1rem; border-left: 4px solid var(--color-red-00);
+  }
+
   .btn-secondary {
     background: #fff; color: #0e5f64; border: 2px solid #0e5f64;
     transition: background-color .15s, color .15s;
   }
   .btn-secondary:hover { background: #eaf9f9; }
   .btn-secondary:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
+
+  /* GOV.BB Secondary button — used as the form "Previous" control (grey fill,
+     black text) paired with the primary "Continue" at the bottom of a step. */
+  .btn-previous {
+    background: #e0e4e9; color: #000;
+    transition: background-color .15s, box-shadow .15s;
+  }
+  .btn-previous:hover { box-shadow: inset 0 0 0 4px rgba(0,0,0,0.05); }
+  .btn-previous:active { background: #b9c0c6; }
+  .btn-previous:focus-visible { outline: none; box-shadow: 0 0 0 4px #30c0c8; }
 
   /* Links */
   .link-bb {
@@ -200,6 +214,57 @@
     transition: width .5s cubic-bezier(.22,1,.36,1);
   }
 
+  /* GOV.BB number input (govtech-bb/govbb-design-system) — bordered cell with a
+     stepper column (up/down triangles). Token values mapped to this project. */
+  .govbb-number-input-wrapper {
+    display: grid; grid-template-columns: 1fr 2.9375rem; align-items: center;
+    width: 11rem; background: #fff;
+    border: 2px solid var(--color-black-00); border-radius: .25rem;
+    transition: box-shadow .2s, border-color .2s;
+  }
+  .govbb-number-input-wrapper:hover { box-shadow: var(--shadow-form-hover); }
+  .govbb-number-input-wrapper:focus-within { box-shadow: 0 0 0 4px #30c0c8; }
+  .govbb-number-input-wrapper:has([aria-invalid="true"]) { border-color: var(--color-red-00); }
+  .govbb-number-input {
+    grid-area: 1 / 1 / auto / -1; width: 100%; min-width: 0;
+    padding: .75rem; padding-right: 2.9375rem;
+    font: inherit; font-size: 1.125rem; line-height: 1.5; color: var(--color-black-00);
+    background: none; border: 0; border-radius: inherit; outline: 0;
+    -moz-appearance: textfield; appearance: textfield;
+  }
+  .govbb-number-input::-webkit-outer-spin-button,
+  .govbb-number-input::-webkit-inner-spin-button { margin: 0; -webkit-appearance: none; appearance: none; }
+  .govbb-number-input__steppers {
+    display: flex; flex-direction: column; grid-area: 1 / 2; align-self: stretch;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-grey-00) 50%, #fff);
+    border-left: 2px solid var(--color-black-00);
+    border-start-end-radius: 2px; border-end-end-radius: 2px;
+  }
+  .govbb-number-input__step {
+    display: flex; flex: 1; align-items: center; justify-content: center;
+    padding: 0; color: var(--color-black-00); background: none; border: 0; outline: 0;
+    cursor: pointer; transition: background-color .15s;
+  }
+  .govbb-number-input__step::before {
+    content: ''; width: 0; height: 0;
+    border-inline: .375rem solid transparent; border-bottom: .5rem solid;
+  }
+  .govbb-number-input__step:hover { background: color-mix(in srgb, var(--color-grey-00) 70%, transparent); }
+  .govbb-number-input__step:active { background: var(--color-grey-00); }
+  .govbb-number-input__step--down::before { transform: rotate(180deg); }
+  .govbb-number-input__divider { flex-shrink: 0; width: 100%; height: 2px; background: var(--color-black-00); }
+
+  /* Plan summary breakdown — key/value rows (alpha summary-list feel): label
+     left, figure right, hairline rules, so each number is labelled and aligned. */
+  .plan-figures { display: flex; flex-direction: column; }
+  .plan-figures__row {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    padding: .625rem 0; border-top: 1px solid rgba(0,0,0,.14);
+    font-size: 1.125rem; line-height: 1.5; color: var(--color-black-00);
+  }
+  .plan-figures__row dd { margin: 0; text-align: right; }
+
   /* Honour reduced-motion: no screen fade/slide, no animated transitions.
      This block stays at the END of the stylesheet so nothing declared later
      can reintroduce motion. The !important catch-all covers everything:
@@ -226,7 +291,7 @@
 <!-- Top bar -->
 <div class="bg-bb-blue-100 text-bb-white-00">
   <div class="container">
-    <div class="stage flex items-center gap-2 py-2 text-[0.85rem]">
+    <div class="stage flex items-center gap-2 py-2 text-[0.95rem]">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Coat_of_arms_of_Barbados_%282%29.svg/1280px-Coat_of_arms_of_Barbados_%282%29.svg.png"
            alt="" class="h-4 w-auto" />
       <span>Official website of the Government of Barbados</span>
@@ -271,7 +336,7 @@
 <!-- Alpha banner -->
 <div class="bg-bb-blue-10 border-b border-bb-blue-40/40">
   <div class="container">
-    <div class="stage py-2 text-[0.9rem]">
+    <div class="stage py-2 text-[1rem]">
       This service is in <a href="#" class="link-bb font-medium">Alpha</a>. Your feedback helps us improve it.
     </div>
   </div>
@@ -292,7 +357,7 @@
 <!-- Footer -->
 <footer class="bg-bb-blue-100 text-bb-white-00 mt-8">
   <div class="container">
-    <div class="stage py-8 text-[0.95rem]">
+    <div class="stage py-8 text-[1rem]">
       <p class="font-medium mb-1">National Insurance and Social Security Scheme of Barbados</p>
       <p class="text-bb-white-00/80 mb-4">A service built with workers, for workers.</p>
       <div class="flex flex-wrap gap-x-5 gap-y-2 mb-5">
@@ -300,7 +365,7 @@
         <a href="#" class="underline underline-offset-2 hover:no-underline">Accessibility</a>
         <a href="#" class="underline underline-offset-2 hover:no-underline">Contact NISSS</a>
       </div>
-      <p class="text-bb-white-00/70 text-[0.85rem]">&copy; 2026 Government of Barbados</p>
+      <p class="text-bb-white-00/70 text-[0.95rem]">&copy; 2026 Government of Barbados</p>
     </div>
   </div>
 </footer>
@@ -313,8 +378,8 @@ const state = {
   screen: 'landing',
   data: {
     workerType: null,
-    goodMonth: 2500,
-    slowMonth: 800,
+    goodMonth: null,
+    slowMonth: null,
     hasDependants: null,
     dependantsCount: 0,
     contributionTier: null, // 'minimum' | 'safer' | 'strong' — null until user picks
@@ -329,6 +394,9 @@ const state = {
   raw: {},
   badInput: {},
   expandedScenario: null,
+  // One-shot message for a gated Continue click (shown as the "There is a
+  // problem" summary on the current step, then consumed on the next render).
+  stepError: null,
 };
 
 // Lean-estimator comparison variant: the MDAs are choosing between the full
@@ -341,8 +409,8 @@ const state = {
 const LEAN_ESTIMATOR = true;
 
 const JOURNEY = LEAN_ESTIMATOR
-  ? ['income-reality', 'risk-awareness', 'plan', 'next-steps']
-  : ['worker-type', 'income-reality', 'your-situation', 'risk-awareness', 'plan', 'next-steps'];
+  ? ['income-reality', 'plan', 'risk-awareness', 'next-steps']
+  : ['worker-type', 'income-reality', 'your-situation', 'plan', 'risk-awareness', 'next-steps'];
 
 /* Screen-reader cue appended to every external (target="_blank") link. */
 const NEW_TAB_CUE = '<span class="sr-only"> (opens in a new tab)</span>';
@@ -382,7 +450,7 @@ const ICONS = {
   arrowRight: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`,
   shield: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>`,
   lock: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
-  chevDown: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 chev"><path d="m6 9 6 6 6-6"/></svg>`,
+  chevDown: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7 chev"><path d="m6 9 6 6 6-6"/></svg>`,
   warning: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
   spark: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg>`,
   clock: `<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
@@ -430,7 +498,7 @@ const BENEFITS = [
 const COLOR_MAP = {
   teal:   { bg: 'bg-bb-teal-10',   text: 'text-bb-teal-00',   border: 'border-bb-teal-40' },
   pink:   { bg: 'bg-bb-red-10',    text: 'text-bb-pink-00',   border: 'border-bb-red-40' },
-  blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-blue-00',   border: 'border-bb-blue-40' },
+  blue:   { bg: 'bg-bb-blue-10',   text: 'text-bb-black-00',   border: 'border-bb-blue-40' },
   purple: { bg: 'bg-[#f3eaf6]',    text: 'text-bb-purple-00', border: 'border-[#d9c1e1]' },
   yellow: { bg: 'bg-bb-yellow-10', text: 'text-bb-yellow-dark', border: 'border-bb-yellow-40' },
   green:  { bg: 'bg-bb-green-10',  text: 'text-bb-green-00',  border: 'border-bb-green-40' },
@@ -492,13 +560,17 @@ function goodMonthsValue() {
 const weeklyInsurableFromMonthly = monthly => monthly * 12 / 52;
 
 function progressBar(currentId) {
+  // Hidden for now — the step counter + bar felt noisy at the top of each step.
+  // Return '' to keep every screen's `${progressBar(...)}` call a no-op; delete
+  // this line to bring it back.
+  return '';
   const idx = JOURNEY.indexOf(currentId);
   if (idx === -1) return '';
   const total = JOURNEY.length;
   return `
     <div class="mb-6">
-      <div class="flex items-center justify-between mb-2 text-[0.85rem] text-bb-mid-grey-00">
-        <span class="font-medium text-bb-blue-00">Step ${idx + 1} of ${total}</span>
+      <div class="flex items-center justify-between mb-2 text-[0.95rem] text-bb-mid-grey-00">
+        <span class="font-medium text-bb-black-00">Step ${idx + 1} of ${total}</span>
         <span>${Math.round(((idx + 1) / total) * 100)}% through the guide</span>
       </div>
       <div class="flex gap-1.5" role="progressbar" aria-label="Progress through the guide" aria-valuenow="${idx + 1}" aria-valuemin="1" aria-valuemax="${total}" aria-valuetext="Step ${idx + 1} of ${total}">
@@ -529,20 +601,58 @@ function serviceCaption(text = 'NISSS for self-employed and gig workers') {
 // 18px on mobile so long labels don't wrap awkwardly on narrow screens,
 // inset hover/active shadows). Width: full-column.
 //
-// opts.disabled uses aria-disabled (NOT the disabled attribute) so the button
-// stays focusable. Pressing it announces + shows opts.hint (role=status)
-// explaining what is still needed, instead of silently doing nothing.
+// The button is NEVER disabled or greyed (GOV.UK pattern). When opts.disabled
+// marks the step as not-ready, clicking shows opts.hint as an inline error in
+// the screen's #step-error region (which sits after the title/description)
+// instead of navigating. Screens with a gated Continue must render ${stepError()}.
 function primaryBtn(label, action, opts = {}) {
-  const isDisabled = !!opts.disabled;
-  const hint = opts.hint || 'Answer the question above to continue.';
-  const attrs = isDisabled
-    ? `onclick="showDisabledHint(this)" aria-disabled="true" data-hint="${hint.replace(/"/g, '&quot;')}"`
-    : `onclick="${action}"`;
+  const isGated = !!opts.disabled;
+  const hint = (opts.hint || 'Answer the question above to continue.').replace(/"/g, '&quot;');
+  const onclick = isGated ? 'showStepError(this)' : action;
+  const dataHint = isGated ? ` data-hint="${hint}"` : '';
+
+  // Form-step layout: a GOV.BB "Previous" (Secondary) + "Continue" (Primary)
+  // pair at the bottom of the step, matching the alpha.gov.bb form pattern.
+  // The Continue here is the exact GOV.BB Primary: 20px regular, no arrow.
+  if (opts.back) {
+    return `
+    <div class="flex flex-col-reverse gap-3 sm:flex-row sm:items-center">
+      ${previousBtn(opts.back)}
+      <button type="button" onclick="${onclick}"${dataHint}
+        class="btn-primary inline-flex items-center justify-center px-xm py-s rounded-sm text-[1.25rem] font-normal leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+        ${label}
+      </button>
+    </div>`;
+  }
+
   return `
-    <button type="button" ${attrs}
-      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+    <button type="button" onclick="${onclick}"${dataHint}
+      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.25rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label} ${opts.arrow !== false ? ICONS.arrowRight : ''}
-    </button>${isDisabled ? '\n    <p class="disabled-hint" role="status"></p>' : ''}`;
+    </button>`;
+}
+
+// Error summary for a gated step — the same "There is a problem" box the
+// income step uses (errorSummary), shown after the title/description when a
+// not-ready Continue is clicked. Driven by the one-shot state.stepError.
+function stepError() {
+  if (!state.stepError) return '';
+  return `
+    <div id="error-summary" tabindex="-1" role="alert" class="border-4 border-bb-red-00 bg-white px-8 py-6 mb-6 outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
+      <p class="font-bold text-bb-black-00 mb-2">There is a problem</p>
+      <div class="flex flex-col gap-1">
+        <span class="text-bb-red-00">${state.stepError}</span>
+      </div>
+    </div>`;
+}
+
+// GOV.BB Secondary button used as the form "Previous" control.
+function previousBtn(target) {
+  return `
+    <button type="button" onclick="nav('${target}')"
+      class="btn-previous inline-flex items-center justify-center px-xm py-s rounded-sm text-[1.25rem] font-normal leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      Previous
+    </button>`;
 }
 
 // Write a message into a live region. Clear first, then set on the next
@@ -561,6 +671,16 @@ function showDisabledHint(btn) {
   setLiveRegion(el, btn.dataset.hint || '');
 }
 
+// A not-ready Continue was clicked: show the "There is a problem" summary at
+// the top of the step (matching the income step) and move focus to it. The
+// button is never disabled, so this is how the user learns what's needed.
+function showStepError(btn) {
+  state.stepError = btn.dataset.hint || 'Answer the question above to continue.';
+  render();
+  const s = document.getElementById('error-summary');
+  if (s) s.focus();
+}
+
 // Announce content revealed or updated by a selection (plan details, the
 // dependants count question). Short, polite, and scoped, not a whole-app
 // live region.
@@ -575,7 +695,7 @@ function announce(msg) {
 function primaryLink(label, href) {
   return `
     <a href="${href}" target="_blank" rel="noopener noreferrer"
-      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.125rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      class="btn-primary w-full inline-flex items-center justify-center gap-2 px-xm py-s rounded-sm text-[1.25rem] sm:text-[1.25rem] font-semibold leading-[1.5] no-underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label}${NEW_TAB_CUE} ${ICONS.arrowRight}
     </a>`;
 }
@@ -591,7 +711,7 @@ function numVal(id, num) {
 function secondaryBtn(label, action) {
   return `
     <button type="button" onclick="${action}"
-      class="btn-secondary w-full inline-flex items-center justify-center px-xm py-s rounded-sm text-[1rem] sm:text-[1.125rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
+      class="btn-secondary w-full inline-flex items-center justify-center px-xm py-s rounded-sm text-[1rem] sm:text-[1.25rem] font-semibold leading-[1.5] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:ring-bb-teal-100">
       ${label}
     </button>`;
 }
@@ -603,16 +723,16 @@ function screenLanding() {
   return `
     <div class="screen stage">
       <div class="hero-bg -mx-4 px-4 pt-2 pb-8 rounded-b-3xl">
-        <div class="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-bb-teal-10 text-bb-teal-00 text-[0.85rem] font-medium max-w-full">
+        <div class="inline-flex items-center gap-2 mb-4 px-3 py-1.5 rounded-full bg-bb-teal-10 text-bb-teal-00 text-[0.95rem] font-medium max-w-full">
           ${ICONS.shield}<span>From NISSS Barbados</span>
         </div>
 
-        <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.1] tracking-tight text-bb-blue-00 mb-4">
+        <h1 class="font-bold text-[2.75rem] sm:text-[3.5rem] leading-[1.1] tracking-tight text-bb-black-00 mb-4">
           Protect your income.<br/>
           <span class="text-bb-teal-00">Protect your future.</span>
         </h1>
 
-        <p class="text-[1.15rem] text-bb-mid-grey-00 mb-6">
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
           You work for yourself: driving, delivering, freelancing, building, selling, creating. NISSS is how you look after yourself when life happens.
         </p>
 
@@ -620,23 +740,23 @@ function screenLanding() {
           ${primaryBtn('Estimate my contributions', LEAN_ESTIMATOR ? "nav('income-reality')" : "nav('worker-type')")}
           ${secondaryBtn('See what benefits you may qualify for', "nav('benefits-quick')")}
           <button type="button" onclick="nav('register-path')"
-            class="w-full rounded-lg px-6 py-4 text-[1.05rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
+            class="w-full rounded-lg px-6 py-4 text-[1.25rem] font-semibold text-bb-teal-00 underline underline-offset-2 hover:no-underline">
             I'm ready to register for NISSS
           </button>
         </div>
       </div>
 
       <div class="mt-10">
-        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-3">What is NISSS, simply?</h2>
-        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
-          NISSS stands for the <strong class="text-bb-blue-00">National Insurance and Social Security Scheme</strong>. Think of it as a safety net you build up bit by bit. You put in a small amount when you earn. It's there when you need it: when you're sick, when you have a baby, when you retire.
+        <h2 class="font-bold text-[1.5rem] text-bb-black-00 mb-3">What is NISSS, simply?</h2>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
+          NISSS stands for the <strong class="text-bb-black-00">National Insurance and Social Security Scheme</strong> (formerly known as NIS). Think of it as a safety net you build up bit by bit. You put in a small amount when you earn. It's there when you need it: when you're sick, when you have a baby, when you retire.
         </p>
-        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-          Self-employed Bajans can join too. You choose how much you put in, based on what you actually earn. It's <strong class="text-bb-blue-00">voluntary</strong> and there's no penalty for slow months.
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
+          Self-employed Bajans can join too. You choose how much you put in: <strong class="text-bb-black-00">more in good months, less in slow ones</strong>. It's voluntary, and what matters is your total over the year.
         </p>
 
         <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-5 mb-6">
-          <p class="font-semibold text-bb-blue-00 mb-3">What NISSS can help with</p>
+          <p class="font-semibold text-bb-black-00 mb-3">What NISSS can help with</p>
           <ul class="space-y-2.5">
             ${[
               ['sickness', 'Money to live on if you get sick'],
@@ -647,7 +767,7 @@ function screenLanding() {
             ].map(([icon, text]) => `
               <li class="flex items-start gap-3">
                 <span class="text-bb-teal-00 mt-0.5">${ICONS[icon]}</span>
-                <span class="text-[1.05rem] text-bb-blue-00">${text}</span>
+                <span class="text-[1.25rem] text-bb-black-00">${text}</span>
               </li>
             `).join('')}
           </ul>
@@ -661,8 +781,8 @@ function screenLanding() {
 
       ${!SHOW_TRACKER_ENTRY ? '' : `
       <div class="mt-10 pt-6 border-t border-bb-grey-00">
-        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">Already contributing?</h2>
-        <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+        <h2 class="font-bold text-[1.5rem] text-bb-black-00 mb-2">Already contributing?</h2>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
           See where you stand. Track your payments, check what benefits you qualify for, and pay what's due.
         </p>
         <button type="button" onclick="nav('tracker')"
@@ -671,14 +791,14 @@ function screenLanding() {
             ${ICONS.chart}
           </span>
           <span class="flex-1 min-w-0">
-            <span class="block font-semibold text-[1.05rem] text-bb-blue-00">Track my NISSS contributions</span>
-            <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5">View your dashboard and recent payments</span>
+            <span class="block font-semibold text-[1.25rem] text-bb-black-00">Track my NISSS contributions</span>
+            <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">View your dashboard and recent payments</span>
           </span>
           <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
         </button>
       </div>`}
 
-      <p class="text-[0.95rem] text-bb-mid-grey-00 flex items-center gap-2 mt-8 pt-6 border-t border-bb-grey-00">
+      <p class="text-[1rem] text-bb-mid-grey-00 flex items-center gap-2 mt-8 pt-6 border-t border-bb-grey-00">
         ${ICONS.lock}
         <span>This is a guide only. Nothing you enter here is saved or shared.</span>
       </p>
@@ -695,12 +815,13 @@ function screenWorkerType() {
       ${progressBar('worker-type')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What kind of work do you do?
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Pick the one that's closest. It just helps us tailor the examples.
       </p>
+      ${stepError()}
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6" role="radiogroup" aria-label="Type of work">
         ${WORKER_TYPES.map(w => {
@@ -709,12 +830,12 @@ function screenWorkerType() {
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectWorker('${w.id}')"
               class="selectable text-left rounded-xl border-2 border-bb-grey-00 bg-white p-4 flex items-start gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
-              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+              <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-black-00">
                 ${ICONS[w.icon]}
               </span>
               <span class="flex-1 min-w-0">
-                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${w.title}</span>
-                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5 leading-snug">${w.example}</span>
+                <span class="block font-semibold text-[1.25rem] text-bb-black-00">${w.title}</span>
+                <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5 leading-snug">${w.example}</span>
               </span>
               <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
                 ${ICONS.check}
@@ -723,10 +844,10 @@ function screenWorkerType() {
         }).join('')}
       </div>
 
-      <h2 class="font-bold text-[1.35rem] sm:text-[1.5rem] leading-[1.25] text-bb-blue-00 mb-1">
+      <h2 class="font-bold text-[1.5rem] sm:text-[1.75rem] leading-[1.25] text-bb-black-00 mb-1">
         Do you already pay National Insurance through a main job?
       </h2>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-4">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-4">
         If yes, you can still pay for your self-employed income on top.
       </p>
 
@@ -743,12 +864,12 @@ function screenWorkerType() {
               <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
                 ${ICONS.check}
               </span>
-              <span class="text-[1.05rem] text-bb-black-00">${opt.label}</span>
+              <span class="text-[1.25rem] text-bb-black-00">${opt.label}</span>
             </button>`;
         }).join('')}
       </div>
 
-      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob, hint: 'Choose your kind of work and answer the main job question to continue.' })}
+      ${primaryBtn('Continue', "nextFromWorkerType()", { disabled: !state.data.workerType || !state.data.hasMainJob, hint: 'Choose your kind of work and answer the main job question to continue.', back: 'landing' })}
     </div>`;
 }
 
@@ -758,42 +879,28 @@ function screenWorkerType() {
 function screenIncomeReality() {
   const d = state.data;
   const e = state.errors;
-  const pctGood = Math.max(0, Math.min(100, ((d.goodMonth || 0) / 6000) * 100));
-  const pctSlow = Math.max(0, Math.min(100, ((d.slowMonth || 0) / 6000) * 100));
 
   return `
     <div class="screen stage">
       ${backBtn(LEAN_ESTIMATOR ? 'landing' : 'worker-type')}
-      ${errorSummary()}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Let's talk about your earnings.
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
       </p>
+      ${errorSummary()}
 
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="goodMonth" class="block font-semibold text-bb-blue-00 mb-1">
+        <label for="goodMonth-typed" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           What does a good month look like?
         </label>
-        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine. Drag the slider or type below.</p>
-        <div class="flex items-baseline gap-2 mb-3">
-          <span id="goodMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.goodMonth == null ? '' : fmtMoney(d.goodMonth)}</span>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </div>
-        <input type="range" id="goodMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.goodMonth || 0))}"
-          oninput="updateIncomeField('goodMonth', this, 'slider')"
-          aria-label="Good month earnings slider"
-          style="background-size: ${pctGood}% 100%" />
-        <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
-          <span>BDS$0</span><span>BDS$6,000+</span>
-        </div>
-        <div class="mt-4">
-          <label for="goodMonth-typed" class="sr-only">Or type your good month earnings</label>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is steady and money comes in. A rough number is fine.</p>
+        <div>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['goodMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
             <input id="goodMonth-typed" type="number" inputmode="numeric" min="0" step="50"
@@ -804,36 +911,23 @@ function screenIncomeReality() {
               onpaste="numberPaste(event)"
               aria-label="Good month earnings in Barbadian dollars"
               aria-describedby="goodMonth-typed-error"${e['goodMonth-typed'] ? ' aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
-          <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
+          <p id="goodMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['goodMonth-typed'] ? '' : ' hidden'}>${e['goodMonth-typed'] || ''}</p>
           <div id="goodMonth-ceiling"${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="goodMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-3 mt-4 text-[1rem] text-bb-black-00">
+              <p id="goodMonth-ceiling-text" role="status">${(d.goodMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
-        <label for="slowMonth" class="block font-semibold text-bb-blue-00 mb-1">
+        <label for="slowMonth-typed" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           And a slow month?
         </label>
-        <p class="text-[0.92rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. Drag the slider or type below.</p>
-        <div class="flex items-baseline gap-2 mb-3">
-          <span id="slowMonth-display" class="text-[2rem] font-bold text-bb-blue-00 tabular-nums">${d.slowMonth == null ? '' : fmtMoney(d.slowMonth)}</span>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </div>
-        <input type="range" id="slowMonth" min="0" max="6000" step="100" value="${Math.max(0, Math.min(6000, d.slowMonth || 0))}"
-          oninput="updateIncomeField('slowMonth', this, 'slider')"
-          aria-label="Slow month earnings slider"
-          style="background-size: ${pctSlow}% 100%" />
-        <div class="flex justify-between mt-2 text-[0.8rem] text-bb-mid-grey-00 tabular-nums">
-          <span>BDS$0</span><span>BDS$6,000+</span>
-        </div>
-        <div class="mt-4">
-          <label for="slowMonth-typed" class="sr-only">Or type your slow month earnings</label>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">When work is quiet: slow season, hurricane month, sickness. A rough number is fine.</p>
+        <div>
           <div class="relative inline-flex w-full rounded-sm border-2 ${e['slowMonth-typed'] ? 'border-bb-red-00' : 'border-bb-black-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100">
             <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
             <input id="slowMonth-typed" type="number" inputmode="numeric" min="0" step="50"
@@ -844,42 +938,42 @@ function screenIncomeReality() {
               onpaste="numberPaste(event)"
               aria-label="Slow month earnings in Barbadian dollars"
               aria-describedby="slowMonth-typed-error"${e['slowMonth-typed'] ? ' aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
-          <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[0.95rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
+          <p id="slowMonth-typed-error" class="mt-1 text-bb-red-00 text-[1rem]"${e['slowMonth-typed'] ? '' : ' hidden'}>${e['slowMonth-typed'] || ''}</p>
           <div id="slowMonth-ceiling"${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? '' : ' hidden'}>
-            <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-3 mt-4 flex items-start gap-3">
-              <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-              <p id="slowMonth-ceiling-text" class="text-[0.95rem] text-bb-blue-00/80" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
+            <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-3 mt-4 text-[1rem] text-bb-black-00">
+              <p id="slowMonth-ceiling-text" role="status">${(d.slowMonth || 0) > NIS.MAX_MONTHLY_INSURABLE ? CEILING_NOTE : ''}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-6 shadow-card">
-        <label for="goodMonthsPerYear" class="block font-semibold text-bb-blue-00 mb-1">
+        <label id="goodMonthsPerYear-label" for="goodMonthsPerYear" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           How many good months do you usually have in a year?
         </label>
-        <div class="flex items-center gap-3 mt-3">
-          <span id="goodMonthsPerYear-hint" class="text-[0.95rem] text-bb-mid-grey-00">A number from 1 to 12.</span>
-          <div class="relative inline-flex rounded-sm border-2 ${e.goodMonthsPerYear ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
-            <input id="goodMonthsPerYear" type="number" inputmode="numeric" min="1" max="12" step="1"
-              value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
-              placeholder="e.g. 8"
-              oninput="updateGoodMonths(this)"
-              onchange="normaliseGoodMonths(this)"
-              onblur="validateIncomeField('goodMonthsPerYear')"
-              onpaste="numberPaste(event)"
-              aria-label="Number of good months per year"
-              aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
-              ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''}
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+        <p id="goodMonthsPerYear-hint" class="text-[1rem] text-bb-mid-grey-00 mb-3">Enter a number from 1 to 12.</p>
+        <div class="govbb-number-input-wrapper" role="group" aria-labelledby="goodMonthsPerYear-label">
+          <input id="goodMonthsPerYear" class="govbb-number-input tabular-nums" type="number" inputmode="numeric" min="1" max="12" step="1"
+            value="${numVal('goodMonthsPerYear', d.goodMonthsPerYear)}"
+            placeholder="e.g. 8"
+            oninput="updateGoodMonths(this)"
+            onchange="normaliseGoodMonths(this)"
+            onblur="validateIncomeField('goodMonthsPerYear')"
+            onpaste="numberPaste(event)"
+            aria-describedby="goodMonthsPerYear-hint goodMonthsPerYear-error"
+            ${e.goodMonthsPerYear ? 'aria-invalid="true"' : ''} />
+          <div class="govbb-number-input__steppers">
+            <button class="govbb-number-input__step" type="button" tabindex="-1" aria-label="Increment" aria-controls="goodMonthsPerYear" onclick="stepGoodMonths(1)"></button>
+            <span class="govbb-number-input__divider" aria-hidden="true"></span>
+            <button class="govbb-number-input__step govbb-number-input__step--down" type="button" tabindex="-1" aria-label="Decrement" aria-controls="goodMonthsPerYear" onclick="stepGoodMonths(-1)"></button>
           </div>
         </div>
-        <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[0.95rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
+        <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[1rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
 
-      ${primaryBtn('Continue', 'nextFromIncome()')}
+      ${primaryBtn('Continue', 'nextFromIncome()', { back: LEAN_ESTIMATOR ? 'landing' : 'worker-type' })}
     </div>`;
 }
 
@@ -900,7 +994,7 @@ function screenYourSituation() {
           <span class="shrink-0 w-6 h-6 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">
             ${ICONS.check}
           </span>
-          <span class="text-[1.05rem] text-bb-black-00">${o.label}</span>
+          <span class="text-[1.25rem] text-bb-black-00">${o.label}</span>
         </button>`;
     }).join('');
   }
@@ -911,14 +1005,15 @@ function screenYourSituation() {
       ${progressBar('your-situation')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Tell us a bit more about your situation.
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         This helps us show you what would happen if you couldn't earn for a while.
       </p>
+      ${stepError()}
 
-      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Does anyone depend on your income?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Does anyone depend on your income?</h2>
       <div class="flex flex-col gap-3 ${d.hasDependants === 'yes' ? 'mb-4' : 'mb-6'}" role="radiogroup" aria-label="Dependants">
         ${radioGroup('hasDependants', [
           { id: 'yes', label: 'Yes, others rely on what I earn' },
@@ -930,8 +1025,8 @@ function screenYourSituation() {
         const countMsg = dependantsCountError();
         return `
         <div class="mb-6">
-          <label for="dependantsCount" class="block font-semibold text-bb-blue-00 mb-1">How many people depend on your income?</label>
-          <p id="dependantsCount-hint" class="text-[0.95rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
+          <label for="dependantsCount" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">How many people depend on your income?</label>
+          <p id="dependantsCount-hint" class="text-[1rem] text-bb-mid-grey-00 mb-3">Include children, a partner or relatives who rely on what you earn.</p>
           <div id="dependantsCount-wrap" class="relative inline-flex rounded-sm border-2 ${countMsg ? 'border-bb-red-00' : 'border-bb-grey-00'} items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="width: 100px;">
             <input id="dependantsCount" type="number" inputmode="numeric" min="1" max="20" step="1"
               value="${numVal('dependantsCount', d.dependantsCount || '')}"
@@ -942,13 +1037,13 @@ function screenYourSituation() {
               aria-label="Number of people who depend on your income"
               aria-describedby="dependantsCount-hint dependantsCount-error"
               aria-invalid="${countMsg ? 'true' : 'false'}"
-              class="w-full p-3 outline-none rounded-[inherit] text-[1.05rem] tabular-nums" />
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
           </div>
-          <p id="dependantsCount-error" class="mt-2 text-bb-red-00 text-[0.95rem]">${countMsg || ''}</p>
+          <p id="dependantsCount-error" class="mt-2 text-bb-red-00 text-[1rem]">${countMsg || ''}</p>
         </div>`;
       })() : ''}
 
-      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">If you couldn't work for 3 weeks tomorrow, do you have savings to cover it?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Savings">
         ${radioGroup('hasSavings', [
           { id: 'yes',      label: 'Yes' },
@@ -957,7 +1052,7 @@ function screenYourSituation() {
         ])}
       </div>
 
-      <h2 class="font-bold text-[1.15rem] text-bb-blue-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Are you paying National Insurance now for your self-employed work?</h2>
       <div class="flex flex-col gap-3 mb-6" role="radiogroup" aria-label="Current NIS status">
         ${radioGroup('payingNIS', [
           { id: 'yes',            label: 'Yes, I pay it' },
@@ -986,7 +1081,7 @@ function situationContinue() {
     : invalidCount
       ? 'Enter a whole number of people from 1 to 20 to continue.'
       : 'Enter how many people depend on your income to continue.';
-  return primaryBtn('Continue', "nav('risk-awareness')", { disabled: missingRadios || missingCount, hint });
+  return primaryBtn('Continue', "nav('plan')", { disabled: missingRadios || missingCount, hint, back: 'income-reality' });
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -995,85 +1090,125 @@ function situationContinue() {
    ───────────────────────────────────────────────────────── */
 function screenRiskAwareness() {
   const d = state.data;
+
+  // ── What you'd lose, from your earnings ──────────────────────
   const monthsLost = (d.goodMonth + d.slowMonth) / 2;
   const twoWeeksLost = Math.round(monthsLost / 2);
   const gmYear = goodMonthsValue();
   const yearLost = Math.round((d.goodMonth * gmYear) + (d.slowMonth * (12 - gmYear)));
 
+  // ── What NISSS pays, from the plan just chosen on the previous step ──
+  const tier = d.contributionTier; // null | 'minimum' | 'safer' | 'strong'
+  const annualIncome = (d.goodMonth * gmYear) + (d.slowMonth * (12 - gmYear));
+  const monthlyAvg = annualIncome / 12;
+  const minMonthly    = 100;
+  const saferMonthly  = Math.max(150, Math.round(monthlyAvg * 0.10 / 10) * 10);
+  const strongMonthly = Math.max(225, Math.round(monthlyAvg * 0.15 / 10) * 10);
+  const chosen =
+    tier === 'minimum' ? minMonthly :
+    tier === 'safer'   ? saferMonthly :
+    tier === 'strong'  ? strongMonthly : null;
+
+  const annualContribution = chosen ? chosen * 12 : 0;
+  const monthlyInsurable   = chosen ? monthlyInsurableFromContribution(annualContribution) : 0;
+  const weeklyInsurable    = weeklyInsurableFromMonthly(monthlyInsurable);
+  const sicknessWk   = weeklyInsurable * NIS.SICKNESS_RATE;
+  const maternityWk  = weeklyInsurable * NIS.MATERNITY_RATE;
+  const paternityWk  = weeklyInsurable * NIS.PATERNITY_RATE;
+  const invalidityWk = Math.max(NIS.INVALIDITY_MIN_WK, weeklyInsurable * NIS.INVALIDITY_RATE);
+  const pensionWk    = weeklyInsurable * NIS.INVALIDITY_RATE;
+  const perWeek = wk => `<strong class="tabular-nums">${fmtMoney(wk)}</strong> a week <span class="text-bb-mid-grey-00">(about ${fmtMoney(wk * 52 / 12)}/month)</span>`;
+
+  // Reached here without a plan (e.g. deep link) — send them to pick one first.
+  if (!tier) {
+    return `
+      <div class="screen stage">
+        ${backBtn('plan')}
+        ${progressBar('risk-awareness')}
+        ${serviceCaption()}
+        <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">Pick a plan first</h1>
+        <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">Choose a contribution level and we'll show you exactly what it protects.</p>
+        ${primaryBtn("Choose a plan", "nav('plan')")}
+      </div>`;
+  }
+
+  // Each life moment paired with the benefit that covers it. The card colour
+  // and icon come from BENEFITS (the step-3 styling the user liked); the
+  // Without / With NISSS split is the step-2 style.
+  const items = [
+    { benefit: 'sickness', title: "Sickness Benefit",
+      without: `Two weeks off sick is about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn — rent, food and bills still due.`,
+      withNis: `Sickness Benefit pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks. If you're still unwell after that, NISSS may pay for up to 26 more weeks.` },
+    { benefit: 'maternity', title: "Maternity Benefit",
+      without: 'Time off to have your baby means no money coming in. Many parents go back to work too soon.',
+      withNis: `Maternity Benefit pays about ${perWeek(maternityWk)}, based on your earnings, for your time off.` },
+    { benefit: 'paternity', title: "Paternity Benefit",
+      without: 'Taking time with a new baby usually means unpaid days away from work.',
+      withNis: `Paternity Benefit gives new fathers a ${NIS.PATERNITY_WEEKS}-week paid break of about ${perWeek(paternityWk)}.` },
+    { benefit: 'invalidity', title: 'Invalidity Pension',
+      without: 'No safety net. Savings go fast, and family has to step in.',
+      withNis: `Invalidity Pension gives ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` },
+    { benefit: 'survivors', title: "Survivors' Benefit",
+      without: 'Your partner, children or parents lose the income you brought in.',
+      withNis: `Survivors' Benefit shares about ${perWeek(pensionWk)} among your partner, children or parents, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` },
+    { benefit: 'pension', title: "Old-Age Contributory Pension",
+      without: `Without a pension, that's about <strong>${fmtMoney(yearLost)}/year</strong> you'd need to find from somewhere else.`,
+      withNis: `An Old-Age Pension for life from age ${NIS.PENSIONABLE_AGE}, starting around ${perWeek(pensionWk)} and growing the longer you contribute.` },
+    { benefit: 'funeral', title: "Funeral Grant",
+      without: 'Funeral costs land on your family at the worst possible time.',
+      withNis: `A one-time Funeral Grant of <strong class="tabular-nums">${fmtMoney(NIS.FUNERAL_GRANT)}</strong> helps your family with the costs. Included at every level.` },
+  ];
+
   return `
     <div class="screen stage">
-      ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
+      ${backBtn('plan')}
       ${progressBar('risk-awareness')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
-        What if something happened tomorrow?
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
+        What your plan protects you from
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        These numbers are based on what you just told us you earn. Tap any card to see what it could cost you, and how NISSS helps.
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
+        For <strong class="tabular-nums">${fmtMoney(chosen)}</strong>/month, here's each moment <strong class="text-bb-red-00">without NISSS</strong> and <strong class="text-bb-green-00">with it</strong>. Figures are estimates based on the amount you chose to put in.
       </p>
+      <p class="text-[1rem] text-bb-mid-grey-00 mb-3">Tap any benefit to see what happens.</p>
 
       <div class="space-y-3 mb-6">
-        ${[
-          {
-            id: 'sick', icon: 'sickness', title: 'You get sick for two weeks.',
-            without: `That's about <strong>${fmtMoney(twoWeeksLost)}</strong> you couldn't earn: rent, food, bills still due.`,
-            withNis: 'NISSS sickness benefit pays part of your usual earnings while you recover, so you can rest without panic.',
-          },
-          {
-            id: 'injury', icon: 'invalidity', title: 'You get hurt and cannot work for months.',
-            without: 'No safety net. Savings go fast. Family steps in or things get hard.',
-            withNis: 'NISSS invalidity benefit gives ongoing support if you can\'t work for the long term.',
-          },
-          {
-            id: 'baby', icon: 'maternity', title: "You're starting a family.",
-            without: 'Time off means no money. Many parents go back to work too soon.',
-            withNis: 'NISSS maternity and paternity benefits pay you to take real time off with your baby.',
-          },
-          {
-            id: 'retire', icon: 'pension', title: "You're 67 and ready to slow down.",
-            without: `Without a pension, that's <strong>${fmtMoney(yearLost)}/year</strong> you'd need from somewhere else.`,
-            withNis: 'NISSS pays a monthly pension for life, built up from years of small contributions.',
-          },
-          {
-            id: 'family', icon: 'survivors', title: "Something happens to you.",
-            without: 'Your partner, kids, or parents lose the income you brought in.',
-            withNis: 'Survivors benefit and a funeral grant help your family keep going.',
-          },
-        ].map(s => `
-          <details class="scenario rounded-xl border border-bb-grey-00 bg-white overflow-hidden" ${state.expandedScenario === s.id ? 'open' : ''} onclick="toggleScenario('${s.id}', event)">
-            <summary class="p-4 flex items-start gap-3 hover:bg-bb-blue-10/30">
-              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-red-10 text-bb-red-00">
-                ${ICONS[s.icon]}
-              </span>
-              <span class="flex-1 min-w-0">
-                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${s.title}</span>
-                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-1">Tap to see what happens</span>
-              </span>
-              <span class="shrink-0 text-bb-mid-grey-00 mt-2">${ICONS.chevDown}</span>
-            </summary>
-            <div class="px-4 pb-5 pt-1 space-y-3 border-t border-bb-grey-00">
-              <div class="rounded-lg bg-bb-red-10 border border-bb-red-40/60 p-3">
-                <p class="text-[0.85rem] uppercase tracking-wide text-bb-red-00 font-semibold mb-1">Without NISSS</p>
-                <p class="text-[0.98rem] text-bb-blue-00">${s.without}</p>
+        ${items.map((it, i) => {
+          const def = BENEFITS.find(x => x.id === it.benefit);
+          const c = def ? COLOR_MAP[def.color] : COLOR_MAP.teal;
+          // First card open on arrival; after that, follow whatever the user toggled.
+          const open = state.expandedScenario ? state.expandedScenario === it.benefit : i === 0;
+          return `
+            <details class="scenario rounded-xl border border-bb-grey-00 bg-white overflow-hidden" ${open ? 'open' : ''} onclick="toggleScenario('${it.benefit}', event)">
+              <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30">
+                <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full ${c.bg} ${c.text}">${ICONS[def ? def.icon : 'shield']}</span>
+                <span class="flex-1 min-w-0 font-semibold text-[1.25rem] text-bb-black-00">${it.title}</span>
+                <span class="shrink-0 text-bb-black-00">${ICONS.chevDown}</span>
+              </summary>
+              <div class="px-4 pb-5 pt-4 space-y-3 border-t border-bb-grey-00">
+                <div class="rounded-lg bg-bb-red-10 border border-bb-red-40/60 p-3">
+                  <p class="text-[0.95rem] uppercase tracking-wide text-bb-red-00 font-semibold mb-1">Without NISSS</p>
+                  <p class="text-[1.125rem] text-bb-black-00">${it.without}</p>
+                </div>
+                <div class="rounded-lg bg-bb-green-10 border border-bb-green-40 p-3">
+                  <p class="text-[0.95rem] uppercase tracking-wide text-bb-green-00 font-semibold mb-1">With NISSS</p>
+                  <p class="text-[1.125rem] text-bb-black-00">${it.withNis}</p>
+                </div>
               </div>
-              <div class="rounded-lg bg-bb-green-10 border border-bb-green-40 p-3">
-                <p class="text-[0.85rem] uppercase tracking-wide text-bb-green-00 font-semibold mb-1">With NISSS</p>
-                <p class="text-[0.98rem] text-bb-blue-00">${s.withNis}</p>
-              </div>
-            </div>
-          </details>
-        `).join('')}
+            </details>
+          `;
+        }).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[1rem] text-bb-blue-00">
-          <strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.
-        </p>
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+        <p><strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.</p>
       </div>
 
-      ${primaryBtn("See what I should put in", "nav('plan')")}
+      ${primaryBtn("Show me next steps", "nav('next-steps')", { back: 'plan' })}
+      <p class="text-center text-[0.95rem] text-bb-mid-grey-00 mt-3">
+        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
+      </p>
     </div>`;
 }
 
@@ -1107,7 +1242,7 @@ function screenPlan() {
 
   // Relative protection level — drives the bar fill in the hero.
   // This is a QUALITATIVE indicator only (more contributions = more benefits).
-  // Exact benefit figures are not shown until NISSS confirms them.
+  // Exact benefit figures are shown on the next step.
   const protectionPct =
     tier === 'minimum' ? 40 :
     tier === 'safer'   ? 70 :
@@ -1117,101 +1252,77 @@ function screenPlan() {
     tier === 'safer'   ? 'Better benefits' :
     tier === 'strong'  ? 'Strongest benefits' : '';
 
-  // ── Estimated benefit amounts ────────────────────────────────
-  // The chosen monthly contribution implies a level of insurable EARNINGS
-  // (contribution ÷ 17.25%). Benefits are a share of those earnings.
-  // These are planning estimates only — NISSS Benefits confirms actuals.
-  const annualContribution = chosen ? chosen * 12 : 0;
-  const monthlyInsurable   = chosen ? monthlyInsurableFromContribution(annualContribution) : 0;
-  const weeklyInsurable    = weeklyInsurableFromMonthly(monthlyInsurable);
-
-  const sicknessWk  = weeklyInsurable * NIS.SICKNESS_RATE;            // 66⅔%
-  const maternityWk = weeklyInsurable * NIS.MATERNITY_RATE;          // 100%
-  const paternityWk = weeklyInsurable * NIS.PATERNITY_RATE;          // 100%
-  const invalidityWk = Math.max(NIS.INVALIDITY_MIN_WK, weeklyInsurable * NIS.INVALIDITY_RATE); // 40%, min $254
-  const pensionWk   = weeklyInsurable * NIS.INVALIDITY_RATE;          // ~40% base accrual
-
-  // small helper: "BDS$X a week (about BDS$Y a month)"
-  const perWeek = wk => `<strong class="tabular-nums">${fmtMoney(wk)}</strong> a week <span class="text-bb-mid-grey-00">(about ${fmtMoney(wk * 52 / 12)}/month)</span>`;
-
   // Tier card definitions
   const tiers = [
     {
       id: 'minimum', label: 'Minimum', monthly: minMonthly, tag: 'Basic', color: 'yellow',
-      sub: "Meets the BDS$1,200/year threshold. Smaller payments when you claim, but you still qualify for every benefit.",
+      sub: 'Smaller payouts, but every benefit still counts.',
     },
     {
       id: 'safer', label: 'Moderate', monthly: saferMonthly, tag: 'Recommended', color: 'green',
-      sub: 'A bigger share of your earnings, so you build more contributions and stronger benefits.',
+      sub: 'A bigger share of your earnings.',
     },
     {
       id: 'strong', label: 'Stronger', monthly: strongMonthly, tag: 'Maximum', color: 'teal',
-      sub: "The most you put in here. It's closer to what employees contribute and builds the strongest benefits.",
+      sub: 'The strongest cover you can build.',
     },
   ];
 
-  // Benefit descriptions — show estimated payout figures derived from the
-  // chosen tier's insurable earnings. Every figure is an estimate; the page
-  // carries a disclaimer that NISSS Benefits confirms the actual amount.
-  const benefitsInline = [
-    { id: 'sickness',   icon: 'sickness',   title: 'Sickness Benefit',
-      desc: tier ? `If you can't work because you're sick, NISSS pays about ${perWeek(sicknessWk)}, roughly two-thirds of your usual earnings, for up to ${NIS.SICKNESS_MAX_WEEKS} weeks. If you are still unwell after that, NISSS may pay for up to 26 more weeks.` : '' },
-    { id: 'maternity',  icon: 'maternity',  title: 'Maternity Benefit',
-      desc: tier ? `Paid time off when you have a baby: about ${perWeek(maternityWk)}, based on your earnings.` : '' },
-    { id: 'paternity',  icon: 'paternity',  title: 'Paternity Benefit',
-      desc: tier ? `A ${NIS.PATERNITY_WEEKS}-week paid break for new fathers: about ${perWeek(paternityWk)}.` : '' },
-    { id: 'invalidity', icon: 'invalidity', title: 'Invalidity Pension',
-      desc: tier ? `If a long illness stops you working, ongoing income of about ${perWeek(invalidityWk)} (at least ${fmtMoney(NIS.INVALIDITY_MIN_WK)} a week).` : '' },
-    { id: 'survivors',  icon: 'survivors',  title: "Survivors' Benefit",
-      desc: tier ? `If anything happens to you, your partner, children or parents share a benefit of about ${perWeek(pensionWk)}, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` : '' },
-    { id: 'pension',    icon: 'pension',    title: 'Old-Age Contributory Pension',
-      desc: tier ? `A pension for life from age ${NIS.PENSIONABLE_AGE}, starting around ${perWeek(pensionWk)} and growing the longer you contribute.` : '' },
-  ];
+  // Selected tier — drives the "Your plan" summary card chip.
+  const selTier = tiers.find(t => t.id === tier);
+  const selC = selTier ? COLOR_MAP[selTier.color] : null;
 
   return `
     <div class="screen stage">
-      ${backBtn('risk-awareness')}
+      ${backBtn(LEAN_ESTIMATOR ? 'income-reality' : 'your-situation')}
       ${progressBar('plan')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What should you put in?
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
-        Pick a level. You'll see what it gets you below. No extra clicks.
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-1">
+        Pick a level you can afford. The more you put in, the bigger your benefits. You'll see what each one protects next.
       </p>
+      ${stepError()}
 
-      <!-- Earnings summary -->
-      <div class="rounded-2xl border border-bb-blue-10 bg-bb-blue-10/40 p-4 mb-5">
-        <p class="text-[0.9rem] text-bb-mid-grey-00 mb-1">Based on what you told us</p>
-        <p class="text-[1.05rem] text-bb-blue-00">
-          Average earnings: <strong class="tabular-nums">${fmtMoney(monthlyAvg)}</strong>
-          <span class="text-bb-mid-grey-00">/ month</span>
-        </p>
-      </div>
+      <!-- Earnings summary (plain text, not a card) -->
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-5">
+        We've suggested these levels from your average earnings of about
+        <strong class="tabular-nums text-bb-black-00">${fmtMoney(monthlyAvg)}</strong> a month.
+      </p>
 
       <!-- Tier cards -->
       <div class="space-y-3 mb-6" role="radiogroup" aria-label="Contribution tier">
         ${tiers.map(t => {
           const selected = tier === t.id;
           const c = COLOR_MAP[t.color];
+          // Per-tier selection colours (kept off the shared teal .selected rule
+          // so each card stays its own colour, selected or not).
+          const sc = {
+            yellow: { border: 'border-bb-yellow-00', fill: 'bg-bb-yellow-00', hex: '#e8a833' },
+            green:  { border: 'border-bb-green-00',  fill: 'bg-bb-green-00',  hex: '#00654a' },
+            teal:   { border: 'border-bb-teal-00',   fill: 'bg-bb-teal-00',   hex: '#0e5f64' },
+          }[t.color];
+          const cardCls = selected ? `${sc.border} shadow-[inset_0_0_0_2px_${sc.hex}]` : c.border;
+          const checkCls = selected ? `${sc.fill} shadow-[0_0_0_3px_#fff,0_0_0_5px_${sc.hex}]` : 'bg-white border-2 border-bb-mid-grey-00';
           return `
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectTier('${t.id}')"
-              class="selectable text-left rounded-xl border-2 ${selected ? '' : c.border + ' ' + c.bg} bg-white p-4 w-full focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 ${selected ? 'selected' : ''}">
+              class="text-left rounded-xl border-2 ${c.bg} ${cardCls} p-4 w-full transition-shadow focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
               <div class="flex items-start justify-between gap-3">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <p class="font-semibold text-[1.05rem] text-bb-blue-00">${t.label}</p>
-                    <span class="chip bg-white ${c.text} border ${c.border}">${t.tag}</span>
+                    <p class="font-semibold text-[1.25rem] text-bb-black-00">${t.label}</p>
+                    ${t.tag === 'Recommended' ? `<span class="chip bg-white ${c.text} border ${c.border}">Recommended</span>` : ''}
                   </div>
-                  <div class="mt-1 flex items-baseline gap-2">
-                    <span class="text-[1.5rem] font-bold ${c.text} tabular-nums">${fmtMoney(t.monthly)}</span>
-                    <span class="text-bb-mid-grey-00 text-[0.95rem]">/ month</span>
-                  </div>
-                  <p class="text-[0.92rem] text-bb-mid-grey-00 mt-2">${t.sub}</p>
+                  <p class="mt-1 leading-none">
+                    <span class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${fmtMoney(t.monthly)}</span>
+                    <span class="text-bb-mid-grey-00 text-[1rem]"> /month</span>
+                  </p>
+                  <p class="text-[1rem] text-bb-mid-grey-00 mt-2">${t.sub}</p>
                 </div>
-                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${selected ? 'bg-bb-teal-00 text-white' : 'border-2 border-bb-grey-00 text-transparent'}">${ICONS.check}</span>
+                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}"></span>
               </div>
             </button>
           `;
@@ -1219,93 +1330,36 @@ function screenPlan() {
       </div>
 
       ${tier ? `
-        <!-- Plan hero (the future-self moment — colour change on tier select) -->
-        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
-          <p class="text-[0.85rem] uppercase tracking-wide text-bb-teal-40 font-semibold mb-1">Your plan</p>
+        <!-- Your plan summary — teal→blue gradient card. -->
+        <div id="plan-hero" class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-6 shadow-card-hover">
+          <div class="flex items-start justify-between gap-3 mb-1">
+            <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40 font-semibold">Your plan</p>
+            <span class="inline-flex items-center rounded-full ${selC.bg} ${selC.text} px-4 py-1.5 text-[1.05rem] font-bold shadow-sm">${selTier.label}</span>
+          </div>
           <p class="text-[2rem] font-bold leading-tight tabular-nums mb-1">${fmtMoney(chosen)}<span class="text-[1rem] font-normal text-bb-teal-40"> / month</span></p>
-          <p class="text-[0.95rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
+          <p class="text-[1rem] text-white/90">About <strong class="tabular-nums">${fmtMoney(chosen / 4)}</strong> a week.</p>
 
           <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-white/20">
             <div>
-              <p class="text-[0.8rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
+              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In a year</p>
               <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12)}</p>
             </div>
             <div>
-              <p class="text-[0.8rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
+              <p class="text-[0.95rem] uppercase tracking-wide text-bb-teal-40">In 10 years</p>
               <p class="text-[1.3rem] font-bold tabular-nums">${fmtMoney(chosen * 12 * 10)}</p>
             </div>
           </div>
-
-          <div class="mt-5">
-            <div class="flex items-center justify-between mb-1.5">
-              <span class="text-[0.9rem] text-white/90">Your protection level</span>
-              <span class="text-[0.9rem] font-semibold text-white">${protectionLabel}</span>
-            </div>
-            <div class="protect-bar bg-white/20">
-              <div class="protect-bar-fill" style="width: ${protectionPct}%"></div>
-            </div>
-            <p class="text-[0.8rem] text-white/70 mt-2">
-              The more you put in, the bigger your benefits. Figures below are estimates based on your insurable earnings.
-            </p>
-          </div>
         </div>
+      ` : ''}
 
-        <!-- Inline benefit estimates (no click-to-expand) -->
-        <h2 class="font-bold text-[1.4rem] text-bb-blue-00 mb-2">What this gets you</h2>
-        <p class="text-[1rem] text-bb-mid-grey-00 mb-4">
-          Six things, all included, sized to the level you picked.
-        </p>
+      <!-- How paying works — left-rule inset matching the landing's service
+           caption (border-bb-blue-40, no box). Always shown, not just on select. -->
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 space-y-2 text-[1rem] text-bb-black-00">
+        <p><strong>Good month?</strong> Pay a bit more. <strong>Slow month?</strong> Pay less, or skip it. What matters is your total for the year.</p>
+        <p><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
+      </div>
 
-        <div class="space-y-3 mb-5">
-          ${benefitsInline.map(b => {
-            const def = BENEFITS.find(x => x.id === b.id);
-            const c = def ? COLOR_MAP[def.color] : COLOR_MAP.teal;
-            return `
-              <div class="rounded-2xl border ${c.border} ${c.bg} p-4">
-                <div class="flex items-start gap-3">
-                  <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white ${c.text}">${ICONS[b.icon]}</span>
-                  <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">${b.title}</p>
-                    <p class="text-[0.95rem] text-bb-blue-00/80 leading-snug">${b.desc}</p>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('')}
-          <div class="rounded-2xl border border-bb-teal-40 bg-bb-teal-10 p-4">
-            <div class="flex items-start gap-3">
-              <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-teal-00">${ICONS.shield}</span>
-              <div class="flex-1 min-w-0">
-                <p class="font-semibold text-[1.05rem] text-bb-blue-00 mb-1">Funeral Grant</p>
-                <p class="text-[0.95rem] text-bb-blue-00/80">A one-time payment of <strong class="tabular-nums">${fmtMoney(NIS.FUNERAL_GRANT)}</strong> to help your family with funeral costs. Included at every level.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
-          <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-          <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>Slow month?</strong> Pay less or skip. No penalty. <strong>Good month?</strong> Top up. What counts is the total over the year.
-          </p>
-        </div>
-
-        <div class="rounded-2xl bg-bb-blue-10 border border-bb-blue-40 p-4 mb-6 flex items-start gap-3">
-          <span class="text-bb-blue-100 shrink-0 mt-0.5">${ICONS.clock}</span>
-          <p class="text-[0.95rem] text-bb-blue-00">
-            <strong>When your benefits start:</strong> you're protected after one full year of contributions, at least BDS$1,200 over the year. Keep paying and your benefits stay active.
-          </p>
-        </div>
-      ` : `
-        <div class="rounded-2xl bg-bb-grey-00/40 border border-bb-grey-00 p-5 mb-6 text-center">
-          <p class="text-[0.95rem] text-bb-mid-grey-00">↑ Pick a level to see what it gets you.</p>
-        </div>
-      `}
-
-      ${primaryBtn("I'm ready, show me next steps", "nav('next-steps')", { disabled: !tier, hint: 'Pick a contribution level above to continue.' })}
-      <p class="text-center text-[0.85rem] text-bb-mid-grey-00 mt-3">
-        Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
-      </p>
+      ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.', back: LEAN_ESTIMATOR ? 'income-reality' : 'your-situation' })}
     </div>`;
 }
 
@@ -1317,10 +1371,10 @@ function screenBenefitsQuick() {
     <div class="screen stage">
       ${backBtn('landing')}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Six ways NISSS protects you.
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Quick read: about a minute.
       </p>
 
@@ -1334,8 +1388,8 @@ function screenBenefitsQuick() {
                   ${ICONS[b.icon]}
                 </span>
                 <div class="flex-1 min-w-0">
-                  <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">${b.title}</p>
-                  <p class="text-[0.98rem] text-bb-blue-00/80 leading-snug">${b.real}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">${b.title}</p>
+                  <p class="text-[1.125rem] text-bb-black-00/80 leading-snug">${b.real}</p>
                 </div>
               </div>
             </div>
@@ -1353,14 +1407,14 @@ function screenBenefitsQuick() {
 function screenNextSteps() {
   return `
     <div class="screen stage">
-      ${backBtn('plan')}
+      ${backBtn('risk-awareness')}
       ${progressBar('next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Ready to take the next step?
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Choose what works best for you right now.
       </p>
 
@@ -1372,8 +1426,8 @@ function screenNextSteps() {
               ${ICONS.shield}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Register with NISSS</p>
-              <p class="text-[0.95rem] text-bb-blue-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Register with NISSS</p>
+              <p class="text-[1rem] text-bb-black-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1382,12 +1436,12 @@ function screenNextSteps() {
         <button type="button" onclick="nav('payment-options')"
           class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
           <div class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-blue-00">
+            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-black-00">
               ${ICONS.card}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">See how to pay</p>
-              <p class="text-[0.95rem] text-bb-blue-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">See how to pay</p>
+              <p class="text-[1rem] text-bb-black-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
@@ -1400,20 +1454,19 @@ function screenNextSteps() {
               ${ICONS.phone}
             </span>
             <div class="flex-1">
-              <p class="font-semibold text-[1.1rem] text-bb-blue-00 mb-1">Contact NISSS</p>
-              <p class="text-[0.95rem] text-bb-blue-00/80">Have a question? Call or visit an office and an officer will help.</p>
+              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Contact NISSS</p>
+              <p class="text-[1rem] text-bb-black-00/80">Have a question? Call or visit an office and an officer will help.</p>
             </div>
             <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
           </div>
         </button>
       </div>
 
-      <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 flex items-start gap-3">
-        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-        <p class="text-[0.95rem] text-bb-blue-00">
-          You can step away at any time. Joining is voluntary, and you choose how much to contribute.
-        </p>
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+        <p>You can step away at any time. Joining is voluntary, and you choose how much to contribute.</p>
       </div>
+
+      ${primaryBtn("Return to start", "nav('landing')", { back: 'risk-awareness' })}
     </div>`;
 }
 
@@ -1430,12 +1483,13 @@ function screenRegisterPath() {
       ${backBtn(state.screen === 'register-path' && JOURNEY.indexOf('next-steps') > -1 && cameFromJourney ? 'next-steps' : 'landing')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Do you already have an NISSS number?
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         If you worked for an employer before, you probably do. It's the same number for life.
       </p>
+      ${stepError()}
 
       <div class="space-y-3 mb-6" role="radiogroup" aria-label="Do you already have an NISSS number?">
         ${[
@@ -1452,8 +1506,8 @@ function screenRegisterPath() {
                 ${ICONS.check}
               </span>
               <span class="flex-1">
-                <span class="block font-semibold text-[1.05rem] text-bb-blue-00">${o.label}</span>
-                <span class="block text-[0.92rem] text-bb-mid-grey-00 mt-0.5">${o.sub}</span>
+                <span class="block font-semibold text-[1.25rem] text-bb-black-00">${o.label}</span>
+                <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">${o.sub}</span>
               </span>
             </button>
           `;
@@ -1488,10 +1542,10 @@ function screenPaymentOptions() {
       ${backBtn('next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         How to pay your NISSS contributions
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
         Pay weekly, monthly, or in a lump sum, whatever fits your cash flow.
       </p>
 
@@ -1510,17 +1564,17 @@ function screenPaymentOptions() {
               <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white ${c.text}">${ICONS[p.icon]}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
-                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${p.title}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00">${p.title}</p>
                   <span class="chip bg-white border border-bb-grey-00 ${c.text}">${p.tag}</span>
                 </div>
-                <p class="text-[0.95rem] text-bb-blue-00/80">${p.sub}</p>
+                <p class="text-[1rem] text-bb-black-00/80">${p.sub}</p>
               </div>
             </div>
           </div>`;
         }).join('')}
       </div>
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">How often should you pay?</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">How often should you pay?</h2>
       <div class="grid grid-cols-3 gap-2 mb-6">
         ${[
           { title: 'Weekly',  sub: 'Smaller amounts more often.' },
@@ -1528,19 +1582,16 @@ function screenPaymentOptions() {
           { title: 'Yearly',  sub: 'One lump sum.' },
         ].map(o => `
           <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-            <p class="font-semibold text-[1rem] text-bb-blue-00">${o.title}</p>
-            <p class="text-[0.85rem] text-bb-mid-grey-00 mt-1">${o.sub}</p>
+            <p class="font-semibold text-[1rem] text-bb-black-00">${o.title}</p>
+            <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1">${o.sub}</p>
           </div>
         `).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.warning}</span>
-        <div>
-          <p class="font-semibold text-bb-blue-00 mb-1">If you stop contributing</p>
-          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
-          <p class="text-[0.95rem] text-bb-blue-00/80">You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
-        </div>
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+        <p class="font-semibold mb-1">If you stop contributing</p>
+        <p class="mb-2">No problem in the short term. Life happens. But to qualify for most benefits, you need a minimum number of contributions over time.</p>
+        <p>You can <strong>back-pay up to 3 years</strong> of missed contributions to count toward benefits. Each missed year adds a <strong>5% surcharge</strong>, so catching up sooner costs less.</p>
       </div>
 
       ${primaryBtn('Register now', "nav('register-path')")}
@@ -1569,21 +1620,20 @@ function screenContact() {
       ${backBtn(unsure ? 'register-path' : 'next-steps')}
       ${serviceCaption()}
 
-      <h1 class="font-bold text-[1.85rem] sm:text-[2.25rem] leading-[1.15] text-bb-blue-00 mb-2">
+      <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         Contact NISSS
       </h1>
-      <p class="text-[1.05rem] text-bb-mid-grey-00 mb-6">${lead}</p>
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">${lead}</p>
 
       ${unsure ? `
-        <div class="rounded-2xl bg-bb-blue-10/50 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-          <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.lock}</span>
-          <p class="text-[0.98rem] text-bb-blue-00">
+        <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
+          <p>
             Ask them to look up your number before you register. If you already have one, you keep it for life, so there is no need to sign up again.
           </p>
         </div>
       ` : ''}
 
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Ways to reach them</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Ways to reach them</h2>
       <div class="space-y-3 mb-6">
         ${ways.map(o => `
           <div class="rounded-2xl border border-bb-grey-00 bg-white p-4">
@@ -1591,26 +1641,25 @@ function screenContact() {
               <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-teal-10 text-bb-teal-00">${ICONS[o.icon]}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap mb-1">
-                  <p class="font-semibold text-[1.05rem] text-bb-blue-00">${o.title}</p>
+                  <p class="font-semibold text-[1.25rem] text-bb-black-00">${o.title}</p>
                   <span class="chip bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40">${o.tag}</span>
                 </div>
-                <p class="text-[0.95rem] text-bb-mid-grey-00">${o.sub}</p>
+                <p class="text-[1rem] text-bb-mid-grey-00">${o.sub}</p>
               </div>
             </div>
           </div>
         `).join('')}
       </div>
 
-      <div class="rounded-2xl bg-bb-yellow-10 border border-bb-yellow-40 p-4 mb-4 flex items-start gap-3">
-        <span class="text-bb-yellow-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[0.98rem] text-bb-blue-00">
+      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-4 text-[1rem] text-bb-black-00">
+        <p>
           <strong>Started a while ago?</strong> NISSS may let you back-pay up to <strong>3 years</strong> so it counts toward your benefits. Missed years carry a <strong>5% surcharge per year</strong>, which adds up, so it's cheaper to start sooner. Ask when you register.
         </p>
       </div>
 
       <div class="rounded-2xl bg-bb-green-10 border border-bb-green-40 p-4 mb-6 flex items-start gap-3">
         <span class="text-bb-green-00 shrink-0 mt-0.5">${ICONS.shield}</span>
-        <p class="text-[0.98rem] text-bb-blue-00">
+        <p class="text-[1.125rem] text-bb-black-00">
           <strong>It's never too late.</strong> Even if you start close to retirement and don't build enough contributions for a full pension, you may still qualify for a <strong>one-time grant</strong>. Starting now always counts for something.
         </p>
       </div>
@@ -1664,7 +1713,7 @@ function screenTracker() {
       <!-- Future-feature preview banner -->
       <div class="rounded-2xl bg-bb-purple-00/5 border border-bb-purple-100/40 p-4 mb-5 flex items-start gap-3">
         <span class="text-bb-purple-00 shrink-0 mt-0.5">${ICONS.spark}</span>
-        <p class="text-[0.92rem] text-bb-blue-00">
+        <p class="text-[1rem] text-bb-black-00">
           <strong>A glimpse of what's coming.</strong> Today most people can't see how much they've put in or what they qualify for. This is an example of a future feature. The details below are made up to show the idea.
         </p>
       </div>
@@ -1673,14 +1722,14 @@ function screenTracker() {
       <div class="rounded-3xl bg-gradient-to-br from-bb-teal-00 to-bb-blue-100 text-white p-6 mb-5 shadow-card-hover">
         <div class="flex items-start justify-between gap-3 mb-3">
           <div>
-            <p class="text-[0.95rem] text-bb-teal-40 mb-1">Welcome back, ${profile.name}</p>
-            <h1 class="text-[1.6rem] font-bold leading-tight">Your NISSS contributions</h1>
+            <p class="text-[1rem] text-bb-teal-40 mb-1">Welcome back, ${profile.name}</p>
+            <h1 class="text-[1.75rem] font-bold leading-tight">Your NISSS contributions</h1>
           </div>
           <span class="chip bg-bb-green-10 text-bb-green-00 border border-bb-green-40">
             ${ICONS.circleCheck}<span>${overallStatus}</span>
           </span>
         </div>
-        <div class="grid grid-cols-2 gap-4 pt-3 border-t border-white/20 text-[0.92rem]">
+        <div class="grid grid-cols-2 gap-4 pt-3 border-t border-white/20 text-[1rem]">
           <div>
             <p class="text-bb-teal-40">NISSS number</p>
             <p class="font-bold tabular-nums">${profile.nisNumber}</p>
@@ -1705,9 +1754,9 @@ function screenTracker() {
         <div class="flex items-start gap-3 mb-3">
           <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-white text-bb-yellow-00">${ICONS.bell}</span>
           <div class="flex-1 min-w-0">
-            <p class="text-[0.85rem] uppercase tracking-wide text-bb-yellow-dark font-semibold">Due in 18 days</p>
-            <p class="font-bold text-[1.25rem] text-bb-blue-00 leading-tight">November contribution</p>
-            <p class="text-[0.95rem] text-bb-mid-grey-00 mt-0.5">${fmtMoney(150)} · Due 15 December 2026</p>
+            <p class="text-[0.95rem] uppercase tracking-wide text-bb-yellow-dark font-semibold">Due in 18 days</p>
+            <p class="font-bold text-[1.25rem] text-bb-black-00 leading-tight">November contribution</p>
+            <p class="text-[1rem] text-bb-mid-grey-00 mt-0.5">${fmtMoney(150)} · Due 15 December 2026</p>
           </div>
         </div>
         <div class="space-y-2">
@@ -1717,24 +1766,24 @@ function screenTracker() {
       </div>
 
       <!-- This year stats -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Your contributions</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Your contributions</h2>
       <div class="grid grid-cols-3 gap-2 mb-5">
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(yearTotal)}</p>
-          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">This year</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${fmtMoney(yearTotal)}</p>
+          <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">This year</p>
         </div>
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${fmtMoney(allTime)}</p>
-          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">All time</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${fmtMoney(allTime)}</p>
+          <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">All time</p>
         </div>
         <div class="rounded-xl border border-bb-grey-00 bg-white p-3 text-center">
-          <p class="text-[1.4rem] font-bold text-bb-blue-00 tabular-nums leading-tight">${monthsActive}</p>
-          <p class="text-[0.8rem] text-bb-mid-grey-00 mt-1 leading-snug">Months active</p>
+          <p class="text-[1.5rem] font-bold text-bb-black-00 tabular-nums leading-tight">${monthsActive}</p>
+          <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1 leading-snug">Months active</p>
         </div>
       </div>
 
       <!-- Recent activity -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Recent activity</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Recent activity</h2>
       <div class="rounded-2xl border border-bb-grey-00 bg-white divide-y divide-bb-grey-00 mb-3">
         ${history.map(h => {
           const statusStyle = {
@@ -1748,12 +1797,12 @@ function screenTracker() {
                 ${ICONS[statusStyle.icon]}
               </span>
               <div class="flex-1 min-w-0">
-                <p class="font-semibold text-[1rem] text-bb-blue-00">${h.month}</p>
-                <p class="text-[0.88rem] text-bb-mid-grey-00 mt-0.5">${h.date}</p>
+                <p class="font-semibold text-[1rem] text-bb-black-00">${h.month}</p>
+                <p class="text-[1rem] text-bb-mid-grey-00 mt-0.5">${h.date}</p>
               </div>
               <div class="text-right shrink-0">
-                <p class="font-bold text-[1.05rem] text-bb-blue-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : 'None'}</p>
-                <p class="text-[0.82rem] ${statusStyle.fg} font-medium">${statusStyle.label}</p>
+                <p class="font-bold text-[1.25rem] text-bb-black-00 tabular-nums">${h.amount ? fmtMoney(h.amount) : 'None'}</p>
+                <p class="text-[0.95rem] ${statusStyle.fg} font-medium">${statusStyle.label}</p>
               </div>
             </div>
           `;
@@ -1767,18 +1816,18 @@ function screenTracker() {
 
       <!-- Back-pay nudge -->
       <div class="rounded-2xl bg-bb-blue-10/60 border border-bb-blue-10 p-4 mb-6 flex items-start gap-3">
-        <span class="text-bb-blue-00 shrink-0 mt-0.5">${ICONS.spark}</span>
+        <span class="text-bb-black-00 shrink-0 mt-0.5">${ICONS.spark}</span>
         <div>
-          <p class="font-semibold text-bb-blue-00 mb-1">You skipped August 2026</p>
-          <p class="text-[0.95rem] text-bb-blue-00/80 mb-2">No worries. Slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
+          <p class="font-semibold text-bb-black-00 mb-1">You skipped August 2026</p>
+          <p class="text-[1rem] text-bb-black-00/80 mb-2">No worries. Slow months happen. You can back-pay it any time in the next 3 years and it'll count toward your benefits. After a year, a 5% surcharge is added, so sooner is cheaper.</p>
           <button type="button" onclick="alert('In a real service, this would let you back-pay BDS$150 for August 2026.')"
-            class="link-bb text-[0.95rem] font-medium">Back-pay BDS$150 →</button>
+            class="link-bb text-[1rem] font-medium">Back-pay BDS$150 →</button>
         </div>
       </div>
 
       <!-- Eligibility progress -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">What you qualify for</h2>
-      <p class="text-[0.95rem] text-bb-mid-grey-00 mb-4">
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">What you qualify for</h2>
+      <p class="text-[1rem] text-bb-mid-grey-00 mb-4">
         Each benefit needs a minimum number of contributions. Here's where you stand.
       </p>
       <div class="space-y-3 mb-6">
@@ -1788,27 +1837,27 @@ function screenTracker() {
           return `
             <div class="rounded-xl border border-bb-grey-00 bg-white p-4">
               <div class="flex items-center justify-between gap-3 mb-2">
-                <p class="font-semibold text-[1rem] text-bb-blue-00">${b.title}</p>
+                <p class="font-semibold text-[1rem] text-bb-black-00">${b.title}</p>
                 <span class="chip ${isEligible ? 'bg-bb-green-10 text-bb-green-00 border border-bb-green-40' : 'bg-bb-yellow-10 text-bb-yellow-dark border border-bb-yellow-40'}">
                   ${isEligible ? ICONS.circleCheck : ICONS.calendar}
                   <span>${isEligible ? 'Eligible' : 'In progress'}</span>
                 </span>
               </div>
-              <div class="flex items-center justify-between mb-1.5 text-[0.85rem] text-bb-mid-grey-00 tabular-nums">
+              <div class="flex items-center justify-between mb-1.5 text-[0.95rem] text-bb-mid-grey-00 tabular-nums">
                 <span>${b.have} / ${b.need} ${b.unit}</span>
                 <span>${pct}%</span>
               </div>
               <div class="protect-bar">
                 <div class="protect-bar-fill" style="width: ${pct}%"></div>
               </div>
-              <p class="text-[0.88rem] text-bb-mid-grey-00 mt-2">${b.note}</p>
+              <p class="text-[1rem] text-bb-mid-grey-00 mt-2">${b.note}</p>
             </div>
           `;
         }).join('')}
       </div>
 
       <!-- Secondary actions -->
-      <h2 class="font-bold text-[1.25rem] text-bb-blue-00 mb-3">Manage your account</h2>
+      <h2 class="font-bold text-[1.25rem] text-bb-black-00 mb-3">Manage your account</h2>
       <div class="space-y-2 mb-6">
         ${[
           { icon: 'card',     title: 'Change my contribution amount',  sub: 'Adjust your monthly target',        action: "nav('plan')" },
@@ -1817,17 +1866,17 @@ function screenTracker() {
         ].map(a => `
           <button type="button" onclick="${a.action}"
             class="text-left rounded-xl border border-bb-grey-00 bg-white p-4 w-full flex items-center gap-3 hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
-            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-blue-00">${ICONS[a.icon]}</span>
+            <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-bb-blue-10 text-bb-black-00">${ICONS[a.icon]}</span>
             <span class="flex-1 min-w-0">
-              <span class="block font-semibold text-[1rem] text-bb-blue-00">${a.title}</span>
-              <span class="block text-[0.88rem] text-bb-mid-grey-00 mt-0.5">${a.sub}</span>
+              <span class="block font-semibold text-[1rem] text-bb-black-00">${a.title}</span>
+              <span class="block text-[1rem] text-bb-mid-grey-00 mt-0.5">${a.sub}</span>
             </span>
             <span class="text-bb-teal-00">${ICONS.arrowRight}</span>
           </button>
         `).join('')}
       </div>
 
-      <p class="text-[0.85rem] text-bb-mid-grey-00 text-center">
+      <p class="text-[0.95rem] text-bb-mid-grey-00 text-center">
         This is a prototype. Numbers shown here are for demonstration only.
       </p>
     </div>`;
@@ -1938,6 +1987,9 @@ function render(opts = {}) {
   root.classList.toggle('no-anim', !opts.scroll);
 
   root.innerHTML = (SCREENS[state.screen] || screenLanding)();
+  // Consume the one-shot step error: it's now in the rendered HTML, so the
+  // next render (a selection, a nav) clears it automatically.
+  state.stepError = null;
   document.title = (Object.keys(state.errors).length ? 'Error: ' : '') + (TITLES[state.screen] || TITLES.landing);
   setupRadioGroups(root);
 
@@ -2066,6 +2118,17 @@ function updateGoodMonths(el) {
   state.data.goodMonthsPerYear = bad || rawStr.trim() === '' ? null : Number(rawStr);
 }
 
+// GOV.BB number-input steppers: nudge the value within 1–12 and sync state.
+function stepGoodMonths(dir) {
+  const el = document.getElementById('goodMonthsPerYear');
+  if (!el) return;
+  const cur = parseInt(el.value, 10);
+  const next = Math.max(1, Math.min(12, (Number.isNaN(cur) ? 1 - dir : cur) + dir));
+  el.value = String(next);
+  updateGoodMonths(el);
+  if (state.errors.goodMonthsPerYear) validateIncomeField('goodMonthsPerYear');
+}
+
 // Only exponent notation is normalised here ("1e1" means 10). Fractional
 // months are an error, not a rounding, so they are left for Continue.
 function normaliseGoodMonths(el) {
@@ -2169,7 +2232,7 @@ function nextFromIncome() {
     render({ focusErrors: true });
     return;
   }
-  nav(LEAN_ESTIMATOR ? 'risk-awareness' : 'your-situation');
+  nav(LEAN_ESTIMATOR ? 'plan' : 'your-situation');
 }
 
 function setDependants(id) {

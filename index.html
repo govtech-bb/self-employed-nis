@@ -173,9 +173,37 @@
     #header-mobile-nav a:hover{color:#000;background:#eaf9f9}
     #header-mobile-nav a:focus-visible{outline:none;background:#ffc726;color:#000}
     @media(min-width:40rem){.nav-desktop{display:block}.nav-menu-btn{display:none}#header-mobile-nav{display:none !important}}
+
+    /* Target layout & typography */
+    .stage{max-width:600px;margin-inline:auto}
+    .text-blue-00{color:var(--blue-00)}
+    .text-mid-grey-00{color:#595959}
+    .border-blue-40{border-color:var(--blue-40)}
+    .text-\[1\.05rem\]{font-size:1.05rem}
+    .text-\[1\.15rem\]{font-size:1.15rem}
+    .text-\[0\.95rem\]{font-size:0.95rem}
+    .text-\[2rem\]{font-size:2rem}
+    .mb-3{margin-bottom:.75rem}
+    .mb-4{margin-bottom:1rem}
+    .mb-5{margin-bottom:1.25rem}
+    .mb-8{margin-bottom:2rem}
+    .pl-6{padding-left:1.5rem}
+    .pl-s{padding-left:1rem}
+    .space-y-1\.5>*+*{margin-top:.375rem}
+    .font-semibold{font-weight:600}
+    .tracking-tight{letter-spacing:-.025em}
+    .link-bb{color:var(--teal-00);text-decoration:underline;text-underline-offset:2px}
+    .link-bb:hover{color:var(--black-00);background:var(--teal-10);text-decoration:none}
+    .link-bb:focus-visible{background:var(--yellow-100);color:var(--black-00);text-decoration:none;outline:none}
+    .link-bb:active{background:var(--yellow-100);color:var(--black-00);text-decoration:none}
+    .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;font-size:1.05rem;font-weight:600;white-space:nowrap;padding:.75rem 1.5rem;border-radius:.25rem;background:var(--teal-00);color:#fff;text-decoration:none;transition:background-color .2s,box-shadow .2s}
+    .btn-primary:hover{background:#1a777d}
+    .btn-primary:focus-visible{outline:none;box-shadow:0 0 0 1px #fff,0 0 0 5px var(--ring)}
+    .btn-primary:active{background:#0a4549}
+    @media(min-width:40rem){.sm\:text-\[2\.5rem\]{font-size:2.5rem}}
   </style>
 </head>
-<body class="font-normal text-[1.25rem] leading-[1.5] grid min-h-screen grid-rows-[auto_1fr_auto] bg-white-00 font-sans antialiased">
+<body class="font-normal text-[1.05rem] leading-[1.5] grid min-h-screen grid-rows-[auto_1fr_auto] bg-white-00 font-sans antialiased" style="line-height:1.55">
 
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:top-2 focus:left-2 focus:bg-yellow-100 focus:text-black-00 focus:px-4 focus:py-2 focus:font-bold">Skip to main content</a>
 
@@ -241,92 +269,122 @@
   <!-- ============ MAIN CONTENT ============ -->
   <main id="main" tabindex="-1" class="outline-none">
     <div class="container">
-      <article class="max-w-3xl py-8 space-y-5">
+      <article class="stage py-8">
 
-        <!-- Breadcrumb. FLAG: the live homepage has no breadcrumb component; this is built
-             from in-system utility classes. Confirm against a content-page template. -->
-        <nav aria-label="Breadcrumb" class="text-[1rem]">
+        <!-- Breadcrumb -->
+        <nav aria-label="Breadcrumb" class="mb-5 text-[0.95rem] text-mid-grey-00">
           <ol class="flex flex-wrap items-center gap-2">
-            <li><a class="inline-flex outline-none underline-offset-2 underline hover:no-underline active:bg-yellow-100 active:no-underline focus-visible:bg-yellow-100 focus-visible:no-underline active:text-black-00 focus-visible:text-black-00 text-teal-00 hover:text-black-00 hover:bg-teal-10" href="/">Home</a></li>
+            <li><a class="link-bb" href="/">Home</a></li>
             <li aria-hidden="true">›</li>
-            <li><a class="inline-flex outline-none underline-offset-2 underline hover:no-underline active:bg-yellow-100 active:no-underline focus-visible:bg-yellow-100 focus-visible:no-underline active:text-black-00 focus-visible:text-black-00 text-teal-00 hover:text-black-00 hover:bg-teal-10" href="/work-employment">Work and employment</a></li>
+            <li><a class="link-bb" href="/national-insurance">National Insurance</a></li>
             <li aria-hidden="true">›</li>
-            <li aria-current="page">National Insurance for self-employed workers</li>
+            <li aria-current="page">Working for yourself? You can be covered.</li>
           </ol>
         </nav>
 
-        <h1 class="font-bold text-[3.5rem] leading-[1.15]">Working for yourself? You can be covered.</h1>
+        <!-- Service caption -->
+        <p class="border-blue-40 border-l-4 py-xs pl-s text-mid-grey-00 text-[1rem] mb-4">National Insurance</p>
 
-        <p class="text-[1rem]" style="color:#4a4a4a">Last updated May 2026</p>
-        <hr style="border:0;border-top:1px solid var(--grey-00);margin:1rem 0 1.5rem">
+        <h1 class="font-bold text-[2rem] sm:text-[2.5rem] leading-[1.15] tracking-tight text-blue-00 mb-4">Working for yourself? You can be covered.</h1>
 
-        <p class="text-[1.5rem] leading-[1.4]">When you work for yourself, National Insurance pays you money when you can't work: when you're sick, when you have a baby, and when you stop working in old age. You contribute based on what you earn, and you pay what you can afford.</p>
+        <p class="text-[1.15rem] text-mid-grey-00 mb-8">Find out how much to pay and how to make a payment. You can also check the benefits you may get.</p>
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Check what you would get</h2>
-        <p>See, in dollars, what you would lose if you couldn't work for a few weeks — and what National Insurance would pay you. It takes about 3 minutes, and nothing is saved.</p>
-        <p>
-          <a href="check.html" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">Check your benefits</a>
-        </p>
+        <!-- Who this is for -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">Who this is for</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">This guidance is for you if you earn money from work and no employer pays National Insurance for that work. For example, if you:</p>
+          <ul class="list-disc pl-6 space-y-3 text-[1.05rem] text-mid-grey-00 mb-4">
+            <li>drive or deliver for an app</li>
+            <li>work in a trade, beauty or personal care</li>
+            <li>sell food, goods or crafts</li>
+            <li>freelance, create content or do online work</li>
+            <li>rent your place to visitors</li>
+            <li>do domestic, casual or cash-in-hand work</li>
+          </ul>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">You do not need a registered business or a work permit. You can also contribute for work you do on the side, even if an employer pays National Insurance for your main job.</p>
+        </section>
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Ready to register?</h2>
-        <p>Find out how to register with NIS, pay your contributions and get your benefits.</p>
-        <p>
-          <a href="register.html" class="relative inline-flex items-center justify-center gap-2 text-[20px] whitespace-nowrap transition-[background-color,box-shadow] duration-200 outline-none bg-teal-00 text-white-00 hover:bg-[#1a777d] hover:shadow-[inset_0_0_0_4px_rgba(222,245,246,0.10)] active:bg-[#0a4549] active:shadow-[inset_0_0_0_3px_rgba(0,0,0,0.20)] px-xm py-s rounded-sm leading-[1.7] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-offset-1 focus-visible:rounded-sm active:ring-4 active:ring-offset-1 active:ring-teal-100 focus-visible:ring-teal-100">How to get your benefits</a>
-        </p>
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Who this is for</h2>
-        <p>This is for you if you earn money from work and no employer pays National Insurance for you, whether it is your only job or something you do on the side. For example, if you:</p>
-        <ul class="list-disc pl-7.5 space-y-2">
-          <li>drive or deliver for an app: rideshare, food or parcel delivery</li>
-          <li>work in a trade or service: mechanics, hairdressers, handymen, carers</li>
-          <li>work in beauty or personal care: braiders, barbers, stylists, nail and lash techs, massage therapists</li>
-          <li>sell food, goods or crafts: market vendors, caterers, online sellers</li>
-          <li>freelance or do online work: design, writing, coding, content creators</li>
-          <li>work in the creative sector: musicians, artists, performers, photographers</li>
-          <li>work in a profession on your own account: consultants, accountants, lawyers, doctors, engineers</li>
-          <li>rent your place to visitors: Airbnb and other short-let hosts</li>
-          <li>do cash-in-hand or casual work: dock work, events, fishing, music, dancing</li>
-          <li>do domestic or household work: cleaning, childminding, helping in homes</li>
-        </ul>
-        <p>You don't need to fit one of these exactly. Anyone earning income on their own account can be covered. You don't need a registered business, and you don't need a work permit.</p>
+        <!-- How much to pay -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">How much to pay</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">How much you pay is based on your earnings after business expenses. NIS sets a minimum and maximum amount each year.</p>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">The amount you contribute affects how much you may receive when you claim a benefit.</p>
+          <p class="mb-4">
+            <a href="check.html" class="btn-primary">Estimate how much to pay</a>
+          </p>
+        </section>
 
-        <p>If you already have a job where your employer pays National Insurance for you, you can still pay for your self-employed work on top.</p>
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">What you get</h2>
-        <p>National Insurance is protection, not a tax. When you contribute, it pays you in seven ways:</p>
-        <ul class="list-disc pl-7.5 space-y-2">
-          <li><strong>Sickness benefit</strong>: money to live on while you recover and can't work. It pays part of your usual earnings, for up to a year.</li>
-          <li><strong>Maternity benefit</strong>: income while you take time off to have your baby.</li>
-          <li><strong>Paternity benefit</strong>: a short paid break for new fathers.</li>
-          <li><strong>Invalidity benefit</strong>: ongoing support if an illness or injury is expected to keep you from working long-term. It carries on from sickness benefit once a doctor decides the condition is lasting.</li>
-          <li><strong>Survivors' benefit</strong>: money for your husband, wife, common-law partner or children if you die. Your contributions keep working for your family.</li>
-          <li><strong>Funeral grant</strong>: a payment to help your family with funeral costs.</li>
-          <li><strong>Old age pension</strong>: a monthly income for life once you reach pension age (currently 67).</li>
-        </ul>
-        <p>It does not cover unemployment.</p>
+        <!-- Make a payment -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">Make a payment</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">Making contributions when you work for yourself is voluntary. If you choose to contribute, the full amount for the year must be paid by 15 January of the following year.</p>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">You can pay weekly, monthly or as one payment for the year.</p>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">Have your National Insurance number ready. You can pay:</p>
+          <ul class="list-disc pl-6 space-y-3 text-[1.05rem] text-mid-grey-00 mb-4">
+            <li>online through SurePay</li>
+            <li>online through EZpay+</li>
+            <li>through a bank</li>
+            <li>in person at the NIS office</li>
+          </ul>
+        </section>
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">What it costs and how it works</h2>
-        <p>You don't pay a fixed bill. You contribute based on your earnings. For self-employed people, this means what you pay yourself after business expenses, not your total income.</p>
-        <p>NIS sets a minimum and a maximum each year, and you choose how much to pay within that range, based on what you can afford. You can pay the minimum if that works for you, but the more you contribute, the higher your benefits may be, because benefits are generally based on your contributions and earnings over time.</p>
-        <p>Your income can go up and down, so your contributions can too. You can pay more in good months and less in slower ones. Pay weekly, monthly, or in lump sums. Paying a little and often is usually easiest to manage.</p>
-        <div class="border-l-4 border-blue-100 bg-blue-10 px-s py-s">
-          <p>Most benefits start after you've contributed for a qualifying period, so the sooner you start, the sooner you're protected.</p>
-        </div>
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
 
-        <h2 class="font-bold text-[2.5rem] leading-[1.25]">Good to know</h2>
-        <ul class="list-disc pl-7.5 space-y-2">
-          <li><strong>"I have to register a business first."</strong> No. You register yourself, using your own name and National Insurance number, not a business.</li>
-          <li><strong>"It's just another tax."</strong> It's protection that pays you back when you can't work. NIS does not share your details with the tax authority except where the law requires it.</li>
-          <li><strong>"My income is too uneven to pay every month."</strong> You don't have to. Pay when the work is there, skip or catch up slow months, and pay weekly, monthly or in lumps.</li>
-          <li><strong>"I'm too old, or I've been out too long."</strong> Your National Insurance number is yours for life, and if you worked in a country with a shared agreement, those years can count too.</li>
-          <li><strong>"My savings are my insurance."</strong> National Insurance works alongside your savings. It replaces some income when you can't work, so your savings last longer.</li>
-        </ul>
+        <!-- If you missed payments -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">If you missed payments</h2>
+          <div class="border-l-4 border-blue-100 bg-blue-10 px-s py-s mb-4">
+            <p class="text-[1.05rem] text-mid-grey-00 mb-4">You may be able to pay contributions for up to 3 missed years. <strong>NIS adds a 5% charge for each year the payment is late.</strong> Contact NIS to check which years you can pay for before making a payment.</p>
+            <p class="text-[1.05rem] text-mid-grey-00">If you worked in a country that has a social security agreement with Barbados, those contributions may count towards your benefits here. Contact NIS and tell them where and when you worked.</p>
+          </div>
+        </section>
 
-        <!-- Feedback box — same pattern as the live homepage -->
+        <!-- Check your record and benefits (hidden) -->
+        <section class="mb-8" style="scroll-margin-top:1rem;display:none">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">Check your record and benefits</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">You can check your payment record to see what you have paid so far and whether you have missed any contributions. If you have worked outside Barbados, some of that time may count towards your record.</p>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">You can also find out which benefits you may be able to get based on your contributions.</p>
+          <p class="mb-4">
+            <a href="check-record.html" class="btn-primary">Check your record and benefits</a>
+          </p>
+        </section>
+
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
+
+        <!-- Before you pay -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">Before you pay</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">Making contributions when you work for yourself is <strong>voluntary</strong>. If you choose to contribute, you need a National Insurance number and must be registered with NIS as self-employed.</p>
+          <div class="border-l-4 border-blue-100 bg-blue-10 px-s py-s mb-4">
+            <p class="text-[1.05rem] text-mid-grey-00"><strong>Having a National Insurance number does not mean you are already registered as self-employed.</strong> If you have worked in Barbados before, NIS can check whether you already have a number.</p>
+          </div>
+          <p class="mb-8">
+            <a href="https://www.nis.gov.bb/self-employment-registration/" class="text-blue-00 font-semibold text-[1.05rem]" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;padding:.75rem 1.5rem;border:2px solid var(--blue-00);text-decoration:none">Register as self-employed</a>
+          </p>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">NIS does not share your information with the Barbados Revenue Authority unless the law requires it.</p>
+        </section>
+
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
+
+        <!-- Get help -->
+        <section class="mb-8" style="scroll-margin-top:1rem">
+          <h2 class="font-bold text-[1.5rem] text-blue-00 mb-3">Get help</h2>
+          <p class="text-[1.05rem] text-mid-grey-00 mb-4">Contact NIS on <strong>467-4NIS (4647)</strong> or visit the <strong>NIS office</strong> in person.</p>
+          <p class="text-[1.05rem] text-blue-00 font-bold mb-2">NIS office</p>
+          <p class="text-[1.05rem] text-mid-grey-00" style="line-height:1.7">National Insurance and Social Security Service<br>Frank Walcott Building<br>Culloden Road<br>St Michael</p>
+        </section>
+
+        <hr style="border:0;border-top:1px solid var(--grey-00);margin-bottom:2rem">
+
+        <!-- Feedback box -->
         <div class="flex flex-col items-start gap-xs border-4 border-yellow-100 bg-yellow-40 px-s py-xm">
-          <h2 class="font-bold text-[1.5rem] leading-[1.25]">Was this helpful?</h2>
-          <p>Give us your feedback about this page.</p>
-          <a class="inline-flex outline-none underline-offset-2 underline hover:no-underline active:bg-yellow-100 active:no-underline focus-visible:bg-yellow-100 focus-visible:no-underline active:text-black-00 focus-visible:text-black-00 text-black-00 hover:bg-white-00 hover:text-[#083A3D]" href="/feedback">Help us improve alpha.gov.bb</a>
+          <h2 class="font-bold text-[1.5rem] leading-[1.25] text-blue-00">Was this helpful?</h2>
+          <p class="text-[1.05rem] text-mid-grey-00">Give us your feedback about this page.</p>
+          <a class="link-bb text-black-00" href="/feedback">Help us improve alpha.gov.bb</a>
         </div>
 
       </article>

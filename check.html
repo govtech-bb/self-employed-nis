@@ -882,19 +882,55 @@ function screenIncomeReality() {
 
   return `
     <div class="screen stage">
-      ${backBtn(LEAN_ESTIMATOR ? 'landing' : 'worker-type')}
       ${progressBar('income-reality')}
       ${serviceCaption()}
 
       <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
-        Let's talk about your earnings.
+        Tell us about your earnings
       </h1>
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
-        Be honest. There are no wrong answers, and this stays on your phone. We use it to give you a real estimate that fits your life.
+        Enter how much you earn after paying your business costs. An estimate is fine.
       </p>
       ${errorSummary()}
 
+      <!-- Do your earnings change? -->
+      <fieldset class="mb-6" style="border:0;padding:0;margin:0 0 1.5rem 0">
+        <legend class="font-bold text-[1.15rem] text-bb-black-00 mb-1">Do your earnings usually change during the year?</legend>
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-3">For example, you may earn more in some months and less in others.</p>
+        <div class="flex flex-col gap-3">
+          <label class="flex items-center gap-3 rounded-xl border-2 px-4 py-3.5 cursor-pointer text-[1.05rem] transition-all ${d.earningsVary !== 'no' ? 'border-bb-teal-00 bg-bb-teal-10' : 'border-bb-grey-00 bg-white hover:border-bb-teal-00'}">
+            <input type="radio" name="earningsVary" value="yes" ${d.earningsVary !== 'no' ? 'checked' : ''}
+              onchange="state.data.earningsVary='yes';render()"
+              class="w-[22px] h-[22px] accent-bb-teal-00 flex-shrink-0" />
+            Yes
+          </label>
+          <label class="flex items-center gap-3 rounded-xl border-2 px-4 py-3.5 cursor-pointer text-[1.05rem] transition-all ${d.earningsVary === 'no' ? 'border-bb-teal-00 bg-bb-teal-10' : 'border-bb-grey-00 bg-white hover:border-bb-teal-00'}">
+            <input type="radio" name="earningsVary" value="no" ${d.earningsVary === 'no' ? 'checked' : ''}
+              onchange="state.data.earningsVary='no';render()"
+              class="w-[22px] h-[22px] accent-bb-teal-00 flex-shrink-0" />
+            No, I earn about the same each month
+          </label>
+        </div>
+        ${d.earningsVary === 'no' ? `
+        <div class="mt-4">
+          <label for="steadyMonth-typed" class="block font-bold text-[1.15rem] text-bb-black-00 mb-1">
+            How much do you usually earn each month?
+          </label>
+          <p class="text-[1rem] text-bb-mid-grey-00 mb-3">Enter the amount after paying your business costs. For example, 1500.</p>
+          <div class="relative inline-flex rounded-sm border-2 border-bb-black-00 items-center transition-all bg-bb-white-00 hover:shadow-form-hover focus-within:ring-4 focus-within:ring-bb-teal-100" style="max-width:280px">
+            <span class="pl-3 text-bb-mid-grey-00">BDS$</span>
+            <input id="steadyMonth-typed" type="number" inputmode="numeric" min="0" step="50"
+              value="${numVal('steadyMonth-typed', d.steadyMonth || d.goodMonth)}"
+              oninput="var v=parseFloat(this.value)||0;state.data.steadyMonth=v;state.data.goodMonth=v;state.data.slowMonth=v;state.data.goodMonthsPerYear=12"
+              onpaste="numberPaste(event)"
+              aria-label="Monthly earnings in Barbadian dollars"
+              class="w-full p-3 outline-none rounded-[inherit] text-[1.125rem] tabular-nums" />
+          </div>
+        </div>
+        ` : ''}
+      </fieldset>
 
+      ${d.earningsVary !== 'no' ? `
       <div class="rounded-2xl border border-bb-grey-00 bg-white p-5 mb-4 shadow-card">
         <label for="goodMonth-typed" class="block font-semibold text-[1.25rem] text-bb-black-00 mb-1">
           What does a good month look like?
@@ -972,6 +1008,7 @@ function screenIncomeReality() {
         </div>
         <p id="goodMonthsPerYear-error" class="mt-2 text-bb-red-00 text-[1rem]"${e.goodMonthsPerYear ? '' : ' hidden'}>${e.goodMonthsPerYear || ''}</p>
       </div>
+      ` : ''}
 
       ${primaryBtn('Continue', 'nextFromIncome()', { back: LEAN_ESTIMATOR ? 'landing' : 'worker-type' })}
     </div>`;
@@ -1152,7 +1189,7 @@ function screenRiskAwareness() {
       without: 'Your partner, children or parents lose the income you brought in.',
       withNis: `Survivors' Benefit shares about ${perWeek(pensionWk)} among your partner, children or parents, plus a ${fmtMoney(NIS.CHILD_GRANT)} grant per child.` },
     { benefit: 'pension', title: "Old-Age Contributory Pension",
-      without: `Without a pension, that's about <strong>${fmtMoney(yearLost)}/year</strong> you'd need to find from somewhere else.`,
+      without: `Without a pension, that's about <strong>${fmtMoney(yearLost)}/year</strong> you'd need to find it from somewhere else.`,
       withNis: `An Old-Age Pension for life from age ${NIS.PENSIONABLE_AGE}, starting around ${perWeek(pensionWk)} and growing the longer you contribute.` },
     { benefit: 'funeral', title: "Funeral Grant",
       without: 'Funeral costs land on your family at the worst possible time.',
@@ -1166,34 +1203,38 @@ function screenRiskAwareness() {
       ${serviceCaption()}
 
       <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
-        What your plan protects you from
+        See the benefits you may get
       </h1>
       <p class="text-[1.125rem] text-bb-mid-grey-00 mb-6">
-        For <strong class="tabular-nums">${fmtMoney(chosen)}</strong>/month, here's each moment <strong class="text-bb-red-00">without NISSS</strong> and <strong class="text-bb-green-00">with it</strong>. Figures are estimates based on the amount you chose to put in.
+        These are the benefits that self-employed National Insurance contributions may help you qualify for.
       </p>
-      <p class="text-[1rem] text-bb-mid-grey-00 mb-3">Tap any benefit to see what happens.</p>
+
+      <!-- Your selected payment card -->
+      <div class="rounded-xl bg-bb-blue-10/50 p-5 mb-6">
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-1">Your selected payment</p>
+        <p class="text-[1.75rem] font-bold text-bb-black-00 tabular-nums">${fmtMoney(chosen)} a month</p>
+        <p class="text-[1rem] text-bb-mid-grey-00 mt-1">${fmtMoney(chosen * 12)} a year</p>
+      </div>
 
       <div class="space-y-3 mb-6">
         ${items.map((it, i) => {
           const def = BENEFITS.find(x => x.id === it.benefit);
-          const c = def ? COLOR_MAP[def.color] : COLOR_MAP.teal;
-          // First card open on arrival; after that, follow whatever the user toggled.
           const open = state.expandedScenario ? state.expandedScenario === it.benefit : i === 0;
           return `
             <details class="scenario rounded-xl border border-bb-grey-00 bg-white overflow-hidden" ${open ? 'open' : ''} onclick="toggleScenario('${it.benefit}', event)">
-              <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30">
-                <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full ${c.bg} ${c.text}">${ICONS[def ? def.icon : 'shield']}</span>
-                <span class="flex-1 min-w-0 font-semibold text-[1.25rem] text-bb-black-00">${it.title}</span>
-                <span class="shrink-0 text-bb-black-00">${ICONS.chevDown}</span>
+              <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30 cursor-pointer">
+                <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-grey-00 text-bb-black-00">${ICONS[def ? def.icon : 'shield']}</span>
+                <span class="flex-1 min-w-0 font-semibold text-[1.125rem] text-bb-black-00">${it.title}</span>
+                <span class="shrink-0 text-bb-black-00 transition-transform">${ICONS.chevDown}</span>
               </summary>
               <div class="px-4 pb-5 pt-4 space-y-3 border-t border-bb-grey-00">
                 <div class="rounded-lg bg-bb-red-10 border border-bb-red-40/60 p-3">
                   <p class="text-[0.95rem] uppercase tracking-wide text-bb-red-00 font-semibold mb-1">Without NISSS</p>
-                  <p class="text-[1.125rem] text-bb-black-00">${it.without}</p>
+                  <p class="text-[1rem] text-bb-black-00">${it.without}</p>
                 </div>
                 <div class="rounded-lg bg-bb-green-10 border border-bb-green-40 p-3">
                   <p class="text-[0.95rem] uppercase tracking-wide text-bb-green-00 font-semibold mb-1">With NISSS</p>
-                  <p class="text-[1.125rem] text-bb-black-00">${it.withNis}</p>
+                  <p class="text-[1rem] text-bb-black-00">${it.withNis}</p>
                 </div>
               </div>
             </details>
@@ -1201,14 +1242,15 @@ function screenRiskAwareness() {
         }).join('')}
       </div>
 
-      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
-        <p><strong>You don't have to plan for every scenario.</strong> NISSS gives you benefits across several of them at once. That's the point of a safety net.</p>
+      <div class="text-[1rem] text-bb-mid-grey-00 mb-4 space-y-3">
+        <p>Each benefit has its own qualifying rules. How much you receive may depend on your earnings and contribution record.</p>
+        <p>National Insurance for self-employed workers does not include unemployment benefit.</p>
       </div>
-
-      ${primaryBtn("Show me next steps", "nav('next-steps')", { back: 'plan' })}
-      <p class="text-center text-[0.95rem] text-bb-mid-grey-00 mt-3">
+      <p class="text-[0.95rem] text-bb-mid-grey-00 mb-6">
         Estimates only. Benefit amounts are calculated from your insurable earnings (your contribution ÷ 17.25%) and your most recent year of contributions, and are subject to change. Final amounts are confirmed by NISSS Benefits.
       </p>
+
+      ${primaryBtn("Show me next steps", "nav('next-steps')", { back: 'plan' })}
     </div>`;
 }
 
@@ -1281,48 +1323,45 @@ function screenPlan() {
       <h1 class="font-bold text-[2.25rem] sm:text-[2.75rem] leading-[1.15] text-bb-black-00 mb-2">
         What should you put in?
       </h1>
-      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-1">
-        Pick a level you can afford. The more you put in, the bigger your benefits. You'll see what each one protects next.
+      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-5">
+        These estimates are based on the earnings you entered.
       </p>
       ${stepError()}
 
-      <!-- Earnings summary (plain text, not a card) -->
-      <p class="text-[1.125rem] text-bb-mid-grey-00 mb-5">
-        We've suggested these levels from your average earnings of about
-        <strong class="tabular-nums text-bb-black-00">${fmtMoney(monthlyAvg)}</strong> a month.
-      </p>
+      <!-- Earnings summary card -->
+      <div class="rounded-xl bg-bb-blue-10/50 p-5 mb-6">
+        <p class="text-[1rem] text-bb-mid-grey-00 mb-1">Average monthly earnings</p>
+        <p class="text-[1.75rem] font-bold text-bb-black-00 tabular-nums mb-2">${fmtMoney(monthlyAvg)}</p>
+        <button type="button" onclick="nav('income-reality')" class="link-bb text-[1rem]">Change your earnings</button>
+      </div>
 
       <!-- Tier cards -->
+      <p class="font-bold text-[1.15rem] text-bb-black-00 mb-1">Choose a monthly payment amount</p>
+      <p class="text-[1rem] text-bb-mid-grey-00 mb-3">Choose an amount to see the National Insurance benefits you may get.</p>
       <div class="space-y-3 mb-6" role="radiogroup" aria-label="Contribution tier">
         ${tiers.map(t => {
           const selected = tier === t.id;
           const c = COLOR_MAP[t.color];
-          // Per-tier selection colours (kept off the shared teal .selected rule
-          // so each card stays its own colour, selected or not).
           const sc = {
             yellow: { border: 'border-bb-yellow-00', fill: 'bg-bb-yellow-00', hex: '#e8a833' },
             green:  { border: 'border-bb-green-00',  fill: 'bg-bb-green-00',  hex: '#00654a' },
             teal:   { border: 'border-bb-teal-00',   fill: 'bg-bb-teal-00',   hex: '#0e5f64' },
           }[t.color];
-          const cardCls = selected ? `${sc.border} shadow-[inset_0_0_0_2px_${sc.hex}]` : c.border;
-          const checkCls = selected ? `${sc.fill} shadow-[0_0_0_3px_#fff,0_0_0_5px_${sc.hex}]` : 'bg-white border-2 border-bb-mid-grey-00';
+          const weekly = Math.round(t.monthly / 4.33);
+          const yearly = t.monthly * 12;
+          const cardBorder = selected ? `${sc.border} ${c.bg} shadow-[inset_0_0_0_2px_${sc.hex}]` : `border-bb-grey-00 ${c.bg}`;
+          const radioCls = selected ? `${sc.fill} shadow-[0_0_0_3px_#fff,0_0_0_5px_${sc.hex}]` : 'bg-white border-2 border-bb-mid-grey-00';
           return `
             <button type="button" role="radio" aria-checked="${selected}"
               onclick="selectTier('${t.id}')"
-              class="text-left rounded-xl border-2 ${c.bg} ${cardCls} p-4 w-full transition-shadow focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
-              <div class="flex items-start justify-between gap-3">
+              class="text-left rounded-xl border-2 ${cardBorder} p-4 w-full transition-shadow focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100">
+              <div class="flex items-start gap-3">
+                <span class="shrink-0 w-6 h-6 mt-0.5 rounded-full inline-flex items-center justify-center ${radioCls}"></span>
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <p class="font-semibold text-[1.25rem] text-bb-black-00">${t.label}</p>
-                    ${t.tag === 'Recommended' ? `<span class="chip bg-white ${c.text} border ${c.border}">Recommended</span>` : ''}
-                  </div>
-                  <p class="mt-1 leading-none">
-                    <span class="text-[2rem] font-bold text-bb-black-00 tabular-nums">${fmtMoney(t.monthly)}</span>
-                    <span class="text-bb-mid-grey-00 text-[1rem]"> /month</span>
-                  </p>
-                  <p class="text-[1rem] text-bb-mid-grey-00 mt-2">${t.sub}</p>
+                  <p class="font-bold text-[1.15rem] text-bb-black-00 tabular-nums">${fmtMoney(t.monthly)} a month</p>
+                  <p class="text-[0.95rem] text-bb-mid-grey-00 mt-1">About ${fmtMoney(weekly)} a week</p>
+                  <p class="text-[0.95rem] text-bb-mid-grey-00">${fmtMoney(yearly)} a year</p>
                 </div>
-                <span class="shrink-0 w-6 h-6 mt-1 rounded-full inline-flex items-center justify-center ${checkCls}"></span>
               </div>
             </button>
           `;
@@ -1354,10 +1393,12 @@ function screenPlan() {
 
       <!-- How paying works — left-rule inset matching the landing's service
            caption (border-bb-blue-40, no box). Always shown, not just on select. -->
-      <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 space-y-2 text-[1rem] text-bb-black-00">
-        <p><strong>Good month?</strong> Pay a bit more. <strong>Slow month?</strong> Pay less, or skip it. What matters is your total for the year.</p>
-        <p><strong>Benefits start</strong> after one full year of contributions (at least BDS$1,200).</p>
+      <div class="rounded-xl bg-bb-blue-10/50 border-l-4 border-bb-blue-40 p-5 mb-4 space-y-3 text-[1rem] text-bb-black-00">
+        <p>You can pay weekly, monthly, in more than one payment or as one payment for the year.</p>
+        <p>The full amount for the year must be paid by 15 January of the following year.</p>
+        <p>The monthly and weekly amounts are shown to help you plan. You can choose how often to pay.</p>
       </div>
+      <p class="text-[1rem] text-bb-mid-grey-00 mb-6">These amounts are estimates. NIS can confirm the exact amount you should pay.</p>
 
       ${primaryBtn("See what this protects", "nav('risk-awareness')", { disabled: !tier, hint: 'Pick a contribution level above to continue.', back: LEAN_ESTIMATOR ? 'income-reality' : 'your-situation' })}
     </div>`;
@@ -1419,47 +1460,51 @@ function screenNextSteps() {
       </p>
 
       <div class="space-y-3 mb-6">
-        <button type="button" onclick="nav('register-path')"
-          class="text-left rounded-2xl border-2 border-bb-teal-00 bg-bb-teal-10 p-5 w-full hover:bg-bb-teal-40/30 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
-          <div class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white text-bb-teal-00">
-              ${ICONS.shield}
-            </span>
-            <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Register with NISSS</p>
-              <p class="text-[1rem] text-bb-black-00/80">Get set up to start contributing. Takes about 10 minutes.</p>
-            </div>
-            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+        <details class="rounded-xl border border-bb-grey-00 bg-white overflow-hidden">
+          <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30 cursor-pointer">
+            <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-grey-00 text-bb-black-00">${ICONS.shield}</span>
+            <span class="flex-1 min-w-0 font-semibold text-[1.125rem] text-bb-black-00">Register with NISSS</span>
+            <span class="shrink-0 text-bb-black-00">${ICONS.chevDown}</span>
+          </summary>
+          <div class="px-4 pb-5 pt-4 border-t border-bb-grey-00">
+            <p class="text-[1rem] text-bb-black-00/80 mb-4">Get set up to start contributing. Takes about 10 minutes.</p>
+            <a href="https://www.nis.gov.bb/self-employment-registration/" target="_blank" rel="noopener" class="link-bb text-[1rem] font-semibold">Start registration →</a>
           </div>
-        </button>
+        </details>
 
-        <button type="button" onclick="nav('payment-options')"
-          class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
-          <div class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-blue-10 text-bb-black-00">
-              ${ICONS.card}
-            </span>
-            <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">See how to pay</p>
-              <p class="text-[1rem] text-bb-black-00/80">SurePay, EZpay+, bank, online, in person. Pick what works for you.</p>
-            </div>
-            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+        <details class="rounded-xl border border-bb-grey-00 bg-white overflow-hidden">
+          <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30 cursor-pointer">
+            <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-grey-00 text-bb-black-00">${ICONS.card}</span>
+            <span class="flex-1 min-w-0 font-semibold text-[1.125rem] text-bb-black-00">See how to pay</span>
+            <span class="shrink-0 text-bb-black-00">${ICONS.chevDown}</span>
+          </summary>
+          <div class="px-4 pb-5 pt-4 border-t border-bb-grey-00">
+            <p class="text-[1rem] text-bb-black-00/80 mb-3">Pay weekly, monthly, or in a lump sum — whatever fits your cash flow.</p>
+            <ul class="list-disc pl-5 space-y-2 text-[1rem] text-bb-black-00/80">
+              <li><strong>NISSS online portal</strong> — pay from your phone, anytime</li>
+              <li><strong>SurePay</strong> — pay cash or card at any SurePay location</li>
+              <li><strong>EZpay+</strong> — pay 24/7 at <a href="https://ezpay.gov.bb" target="_blank" rel="noopener" class="link-bb">ezpay.gov.bb</a></li>
+              <li><strong>Bank transfer</strong> — standing order or one-off transfer</li>
+              <li><strong>In person at NISSS</strong> — pay at the office and get help</li>
+            </ul>
           </div>
-        </button>
+        </details>
 
-        <button type="button" onclick="nav('contact')"
-          class="text-left rounded-2xl border-2 border-bb-grey-00 bg-white p-5 w-full hover:border-bb-teal-00 hover:bg-bb-teal-10/40 focus:outline-none focus-visible:ring-4 focus-visible:ring-bb-teal-100 transition-colors">
-          <div class="flex items-start gap-3">
-            <span class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-full bg-bb-yellow-10 text-bb-yellow-00">
-              ${ICONS.phone}
-            </span>
-            <div class="flex-1">
-              <p class="font-semibold text-[1.25rem] text-bb-black-00 mb-1">Contact NISSS</p>
-              <p class="text-[1rem] text-bb-black-00/80">Have a question? Call or visit an office and an officer will help.</p>
-            </div>
-            <span class="text-bb-teal-00 mt-2">${ICONS.arrowRight}</span>
+        <details class="rounded-xl border border-bb-grey-00 bg-white overflow-hidden">
+          <summary class="p-4 flex items-center gap-3 hover:bg-bb-blue-10/30 cursor-pointer">
+            <span class="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-full bg-bb-grey-00 text-bb-black-00">${ICONS.phone}</span>
+            <span class="flex-1 min-w-0 font-semibold text-[1.125rem] text-bb-black-00">Contact NISSS</span>
+            <span class="shrink-0 text-bb-black-00">${ICONS.chevDown}</span>
+          </summary>
+          <div class="px-4 pb-5 pt-4 border-t border-bb-grey-00">
+            <p class="text-[1rem] text-bb-black-00/80 mb-3">Have a question? Here's how to reach them.</p>
+            <ul class="list-disc pl-5 space-y-2 text-[1rem] text-bb-black-00/80">
+              <li><strong>Call</strong> — <a href="tel:2464317400" class="link-bb">246-431-7400</a></li>
+              <li><strong>Visit</strong> — Frank Walcott Building, Bridgetown, or any branch office</li>
+              <li><strong>Online</strong> — <a href="https://www.nis.gov.bb" target="_blank" rel="noopener" class="link-bb">nis.gov.bb</a></li>
+            </ul>
           </div>
-        </button>
+        </details>
       </div>
 
       <div class="bg-bb-grey-00/50 border-bb-blue-40 border-l-4 p-4 mb-6 text-[1rem] text-bb-black-00">
